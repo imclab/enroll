@@ -347,7 +347,7 @@
             </div>
           </div>
           <?php 
-            $numCourse = 1;
+            $numCourse = 11;
             mysql_data_seek($result,0);
             //Generates rows for colloquiums
             while($row = mysql_fetch_array($result)){
