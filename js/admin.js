@@ -3,7 +3,6 @@ $(document).ready(
 	function() {
 
 		//IMAGE UPLOAD
-
 		var preview = $('#preview'); //id of the preview image
 		new AjaxUpload('imageUpload', {
 			action: 'upload_image.php', //the php script that receives and saves the image
@@ -32,9 +31,9 @@ $(document).ready(
 					function(data) {
 						$("#status").append(data);
 					});
-					//setTimeout(function() {
-					//	location.reload(true);
-					//}, 1500);
+					setTimeout(function() {
+						location.reload(true);
+					}, 1500);
 				}
 		);
 
