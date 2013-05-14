@@ -28,9 +28,9 @@
  		$seniors=0;
  	//Insert Data into mysql
 	$query=mysql_query("INSERT INTO xy(
-			name,description,image,category,teacher,preferred_room,preferred_class_size,
+			name,description,image,category,teacher_id,preferred_room,preferred_class_size,
 			freshmen,sophomores,juniors,seniors) 
-			VALUES('$name','$description','$image','$category','$teacher','$preferred_room',
+			VALUES('$name','$description','$image',$category,'$teacher','$preferred_room',
 			$preferred_class_size,$freshmen,$sophomores,$juniors,$seniors)");
 	mysql_close($con);
   	if($query){
