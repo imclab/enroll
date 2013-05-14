@@ -1,7 +1,6 @@
 $(document).ready(
 
 	function() {
-
 		//IMAGE UPLOAD
 		var preview = $('#preview'); //id of the preview image
 		new AjaxUpload('imageUpload', {
