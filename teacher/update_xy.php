@@ -10,7 +10,7 @@
  	$mysql_id = trim($_POST['mysql_id']);
  	$name=trim($_POST['name']);
  	$description=trim($_POST['description']);
- 	$image=$_POST['image'];
+ 	$image=$_POST['uploadedImg'];
  	$category=$_POST['category'];
  	$teacher=$_POST['teacher'];
  	$preferred_room=trim($_POST['preferred_room']);
@@ -29,22 +29,25 @@
  		$seniors=0;
   $delete=$_POST['delete'];
   $result = "";	
-  	if(strcmp($delete,"n") == 0){
- 		//Insert Data into mysql
-		$query=mysql_query("UPDATE xy SET name='$name',description='$description',
-			image='$image',category='$category',teacher='$teacher',preferred_room='$preferred_room',
-			preferred_class_size='$preferred_class_size',
-			freshmen='$freshmen',sophomores='$sophomores',juniors='$juniors',seniors='$seniors'
-			WHERE id='$mysql_id'");
-		$result = "Course updated!";
-  	}
-  	else{
-  		$query=mysql_query("DELETE FROM xy WHERE id='$mysql_id' LIMIT 1");
-  		$result = "Course deleted!";
-  	}
-  	if($query){
-		echo "$result";
-   	}
-	else{ echo "Error! Sorry, tell Marcos!"; }
+  if(strcmp($delete,"n") == 0){
+    //Insert Data into mysql
+    $query=mysql_query("UPDATE xy SET name='$name',description='$description',
+    image='$image',category=$category,teacher_id=$teacher,preferred_room='$preferred_room',
+    preferred_class_size=$preferred_class_size,
+    freshmen=$freshmen,sophomores=$sophomores,juniors=$juniors,seniors=$seniors
+    WHERE id=$mysql_id");
+    if($query)
+      echo "Course updated!";
+    else
+      echo "Update failed!"; 
+  }
+  else{
+    $query=mysql_query("DELETE FROM xy WHERE id='$mysql_id' LIMIT 1");
+    if($query)
+      echo "Course deleted!";
+    else
+      echo "Delete failed!";
+  } 
+
 	mysql_close($con);
 ?>

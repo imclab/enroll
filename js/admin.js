@@ -261,15 +261,12 @@ function edit_XY(clicked_id){
 }
 
 function update_XY(clicked_id){
-	alert("right");
-	$.post('update_xy.php', $("#updateXY" + clicked_id)
-			.serialize(), function(data) {
-		$("#update_status" + clicked_id).append(data);
+	$.post('update_xy.php', $("#updateXY" + clicked_id).serialize(), function(data) {
+		$("#status" + clicked_id).append(data);
 	});
-
 	setTimeout(function() {
 		location.reload(true);
-	}, 3000);
+	}, 1500);
 }
 
 //COLLOQUIUM FUNCTIONS

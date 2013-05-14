@@ -18,10 +18,6 @@
   $teacher=$_SESSION['username'];
   //Internal user id
   $userid=NULL;
-  //Grab all of the teacher's xy options
-  $query='SELECT * FROM xy INNER JOIN `users` on xy.teacher_id = users.id WHERE users.username="' . $teacher . '"';
-  //Result of above query
-  $result=mysql_query($query) or die(mysql_error());
   //Grab all dates xy is offered and current assignments
   $xyQuery="SELECT dates.date, dates.id AS dateid, xy.name, xy_assignments.notes, xy_assignments.preferred_block, users.id AS userid 
               FROM `dates` 
@@ -42,6 +38,10 @@
     if(is_null($userid))
       $userid=$row['userid'];
   }
+  //Grab all of the teacher's xy options
+  $query="SELECT * FROM xy WHERE teacher_id=$userid";
+  //Result of above query
+  $result=mysql_query($query) or die(mysql_error());
   //Close MySQL Connection, all necessary queries have been run
   mysql_close($con);
 ?>
@@ -372,7 +372,7 @@
             </div>
             <div id="<?php echo $numCourse; ?>" class="accordion-body collapse">
               <div class="accordion-inner">
-                <form class="form-horizontal" id="updateXY<?php echo $numCourse; ?>" enctype="multipart/form-data">
+                <form class="form-horizontal updateXYForm" id="updateXY<?php echo $numCourse; ?>" enctype="multipart/form-data">
                   <!-- XY Name -->
                   <div class="control-group">
                     <label class="control-label">Name</label>
@@ -380,13 +380,13 @@
                         <input name='teacher' type='hidden' value='<?php echo $userid; ?>' />
                         <input name='form_id' type='hidden' value='<?php echo $courseName; ?>'  />
                         <input name='mysql_id' type='hidden' value='<?php echo $mysql_id; ?>'  />
-                      <input id='name<?php echo $numCourse; ?>' name='name' class='span5' type='text' value='<?php echo $courseName; ?>' disabled /> 
+                      <input id='name<?php echo $numCourse; ?>' name='name' class='span5' type='text' value='<?php echo $courseName; ?>' disabled required /> 
                     </div>
                   </div>
                   <div class="control-group">
                     <label class="control-label">Description</label>
                     <div class="controls">
-                      <textarea id='description<?php echo $numCourse; ?>' name='description' class="span5" rows='10' disabled><?php echo $description; ?></textarea>
+                      <textarea id='description<?php echo $numCourse; ?>' name='description' class="span5" rows='10' disabled required><?php echo $description; ?></textarea>
                     </div>
                   </div>
                   <div class="control-group">
@@ -419,13 +419,13 @@
                           );
                         </script>
                       </div>
-                      <input name="uploadedImg<?php echo $numCourse; ?>" id="uploadedImg<?php echo $numCourse; ?>" type="hidden" value="<?php echo $image; ?>" />
+                      <input name="uploadedImg" id="uploadedImg<?php echo $numCourse; ?>" type="hidden" value="<?php echo $image; ?>" />
                     </div>
                   </div>
                   <div class="control-group">
                     <label class="control-label">Category</label>
                     <div class="controls">
-                      <select id='category<?php echo $numCourse; ?>' name='category' disabled>
+                      <select id='category<?php echo $numCourse; ?>' name='category' disabled required>
                         <?php 
                           if ($category == 1) {
                             echo "<option selected value='1'>Academic Enhancement</option>";
@@ -450,14 +450,14 @@
                     <label class="control-label">Preferred Room</label>
                     <div class="controls">
                       <input id='preferred_room<?php echo $numCourse; ?>' name='preferred_room' 
-                           type='text' maxlength='4' value='<?php echo $preferred_room; ?>' disabled />
+                           type='text' maxlength='4' value='<?php echo $preferred_room; ?>' disabled required />
                     </div>
                   </div>
                   <div class="control-group">
                     <label class="control-label">Preferred Class Size</label>
                     <div class="controls">
                       <input id='preferred_class_size<?php echo $numCourse; ?>' name='preferred_class_size' 
-                           type='text' maxlength='4' value='<?php echo $preferred_class_size; ?>' disabled />
+                           type='number' min="10" maxlength='4' value='<?php echo $preferred_class_size; ?>' disabled required />
                     </div>
                   </div>
                   <div class="control-group">
