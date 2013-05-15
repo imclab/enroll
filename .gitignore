@@ -1,5 +1,5 @@
 ## APPLICATION SPECIFIC ##
-img/courses/*
+img/courses/
 admin/db.php
 admin/analyticstracking.php
 
