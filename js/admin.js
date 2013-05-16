@@ -204,12 +204,13 @@ function assign_xy(clicked_id){
 		'assign_xy.php',
 		$("#selection" + clicked_id).serialize(),
 		function(data) {
-			$("#status" + clicked_id).append(data).fadeOut(1500);
+			$("#status" + clicked_id).append(data);
 		}
 	);
-	setTimeout(function() {
-		location.reload(true);
-	}, 3000);
+	$("#assignXYButton" + clicked_id).toggle();
+	$("#name" + clicked_id).prop('disabled', true);
+	$("#preferred_block" + clicked_id).prop('disabled', true);
+	$("#notes" + clicked_id).prop('disabled', true);
 }
 
 function edit_XYAssn(clicked_id){

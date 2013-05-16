@@ -9,24 +9,30 @@
  	$xy_id=trim($_POST['xy_id']);
  	$date_id=trim($_POST['date_id']);
  	$notes=trim($_POST['notes']);
- 	$teacher=trim($_POST['teacher']);
+ 	$teacher=trim($_POST['teacher_id']);
  	$blockpreference=trim($_POST['blockpreference']);
 	$existing=$_POST['existing'];
- 	if($existing){
+ 	if(strcmp($existing,"true") == 0){
  		//Update MySQL Entry
  		$query=mysql_query("UPDATE xy_assignments SET xy_id=$xy_id,notes='$notes',
  				preferred_block='$blockpreference' WHERE date_id=$date_id");
+	  	if($query){
+			echo "Successfully Updated!";
+	   	}
+		else{ 
+			echo "Failed!"; 
+		}
  	}
  	else{
 		//Insert Data into MySQL
-		$query=mysql_query("INSERT INTO xy_assignments(xy_id,date_id,notes,teacher,preferred_block) 
-							VALUES($xy_id,$date_id,'$notes','$teacher','$blockpreference')");
+		$query=mysql_query("INSERT INTO xy_assignments(xy_id,date_id,notes,teacher_id,preferred_block) 
+							VALUES($xy_id,$date_id,'$notes',$teacher,'$blockpreference')");
+	  	if($query){
+			echo "XY Assigned!";
+	   	}
+		else{ 
+			echo "Failed!";
+		}
  	}
  	mysql_close($con);
-  	if($query){
-		echo "Successfully Updated!";
-   	}
-	else{ 
-		echo $_POST['existing']; 
-	}
 ?>

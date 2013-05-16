@@ -22,27 +22,24 @@
   $get_userid_result=mysql_query("SELECT id FROM users WHERE username=\"$teacher\"") or die(mysql_error());
   $get_userid_array=mysql_fetch_array($get_userid_result);
   $userid=$get_userid_array['id'];
-  //Grab all dates xy is offered and current assignments
-  $xyQuery="SELECT dates.date, dates.id AS dateid, xy.name, xy_assignments.notes, xy_assignments.preferred_block, users.id AS userid 
+  //Grab all dates xy is offered 
+  $get_dates_result=mysql_query("SELECT id, date FROM dates WHERE schedule='a'") or die(mysql_error());
+  //Get all xy assignments
+  $get_xy_assignments_result=mysql_query("SELECT dates.date, dates.id AS dateid, xy.name, xy_assignments.notes, xy_assignments.preferred_block 
               FROM `dates` 
               LEFT JOIN `xy_assignments` on xy_assignments.date_id = dates.id 
               LEFT JOIN `xy` on xy_assignments.xy_id = xy.id 
-              LEFT JOIN `users` on xy.teacher_id = users.id 
-              WHERE dates.schedule ='a' AND ( users.username = \"$teacher\" OR xy_assignments.teacher_id IS NULL )";
-  //Result
-  $xyResult=mysql_query($xyQuery) or die(mysql_error());
+              WHERE dates.schedule ='a' AND xy_assignments.teacher_id=$userid") or die(mysql_error());
   //Array of all dates with assignments if they exist
-  $dates=array();
+  $xy_assignments_dates=array();
   //Reset to first element in array
   mysql_data_seek($xyResult,0);
   //Fill array with arrays that consist of existing xy assignments
-  while($row=mysql_fetch_array($xyResult)){
-    $dates[]=$row;
+  while($row=mysql_fetch_array($get_xy_assignments_result)){
+    $xy_assignments_dates[]=$row;
   }
-  //Grab all of the teacher's xy options
-  $query="SELECT * FROM xy WHERE teacher_id=$userid";
-  //Result of above query
-  $result=mysql_query($query) or die(mysql_error());
+  //Grab all of the teacher's xy repository
+  $get_xy_repository_result=mysql_query("SELECT * FROM xy WHERE teacher_id=$userid") or die(mysql_error());
   //Close MySQL Connection, all necessary queries have been run
   mysql_close($con);
 ?>
@@ -66,7 +63,8 @@
     </style>
 
     <!-- JQUERY -->
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> -->
+    <script src="../js/jquery.min.js"></script>
     <!-- BOOTSTRAP -->
     <script src="../js/bootstrap.min.js"></script>
     <!-- INHOUSE JAVASCRIPT -->
@@ -144,38 +142,37 @@
             //This for loop creates a hidden div for each month with the respective xy dates
             foreach ($months as $month) {
               echo "<div id='$month' class='selectedMonth' hidden>";
-              //$date in the format ie. 2013-09-28
-              //For every date withing the given month make a form
-              foreach ($dates as $value) {
-                $date = $value['date'];
-                $xyAssigned=NULL;
+              //Make a form for every date within the selected month
+              mysql_data_seek($get_dates_result,0);
+              while($selected_date=mysql_fetch_array($get_dates_result)){
+                $date = $selected_date['date']; //ie. YYYY-MM-DD
+                $xyAssigned=false;
                 $xyName=NULL;
                 $xyNotes=NULL;
                 $xyPreferredBlock=NULL;
-                $xyDateID=NULL;
-                //Current month ie. January
-                $curMonth = date('F', strtotime($date));
+                $xyDateID=$selected_date['id'];
+                $xyMonth = date('F', strtotime($date)); //ie. January
                 //If the month that is selected matches the month of the variable in the array
-                if(strcmp($month, $curMonth) == 0){
+                if(strcmp($month, $xyMonth) == 0){
                   //Check to see if there is an xy assigned to this date
-                  if(is_null($value['name'])){
-                    //XY is not assigned, date still open
-                    $xyAssigned=false;
-                    $xyDateID=$value['dateid'];
-                  }
-                  else{
-                    //XY is assigned, set other variables
-                    $xyAssigned=true;
-                    $xyName=$value['name'];
-                    $xyNotes=$value['notes'];
-                    $xyPreferredBlock=$value['preferred_block'];
-                    $xyDateID=$value['dateid'];
+                  //Traverse xy assignments result
+                  mysql_data_seek($get_xy_assignments_result,0);
+                  while($xy_assignment=mysql_fetch_array($get_xy_assignments_result)){
+                    if(strcmp($date,$xy_assignment['date']) == 0){
+                      //XY is assigned, set other variables
+                      $xyAssigned=true;
+                      $xyName=$xy_assignment['name'];
+                      $xyNotes=$xy_assignment['notes'];
+                      $xyPreferredBlock=$xy_assignment['preferred_block'];
+                      $xyDateID=$xy_assignment['dateid'];
+                      break;
+                    }
                   }
           ?>
                   <!-- Still in the for loop for a date that matches the current month we are traversing -->
                   <div class="span5">
                     <form class='form-horizontal' id='selection<?php echo $xyDateID; ?>' enctype='multipart/form-data'>
-                      <input name="teacher" type="hidden" value="<?php echo $userid; ?>" />
+                      <input name="teacher_id" type="hidden" value="<?php echo $userid; ?>" />
                       <input name="existing" type="hidden" value='<?php if($xyAssigned){ echo "true"; }else{ echo "false"; } ?>' />
                       <input name="date_id" type="hidden" value="<?php echo $xyDateID; ?>" />
                       <div class="control-group">
@@ -193,11 +190,11 @@
                             if($xyAssigned)
                               echo "<select name='xy_id' id='name$xyDateID' class='selectedXYDate' disabled>"; 
                             else
-                              echo "<select name='xy_id' class='selectedXYDate'>";
+                              echo "<select name='xy_id' id='name$xyDateID' class='selectedXYDate'>";
                             echo "<option value=''></option>";
                             //Traverse through teacher's XY repository
-                            mysql_data_seek($result,0);
-                            while($row = mysql_fetch_array($result)){
+                            mysql_data_seek($get_xy_repository_result,0);
+                            while($row = mysql_fetch_array($get_xy_repository_result)){
                               $tempCourseName = $row['name'];
                               $xy_id = $row['id'];
                               if(strcmp($xyName, $tempCourseName) == 0)
@@ -216,7 +213,7 @@
                             if($xyAssigned)
                               echo "<select name='blockpreference' id='preferred_block$xyDateID' disabled>";
                             else
-                              echo '<select name="blockpreference">';
+                              echo "<select name='blockpreference' id='preferred_block$xyDateID'>";
                             echo '<option value=""></option>';
                             if(strcmp($xyPreferredBlock, "x") == 0)
                               echo '<option selected value="x">X</option>';
@@ -239,8 +236,7 @@
                         <div class="controls">
                           <?php
                             if($xyAssigned){
-                              $notes = $value['notes'];
-                              echo "<textarea name='notes' id='notes$xyDateID' rows='5' disabled>$notes</textarea>";
+                              echo "<textarea name='notes' id='notes$xyDateID' rows='5' disabled>$xyNotes</textarea>";
                             }
                             else
                               echo "<textarea name='notes' id='notes$xyDateID' rows='5' ></textarea>";
@@ -250,8 +246,11 @@
                       <div class="control-group">
                         <div class="controls">
                           <?php
-                            if(!$xyAssigned)
-                              echo "<button class='btn' type='button' id='assignXYButton' onClick='assign_xy(\"$xyDateID\")'>Assign</button>";
+                            if(!$xyAssigned){
+                              echo "<div id='assignXYButton$xyDateID'>";
+                                echo "<button class='btn' type='button' id='assignXYButton' onClick='assign_xy(\"$xyDateID\")'>Assign</button>";
+                              echo "</div>";
+                            }
                             else{
                               echo "<div id='editXYAssnButton$xyDateID'>";
                                 echo "<button class='btn' type='button' onClick='edit_XYAssn(\"$xyDateID\")'>Edit</button></div>";
@@ -363,9 +362,9 @@
           </div>
           <?php 
             $numCourse = 11;
-            mysql_data_seek($result,0);
+            mysql_data_seek($get_xy_repository_result,0);
             //Generates rows for colloquiums
-            while($row = mysql_fetch_array($result)){
+            while($row = mysql_fetch_array($get_xy_repository_result)){
               $mysql_id = $row['id'];
               $courseName = $row['name'];
               $description = $row['description'];
