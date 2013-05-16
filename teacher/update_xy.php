@@ -42,7 +42,7 @@
       echo "Update failed!"; 
   }
   else{
-    $query=mysql_query("DELETE FROM xy WHERE id='$mysql_id' LIMIT 1");
+    $query=mysql_query("DELETE FROM xy WHERE id=$mysql_id LIMIT 1");
     if($query)
       echo "Course deleted!";
     else

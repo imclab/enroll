@@ -3,7 +3,8 @@
   //Not logged in or doesn't have the teacher role
   if (!isset($_SESSION['username']) || 
     $_SESSION['login']!=true || 
-    $_SESSION['teacher']!=true) {
+    $_SESSION['teacher']!=true) 
+  {
       header("Location: ../login.html");
   }
   //Code to connect to database
@@ -18,13 +19,16 @@
   $teacher=$_SESSION['username'];
   //Internal user id
   $userid=NULL;
+  $get_userid_result=mysql_query("SELECT id FROM users WHERE username=\"$teacher\"") or die(mysql_error());
+  $get_userid_array=mysql_fetch_array($get_userid_result);
+  $userid=$get_userid_array['id'];
   //Grab all dates xy is offered and current assignments
   $xyQuery="SELECT dates.date, dates.id AS dateid, xy.name, xy_assignments.notes, xy_assignments.preferred_block, users.id AS userid 
               FROM `dates` 
               LEFT JOIN `xy_assignments` on xy_assignments.date_id = dates.id 
               LEFT JOIN `xy` on xy_assignments.xy_id = xy.id 
               LEFT JOIN `users` on xy.teacher_id = users.id 
-              WHERE dates.schedule = \"a\" AND ( users.username = \"$teacher\" OR xy_assignments.teacher_id IS NULL )";
+              WHERE dates.schedule ='a' AND ( users.username = \"$teacher\" OR xy_assignments.teacher_id IS NULL )";
   //Result
   $xyResult=mysql_query($xyQuery) or die(mysql_error());
   //Array of all dates with assignments if they exist
@@ -34,9 +38,6 @@
   //Fill array with arrays that consist of existing xy assignments
   while($row=mysql_fetch_array($xyResult)){
     $dates[]=$row;
-    //Sets internal userid if variable is NULL
-    if(is_null($userid))
-      $userid=$row['userid'];
   }
   //Grab all of the teacher's xy options
   $query="SELECT * FROM xy WHERE teacher_id=$userid";
