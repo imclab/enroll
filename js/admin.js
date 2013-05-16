@@ -205,28 +205,11 @@ function assign_xy(clicked_id){
 		$("#selection" + clicked_id).serialize(),
 		function(data) {
 			$("#status" + clicked_id).append(data);
+			$("#status" + clicked_id).fadeOut(3000, function(){
+				$("#status" + clicked_id).empty().fadeIn();
+			});
 		}
 	);
-	$("#assignXYButton" + clicked_id).toggle();
-	$("#name" + clicked_id).prop('disabled', true);
-	$("#preferred_block" + clicked_id).prop('disabled', true);
-	$("#notes" + clicked_id).prop('disabled', true);
-}
-
-function edit_XYAssn(clicked_id){
-	$editXYAssnButton = "#editXYAssnButton" + clicked_id;
-	$updateXYAssnButton = "#updateXYAssnButton" + clicked_id;
-	$name = "#name" + clicked_id;
-	$preferred_block = "#preferred_block" + clicked_id;
-	$notes = "#notes" + clicked_id;
-	//Hide the Edit Button
-	$($editXYAssnButton).toggle();
-	//Make fields editable
-	$($name).removeAttr("disabled");
-	$($preferred_block).removeAttr("disabled");
-	$($notes).removeAttr("disabled");
-	//Show the update button
-	$($updateXYAssnButton).toggle();
 }
 
 function edit_XY(clicked_id){

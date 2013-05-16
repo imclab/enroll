@@ -11,8 +11,16 @@
  	$notes=trim($_POST['notes']);
  	$teacher=trim($_POST['teacher_id']);
  	$blockpreference=trim($_POST['blockpreference']);
-	$existing=$_POST['existing'];
- 	if(strcmp($existing,"true") == 0){
+ 	$existing=NULL;
+	//Check to see if assignment already exists
+	$existing_assignment_result=mysql_query("SELECT id FROM xy_assignments WHERE date_id=$date_id AND teacher_id=$teacher");
+	$existing_assignment_row=mysql_fetch_assoc($existing_assignment_result);
+	if(empty($existing_assignment_row['id']))
+		$existing=false;
+	else
+		$existing=true;
+
+ 	if($existing){
  		//Update MySQL Entry
  		$query=mysql_query("UPDATE xy_assignments SET xy_id=$xy_id,notes='$notes',
  				preferred_block='$blockpreference' WHERE date_id=$date_id");

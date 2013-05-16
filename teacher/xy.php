@@ -188,10 +188,7 @@
                           <?php
                             $courseName;
                             //If there is already an XY assigned to this date
-                            if($xyAssigned)
-                              echo "<select name='xy_id' id='name$xyDateID' class='selectedXYDate' disabled>"; 
-                            else
-                              echo "<select name='xy_id' id='name$xyDateID' class='selectedXYDate'>";
+                            echo "<select name='xy_id' id='name$xyDateID' class='selectedXYDate'>";
                             echo "<option value=''></option>";
                             //Traverse through teacher's XY repository
                             mysql_data_seek($get_xy_repository_result,0);
@@ -211,10 +208,7 @@
                         <label class="control-label">Block Preference:</label>
                         <div class="controls">
                           <?php
-                            if($xyAssigned)
-                              echo "<select name='blockpreference' id='preferred_block$xyDateID' disabled>";
-                            else
-                              echo "<select name='blockpreference' id='preferred_block$xyDateID'>";
+                            echo "<select name='blockpreference' id='preferred_block$xyDateID'>";
                             echo '<option value=""></option>';
                             if(strcmp($xyPreferredBlock, "x") == 0)
                               echo '<option selected value="x">X</option>';
@@ -236,30 +230,18 @@
                         <label class="control-label">Notes for programmer:</label>
                         <div class="controls">
                           <?php
-                            if($xyAssigned){
-                              echo "<textarea name='notes' id='notes$xyDateID' rows='5' disabled>$xyNotes</textarea>";
-                            }
-                            else
-                              echo "<textarea name='notes' id='notes$xyDateID' rows='5' ></textarea>";
+                              echo "<textarea name='notes' id='notes$xyDateID' rows='5' >";
+                              if($xyAssigned){ echo $xyNotes; }
+                              echo "</textarea>";
                           ?>
                         </div>
                       </div>
                       <div class="control-group">
                         <div class="controls">
-                          <?php
-                            if(!$xyAssigned){
-                              echo "<div id='assignXYButton$xyDateID'>";
-                                echo "<button class='btn' type='button' id='assignXYButton' onClick='assign_xy(\"$xyDateID\")'>Assign</button>";
-                              echo "</div>";
-                            }
-                            else{
-                              echo "<div id='editXYAssnButton$xyDateID'>";
-                                echo "<button class='btn' type='button' onClick='edit_XYAssn(\"$xyDateID\")'>Edit</button></div>";
-                              echo "<div id='updateXYAssnButton$xyDateID' hidden>";
-                                echo "<button class='btn' type='button' onClick='assign_xy(\"$xyDateID\")' >Update</button></div>";
-                            }
-                            echo "<div id='status$xyDateID'></div>";
-                          ?>
+                          <div id='updateXYAssnButton<?php echo $xyDateID; ?>'>
+                          <button class='btn' type='button' onClick='assign_xy("<?php echo $xyDateID; ?>")' >Update</button>
+                        </div>
+                          <div id='status<?php echo $xyDateID; ?>'></div>
                         </div>
                       </div>
                     </form>
