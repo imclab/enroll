@@ -19,22 +19,40 @@ $(document).ready(
 		});
 
 		//XY FUNCTIONS
-
 		$("#addXYForm").submit(
 			function(event) {
 				/* stop form from submitting normally */
 				event.preventDefault();
-				$.post(
-					'insert_xy.php',
-					$("#addXYForm").serialize(),
-					function(data) {
-						$("#status").append(data);
-					});
+			}).validate({
+				rules: {
+					name: "required",
+					description: "required",
+					category: {
+						required: true,
+						minlength: 1
+					},
+					preferred_room: "required",
+					preferred_class_size: "required"
+				},
+				highlight: function(element) {
+					$(element).closest('.control-group').removeClass('success').addClass('error');
+				},
+				success: function(element) {
+					element.text('OK!').addClass('valid').closest('.control-group').removeClass('error').addClass('success');
+				},
+				submitHandler: function(form){
+					$.post(
+						'insert_xy.php',
+						$("#addXYForm").serialize(),
+						function(data) {
+							$("#status").append(data);
+						}
+					);
 					setTimeout(function() {
 						location.reload(true);
 					}, 1500);
 				}
-		);
+			});
 
 		months = new Array("January","February","March","April","May","June","July","August","September","October","November","December");
 		currentMonth = new Date().getMonth() + 1;
@@ -200,16 +218,37 @@ function setXYPicker(){
 
 //Assign XY details to specific date
 function assign_xy(clicked_id){
-	$.post(
-		'assign_xy.php',
-		$("#selection" + clicked_id).serialize(),
-		function(data) {
-			$("#status" + clicked_id).append(data);
-			$("#status" + clicked_id).fadeOut(3000, function(){
-				$("#status" + clicked_id).empty().fadeIn();
-			});
+	$("#selection" + clicked_id).validate({
+		rules: {
+			xy_id: {
+				required: true,
+				minlength: 1
+			},
+			blockpreference: {
+				required: true,
+				minlength: 1
+			}
+		},
+		highlight: function(element) {
+			$(element).closest('.control-group').removeClass('success').addClass('error');
+		},
+		success: function(element) {
+			$(element).text('OK!').addClass('valid').closest('.control-group').removeClass('error').addClass('success');
+		},
+		submitHandler: function(form){
+			alert("Test2");
+			$.post(
+				'assign_xy.php',
+				$("#selection" + clicked_id).serialize(),
+				function(data) {
+					$("#status" + clicked_id).append(data);
+					$("#status" + clicked_id).fadeOut(3000, function(){
+						$("#status" + clicked_id).empty().fadeIn();
+					});
+				}
+			);
 		}
-	);
+	});
 }
 
 function edit_XY(clicked_id){

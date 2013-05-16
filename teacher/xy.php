@@ -62,20 +62,19 @@
     <link href="../css/bootstrap-responsive.css" rel="stylesheet">
     <link href="../css/admin.css" rel="stylesheet">
     
-
     <!-- JQUERY -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <!-- BOOTSTRAP -->
     <script src="../js/bootstrap.min.js"></script>
-    <!-- INHOUSE JAVASCRIPT -->
-    <script src="../js/admin.js"></script>
     <!-- AJAX UPLOAD BY BRYAN GENTRY -->
     <!-- http://bryangentry.us/ajax-upload-with-javascript-and-php-upload-an-image-and-display-a-preview/ -->
     <script src="../js/ajaxupload.js"></script>
     <!-- FORM VALIDATION USING JQUERY -->
     <!-- http://alittlecode.com/jquery-form-validation-with-styles-from-twitter-bootstrap/ -->
     <script src="../js/jquery.validate.min.js"></script>
-    <script src="../js/validate.js"></script>
+    <!-- <script src="../js/validate.js"></script> -->
+    <!-- INHOUSE JAVASCRIPT -->
+    <script src="../js/admin.js"></script>
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -171,7 +170,7 @@
           ?>
                   <!-- Still in the for loop for a date that matches the current month we are traversing -->
                   <div class="span5">
-                    <form class='form-horizontal xyAssignmentForm' id='selection<?php echo $xyDateID; ?>' enctype='multipart/form-data'>
+                    <form class='form-horizontal' id='selection<?php echo $xyDateID; ?>' enctype='multipart/form-data'>
                       <input name="teacher_id" type="hidden" value="<?php echo $userid; ?>" />
                       <input name="existing" type="hidden" value='<?php if($xyAssigned){ echo "true"; }else{ echo "false"; } ?>' />
                       <input name="date_id" type="hidden" value="<?php echo $xyDateID; ?>" />
@@ -205,9 +204,9 @@
                       <div class="control-group">
                         <label class="control-label">Block Preference:</label>
                         <div class="controls">
+                          <select name='blockpreference' id='preferred_block<?php echo $xyDateID; ?>' required>
+                            <option value=''></option>
                           <?php
-                            echo "<select name='blockpreference' id='preferred_block$xyDateID' required>";
-                            echo '<option value=""></option>';
                             if(strcmp($xyPreferredBlock, "x") == 0)
                               echo '<option selected value="x">X</option>';
                             else
@@ -236,9 +235,7 @@
                       </div>
                       <div class="control-group">
                         <div class="controls">
-                          <div id='updateXYAssnButton<?php echo $xyDateID; ?>'>
-                          <button class='btn' type='button' onClick='assign_xy("<?php echo $xyDateID; ?>")' >Update</button>
-                        </div>
+                            <button class='btn' type='submit' onClick='assign_xy("<?php echo $xyDateID; ?>")' >Update</button>
                           <div id='status<?php echo $xyDateID; ?>'></div>
                         </div>
                       </div>
