@@ -53,14 +53,15 @@
     <meta name="author" content="Marcos Alcozer">
     <meta name="keywords" content="Education, Scheduling">
     <!-- CSS -->
-    <link href="../css/bootstrap.css" rel="stylesheet">
-    <link href="../css/bootstrap-responsive.css" rel="stylesheet">
-    <link href="../css/admin.css" rel="stylesheet">
     <style>
       body {
         padding-top: 60px; /** Clear the top bar **/
       }
     </style>
+    <link href="../css/bootstrap.css" rel="stylesheet">
+    <link href="../css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="../css/admin.css" rel="stylesheet">
+    
 
     <!-- JQUERY -->
     <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> -->

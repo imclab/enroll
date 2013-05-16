@@ -119,12 +119,12 @@ while($colRow = mysql_fetch_array($colResult)){
     <meta name="keywords" content="Education, Scheduling">
 
     <!-- Le styles -->
-    <link href="../css/bootstrap.css" rel="stylesheet">
     <style>
       body {
         padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
       }
     </style>
+    <link href="../css/bootstrap.css" rel="stylesheet">
     <link href="../css/bootstrap-responsive.css" rel="stylesheet">
     <link href="../css/admin.css" rel="stylesheet">
 
