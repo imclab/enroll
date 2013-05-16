@@ -50,4 +50,23 @@ $(document).ready(function() {
 			element.text('OK!').addClass('valid').closest('.control-group').removeClass('error').addClass('success');
 		}
 	});
+	//Validate the XY Assignment module
+	$(".xyAssignmentForm").validate({
+		rules: {
+			xy_id: {
+				required: true,
+				minlength: 1
+			},
+			blockpreference: {
+				required: true,
+				minlength: 1
+			}
+		},
+		highlight: function(element) {
+			$(element).closest('.control-group').removeClass('success').addClass('error');
+		},
+		success: function(element) {
+			element.text('OK!').addClass('valid').closest('.control-group').removeClass('error').addClass('success');
+		}
+	});
 });

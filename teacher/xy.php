@@ -64,8 +64,7 @@
     
 
     <!-- JQUERY -->
-    <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> -->
-    <script src="../js/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <!-- BOOTSTRAP -->
     <script src="../js/bootstrap.min.js"></script>
     <!-- INHOUSE JAVASCRIPT -->
@@ -172,7 +171,7 @@
           ?>
                   <!-- Still in the for loop for a date that matches the current month we are traversing -->
                   <div class="span5">
-                    <form class='form-horizontal' id='selection<?php echo $xyDateID; ?>' enctype='multipart/form-data'>
+                    <form class='form-horizontal xyAssignmentForm' id='selection<?php echo $xyDateID; ?>' enctype='multipart/form-data'>
                       <input name="teacher_id" type="hidden" value="<?php echo $userid; ?>" />
                       <input name="existing" type="hidden" value='<?php if($xyAssigned){ echo "true"; }else{ echo "false"; } ?>' />
                       <input name="date_id" type="hidden" value="<?php echo $xyDateID; ?>" />
@@ -188,17 +187,16 @@
                           <?php
                             $courseName;
                             //If there is already an XY assigned to this date
-                            echo "<select name='xy_id' id='name$xyDateID' class='selectedXYDate'>";
+                            echo "<select name='xy_id' id='name$xyDateID' class='selectedXYDate' required>";
                             echo "<option value=''></option>";
                             //Traverse through teacher's XY repository
                             mysql_data_seek($get_xy_repository_result,0);
                             while($row = mysql_fetch_array($get_xy_repository_result)){
-                              $tempCourseName = $row['name'];
-                              $xy_id = $row['id'];
-                              if(strcmp($xyName, $tempCourseName) == 0)
-                                echo "<option selected value=$xy_id>$xyName</option>";
-                              else
-                                echo "<option value=$xy_id>$tempCourseName</option>";
+                              echo "<option value=" . $row['id'];
+                              //Add selected attribute if current course is the one already assigned
+                              if(strcmp($xyName, $row['name']) == 0)
+                                echo " selected ";
+                              echo ">" . $row['name'] . "</option>";
                             }
                           ?>
                           </select>
@@ -208,7 +206,7 @@
                         <label class="control-label">Block Preference:</label>
                         <div class="controls">
                           <?php
-                            echo "<select name='blockpreference' id='preferred_block$xyDateID'>";
+                            echo "<select name='blockpreference' id='preferred_block$xyDateID' required>";
                             echo '<option value=""></option>';
                             if(strcmp($xyPreferredBlock, "x") == 0)
                               echo '<option selected value="x">X</option>';
@@ -230,7 +228,7 @@
                         <label class="control-label">Notes for programmer:</label>
                         <div class="controls">
                           <?php
-                              echo "<textarea name='notes' id='notes$xyDateID' rows='5' >";
+                              echo "<textarea name='notes' id='notes$xyDateID' rows='5'>";
                               if($xyAssigned){ echo $xyNotes; }
                               echo "</textarea>";
                           ?>
