@@ -318,7 +318,7 @@
                   if(strcmp($sem1ColDuration, "y") == 0){echo "</div>"; }
                 ?>
           </div>
-        </div></div></div>
+        </div></div>
  
 
       <!-- MANAGEMENT MODULE -->
