@@ -6,24 +6,23 @@
  		die('Could not connect: ' . mysql_error());
  	}
  	mysql_select_db($db, $con);
- 	$semester=trim($_POST['semester']);
+ 	$semester=$_POST['semester'];
  	$duration=trim($_POST['duration']);
  	$notes=trim($_POST['notes']);
  	$c_id=trim($_POST['c_id']);
  	$teacher=trim($_POST['teacher']);
  	$existing=$_POST['existing'];
  	if(strcmp($existing, "true") == 0){
- 		$assnID=$_POST['assnID'];
  		//Update MySQL Entry
- 		$query=mysql_query("UPDATE c_assignments SET duration='$duration',semester='$semester',
- 				c_id='$c_id',notes='$notes' WHERE id='$assnID'");
+ 		$query=mysql_query("UPDATE c_assignments SET duration='$duration',
+ 				c_id='$c_id',notes='$notes' WHERE semester=$semester AND teacher_id=$teacher");
  		if(strcmp($duration, "y") == 0){
- 			$delquery=mysql_query("DELETE FROM c_assignments WHERE semester='2' AND teacher='$teacher' LIMIT 1");
+ 			$delquery=mysql_query("DELETE FROM c_assignments WHERE semester='2' AND teacher_id='$teacher' LIMIT 1");
  		}
  	}
  	else{
  		//Insert Data into MySQL
-		$query=mysql_query("INSERT INTO c_assignments(duration,semester,c_id,notes,teacher) 
+		$query=mysql_query("INSERT INTO c_assignments(duration,semester,c_id,notes,teacher_id) 
 							VALUES('$duration','$semester','$c_id','$notes','$teacher')");
  	}
   	if($query){

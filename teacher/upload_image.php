@@ -3,7 +3,7 @@
 	//Full path including new filename
 	$uploadfile = '../img/courses/' . rand() . basename($_FILES['image']['name']);
 	$path_parts = pathinfo($uploadfile);
-	$jpegversion=$path_parts['dirname'] . "/" . $path_parts['filename'] . ".jpg";
+	$jpegversion=$path_parts['dirname'] . '/' . $path_parts['filename'] . '.jpg';
 
 	//$originalImage=imagecreatefromjpeg(basename($_FILES['image']['tmp_name']));
 	if(move_uploaded_file($_FILES['image']['tmp_name'], $uploadfile)){
@@ -24,18 +24,18 @@
 		}
 		if (imagecopyresampled($resizedImage, $originalImage, 0, 0, 0, 0, 200, 200, $width, $height)) {
 			imagejpeg($resizedImage, $jpegversion);
-			if(strcmp($path_parts['extension'], "jpg") != 0){
+			if(strcmp($path_parts['extension'], 'jpg') != 0){
 				unlink($uploadfile);  //  clean up image storage
 			}
 			imagedestroy($resizedImage);
 			imagedestroy($originalImage);
-			echo $path_parts['filename'] . ".jpg"; // successful, returns filename
+			echo $path_parts['filename'] . '.jpg'; // successful, returns filename
 		} 
 		else {
-			echo "error.jpg";
+			echo 'error.jpg';
 		}
 	}
 	else{
-		echo "error.png";
+		echo 'error.png';
 	}
 ?>

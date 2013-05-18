@@ -57,7 +57,6 @@ $(document).ready(
 		months = new Array("January","February","March","April","May","June","July","August","September","October","November","December");
 		currentMonth = new Date().getMonth() + 1;
 
-
 		setXYPicker();
 
 		$("#previous").click(
@@ -88,6 +87,7 @@ $(document).ready(
 			}
 		);
 
+		//Hides assign module when user taps label
 		$("#assignLabel").click(
 			function(event) {
 				$('#assign').toggle();
@@ -95,85 +95,6 @@ $(document).ready(
 		);
 
 		//COLLOQUIUM FUNCTIONS
-
-		//Assigning colloquium to Semester 1
-		$("#assignSem1ColButton").click(
-			function(event) {
-				$.post('assign_colloquium.php',
-					$("#sem1Selection").serialize(),
-					function(data) {
-						$("#sem1Status").append(data).fadeOut(1500);
-					}
-				);
-				setTimeout(function() {
-					location.reload(true);
-				}, 3000);
-		});
-
-		//Assigning colloquium to Semester 2
-		$("#assignSem2ColButton").click(
-			function(event) {
-				$.post('assign_colloquium.php',
-					$("#sem2Selection").serialize(),
-					function(data) {
-						$("#sem2Status").append(data).fadeOut(1500);
-					}
-				);
-				setTimeout(function() {
-					location.reload(true);
-				}, 3000);
-		});
-
-		$("#editSem1ColAssnButton").click(
-			function(event) {
-				$('#editSem1ColAssnButton').hide();
-				$('#sem1Colloquium').removeAttr("disabled");
-				$('#sem1Duration').removeAttr("disabled");
-				$('#sem1Notes').removeAttr("disabled");
-				$('#updateSem1ColAssnButton').show();
-			}
-		);
-
-		$("#editSem2ColAssnButton").click(
-			function(event) {
-				$('#editSem2ColAssnButton').hide();
-				$('#sem2Colloquium').removeAttr("disabled");
-				$('#sem2Notes').removeAttr("disabled");
-				$('#updateSem2ColAssnButton').show();
-			}
-		);
-
-		//Updating colloquium for Semester 1
-		$("#updateSem1ColAssnButton").click(function(event) {
-			/* stop form from submitting normally */
-			$.post(
-				'assign_colloquium.php',
-				$("#sem1ExistingSelection").serialize(),
-				function(data) {
-					$("#sem1Status").append(data).fadeOut(1500);
-				}
-			);
-			setTimeout(function() {
-				location.reload(true);
-			}, 3000);
-		});
-
-		//Updating colloquium for Semester 2
-		$("#updateSem2ColAssnButton").click(
-			function(event) {
-				/* stop form from submitting normally */
-				$.post(
-					'assign_colloquium.php',
-					$("#sem2ExistingSelection").serialize(),
-					function(data) {
-						$("#sem2Status").append(data).fadeOut(1500);
-					}
-				);
-				setTimeout(function() {
-					location.reload(true);
-				}, 3000);
-			}
-		);
 
 		//When user clicks submit button to add coloquium
 		$("#addColloquiumForm").submit(
@@ -398,6 +319,40 @@ function update_colloquium(clicked_id){
 			setTimeout(function() {
 				location.reload(true);
 			}, 1500);
+		}
+	});
+}
+
+//Assign colloquium details to specific semester
+function assign_colloquium(clicked_id){
+	$("#sem" + clicked_id + "Selection").validate({
+		rules: {
+			c_id: {
+				required: true,
+				minlength: 1
+			},
+			duration: {
+				required: true,
+				minlength: 1
+			}
+		},
+		highlight: function(element) {
+			$(element).closest('.control-group').removeClass('success').addClass('error');
+		},
+		success: function(element) {
+			$(element).text('OK!').addClass('valid').closest('.control-group').removeClass('error').addClass('success');
+		},
+		submitHandler: function(form){
+			$.post(
+				'assign_colloquium.php',
+				$("#sem" + clicked_id + "Selection").serialize(),
+				function(data) {
+					$("#sem" + clicked_id + "Status").append(data);
+					$("#sem" + clicked_id + "Status").fadeOut(3000, function(){
+						$("#sem" + clicked_id + "Status").empty().fadeIn();
+					});
+				}
+			);
 		}
 	});
 }
