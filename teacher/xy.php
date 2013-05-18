@@ -250,88 +250,88 @@
             </div>
       </div>
       <!-- MANAGEMENT MODULE -->
-      <div id="manage">
+      <div id='manage'>
         <h2>Manage</h2>
         <hr />
-        <div class="accordion" id="accordion2">
+        <div class='accordion' id='accordion2'>
           <!-- ACCORDIAN TO ADD A NEW XY COURSE -->
-          <div class="accordion-group">
-            <div class="accordion-heading">
-              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#addXY">
-                <i class="icon-folder-close"></i> Add XY...
+          <div class='accordion-group'>
+            <div class='accordion-heading'>
+              <a class='accordion-toggle' data-toggle='collapse' data-parent='#accordion2' href='#addXY'>
+                <i class='icon-folder-close'></i> Add XY...
               </a>
             </div>
-            <div id="addXY" class="accordion-body collapse">
-              <div class="accordion-inner">
+            <div id='addXY' class='accordion-body collapse'>
+              <div class='accordion-inner'>
                 <!-- Add XY Form -->
-                <form class="form-horizontal" id="addXYForm" enctype="multipart/form-data">
-                  <input name='teacher' type='hidden' value="<?php echo $userid; ?>" />
+                <form class='form-horizontal' id='addXYForm' enctype='multipart/form-data'>
+                  <input name='teacher' type='hidden' value='<?php echo $userid; ?>' />
                   <!-- XY Name -->
-                  <div class="control-group">
-                    <label class="control-label">Name</label>
-                    <div class="controls">
-                      <input type="text" class="span5" name="name" required />
+                  <div class='control-group'>
+                    <label class='control-label'>Name</label>
+                    <div class='controls'>
+                      <input type='text' class='span5' name='name' required />
                     </div>
                   </div>
-                  <div class="control-group">
-                    <label class="control-label">Description</label>
-                    <div class="controls">
-                      <textarea name="description" class="span5" rows="10" required></textarea>
+                  <div class='control-group'>
+                    <label class='control-label'>Description</label>
+                    <div class='controls'>
+                      <textarea name='description' class='span5' rows='10' required></textarea>
                     </div>
                   </div>
-                  <div class="control-group">
-                    <label class="control-label">Image:</label>
-                    <div class="controls">
-                      <img id="preview" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image" width="200px" height="200px" />
-                      <p><i class="icon-resize-small"></i>Currently all images are resized to 200 x 200</p>
-                      <button id="imageUpload" class="btn btn-small" type="button">Upload Image</button>
-                      <input name="uploadedImg" id="uploadedImg" type="hidden" value="" />
+                  <div class='control-group'>
+                    <label class='control-label'>Image:</label>
+                    <div class='controls'>
+                      <img id='preview' src='http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image' width='200px' height='200px' />
+                      <p><i class='icon-resize-small'></i>Currently all images are resized to 200 x 200</p>
+                      <button id='imageUpload' class='btn btn-small' type='button'>Upload Image</button>
+                      <input name='uploadedImg' id='uploadedImg' type='hidden' value='' />
                     </div>
                   </div>
-                  <div class="control-group">
-                    <label class="control-label">Category</label>
-                    <div class="controls">
-                      <select name="category" required>
-                        <option value=""></option>
-                        <option value="1">Academic Enhancement</option>
-                        <option value="2">Enrichment</option>
-                        <option value="3">Health &amp; Wellness</option>
+                  <div class='control-group'>
+                    <label class='control-label'>Category</label>
+                    <div class='controls'>
+                      <select name='category' required>
+                        <option value=''></option>
+                        <option value='1'>Academic Enhancement</option>
+                        <option value='2'>Enrichment</option>
+                        <option value='3'>Health &amp; Wellness</option>
                       </select>
                     </div>
                   </div>
-                  <div class="control-group">
-                    <label class="control-label">Preferred Room</label>
-                    <div class="controls">
-                      <input name="preferred_room" type="text" maxlength="4" required />
+                  <div class='control-group'>
+                    <label class='control-label'>Preferred Room</label>
+                    <div class='controls'>
+                      <input name='preferred_room' type='text' maxlength='4' required />
                     </div>
                   </div>
-                  <div class="control-group">
-                    <label class="control-label">Preferred Class Size</label>
-                    <div class="controls">
-                      <input name="preferred_class_size" type="number" min="10" maxlength="4" required />
+                  <div class='control-group'>
+                    <label class='control-label'>Preferred Class Size</label>
+                    <div class='controls'>
+                      <input name='preferred_class_size' type='number' min='10' maxlength='4' required />
                     </div>
                   </div>
-                  <div class="control-group">
-                    <label class="control-label">Course open to </label>
-                    <div class="controls">
-                      <label class="checkbox inline">
-                        <input type="checkbox" name="freshmen" value="1" checked>Freshmen
+                  <div class='control-group'>
+                    <label class='control-label'>Course open to </label>
+                    <div class='controls'>
+                      <label class='checkbox inline'>
+                        <input type='checkbox' name='freshmen' value='1' checked>Freshmen
                       </label>
-                      <label class="checkbox inline">
-                        <input type="checkbox" name="sophomores" value="1" checked>Sophomores
+                      <label class='checkbox inline'>
+                        <input type='checkbox' name='sophomores' value='1' checked>Sophomores
                       </label>
-                      <label class="checkbox inline">
-                        <input type="checkbox" name="juniors" value="1" checked>Juniors
+                      <label class='checkbox inline'>
+                        <input type='checkbox' name='juniors' value='1' checked>Juniors
                       </label>
-                      <label class="checkbox inline">
-                        <input type="checkbox" name="seniors" value="1" checked>Seniors
+                      <label class='checkbox inline'>
+                        <input type='checkbox' name='seniors' value='1' checked>Seniors
                       </label>
                     </div>
                   </div>
-                  <div class="control-group">
-                    <div class="controls">
-                      <button type="submit" class="btn">Add Course</button>
-                      <div id="status"></div>
+                  <div class='control-group'>
+                    <div class='controls'>
+                      <button type='submit' class='btn'>Add Course</button>
+                      <div id='status'></div>
                     </div>
                   </div>
                 </form>
@@ -356,19 +356,19 @@
               $seniors = $row['seniors'];  
           ?>
           <!-- INSIDE THE WHILE LOOP -->
-          <div class="accordion-group">
-            <div class="accordion-heading">
-              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#<?php echo $numCourse; ?>">
-                <i class="icon-folder-close"></i> <?php echo $courseName; ?>
+          <div class='accordion-group'>
+            <div class='accordion-heading'>
+              <a class='accordion-toggle' data-toggle='collapse' data-parent='#accordion2' href='#<?php echo $numCourse; ?>'>
+                <i class='icon-folder-close'></i> <?php echo $courseName; ?>
               </a>
             </div>
-            <div id="<?php echo $numCourse; ?>" class="accordion-body collapse">
-              <div class="accordion-inner">
-                <form class="form-horizontal updateXYForm" id="updateXY<?php echo $numCourse; ?>" enctype="multipart/form-data">
+            <div id='<?php echo $numCourse; ?>' class='accordion-body collapse'>
+              <div class='accordion-inner'>
+                <form class='form-horizontal' id='updateXYForm<?php echo $numCourse; ?>' enctype='multipart/form-data'>
                   <!-- XY Name -->
-                  <div class="control-group">
-                    <label class="control-label">Name</label>
-                    <div class="controls">
+                  <div class='control-group'>
+                    <label class='control-label'>Name</label>
+                    <div class='controls'>
                         <input name='teacher' type='hidden' value='<?php echo $userid; ?>' />
                         <input name='form_id' type='hidden' value='<?php echo $courseName; ?>'  />
                         <input name='mysql_id' type='hidden' value='<?php echo $mysql_id; ?>'  />

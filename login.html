@@ -76,6 +76,22 @@
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/jquery.validate.min.js"></script>
-	<script src="js/validate.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			// validate the login form
+			$("#login").validate({
+				rules: {
+					username: "required",
+					password: "required"
+				},
+				highlight: function(element) {
+					$(element).closest('.control-group').removeClass('success').addClass('error');
+				},
+				success: function(element) {
+					element.text('OK!').addClass('valid').closest('.control-group').removeClass('error').addClass('success');
+				}
+			});
+		});
+	</script>
 </body>
 </html>

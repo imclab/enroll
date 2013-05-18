@@ -38,7 +38,7 @@ $(document).ready(
 					$(element).closest('.control-group').removeClass('success').addClass('error');
 				},
 				success: function(element) {
-					element.text('OK!').addClass('valid').closest('.control-group').removeClass('error').addClass('success');
+					$(element).text('OK!').addClass('valid').closest('.control-group').removeClass('error').addClass('success');
 				},
 				submitHandler: function(form){
 					$.post(
@@ -175,25 +175,41 @@ $(document).ready(
 			}
 		);
 
-
-
 		//When user clicks submit button to add coloquium
-		$("#addColloquium").submit(
+		$("#addColloquiumForm").submit(
 			function(event) {
 				/* stop form from submitting normally */
 				event.preventDefault();
-				$.post(
-					'insert_colloquium.php',
-					$("#addColloquiumForm").serialize(),
-					function(data) {
-						$("#status").append(data);
+			}).validate({
+				rules: {
+					name: "required",
+					description: "required",
+					preferred_room: "required",
+					preferred_class_size: "required",
+					preferred_lunch_block: {
+						required: true,
+						minlength: 1
 					}
-				);
-				setTimeout(function() {
-					location.reload(true);
-				}, 3000);
-			}
-		);
+				},
+				highlight: function(element) {
+					$(element).closest('.control-group').removeClass('success').addClass('error');
+				},
+				success: function(element) {
+					$(element).text('OK!').addClass('valid').closest('.control-group').removeClass('error').addClass('success');
+				},
+				submitHandler: function(form){
+					$.post(
+						'insert_colloquium.php',
+						$("#addColloquiumForm").serialize(),
+						function(data) {
+							$("#status").append(data);
+						}
+					);
+					setTimeout(function() {
+						location.reload(true);
+					}, 1500);
+				}
+			});
 	}
 );
 
@@ -236,7 +252,6 @@ function assign_xy(clicked_id){
 			$(element).text('OK!').addClass('valid').closest('.control-group').removeClass('error').addClass('success');
 		},
 		submitHandler: function(form){
-			alert("Test2");
 			$.post(
 				'assign_xy.php',
 				$("#selection" + clicked_id).serialize(),
@@ -284,12 +299,36 @@ function edit_XY(clicked_id){
 }
 
 function update_XY(clicked_id){
-	$.post('update_xy.php', $("#updateXY" + clicked_id).serialize(), function(data) {
-		$("#status" + clicked_id).append(data);
+	$("#updateXYForm" + clicked_id).validate({
+		rules: {
+			name: "required",
+			description: "required",
+			category: {
+				required: true,
+				minlength: 1
+			},
+			preferred_room: "required",
+			preferred_class_size: "required"
+		},
+		highlight: function(element) {
+			$(element).closest('.control-group').removeClass('success').addClass('error');
+		},
+		success: function(element) {
+			$(element).text('OK!').addClass('valid').closest('.control-group').removeClass('error').addClass('success');
+		},
+		submitHandler: function(form){
+			$.post(
+				'update_xy.php',
+				$("#updateXYForm" + clicked_id).serialize(),
+				function(data) {
+					$("#status" + clicked_id).append(data);
+				}
+			);
+			setTimeout(function() {
+				location.reload(true);
+			}, 1500);
+		}
 	});
-	setTimeout(function() {
-		location.reload(true);
-	}, 1500);
 }
 
 //COLLOQUIUM FUNCTIONS
@@ -331,16 +370,34 @@ function edit_colloquium(clicked_id){
 
 //When user clicks submit button to update colloquium
 function update_colloquium(clicked_id){
-	/* stop form from submitting normally */
-	$statusID = "#status" + clicked_id;
-	$.post(
-		'update_colloquium.php',
-		$("#updateColloquium" + clicked_id).serialize(),
-		function(data) {
-			$($statusID).append(data);
+	$("#updateColloquiumForm" + clicked_id).validate({
+		rules: {
+			name: "required",
+			description: "required",
+			preferred_room: "required",
+			preferred_class_size: "required",
+			preferred_lunch_block: {
+				required: true,
+				minlength: 1
+			}
+		},
+		highlight: function(element) {
+			$(element).closest('.control-group').removeClass('success').addClass('error');
+		},
+		success: function(element) {
+			$(element).text('OK!').addClass('valid').closest('.control-group').removeClass('error').addClass('success');
+		},
+		submitHandler: function(form){
+			$.post(
+				'update_colloquium.php',
+				$("#updateColloquiumForm" + clicked_id).serialize(),
+				function(data) {
+					$("#status" + clicked_id).append(data);
+				}
+			);
+			setTimeout(function() {
+				location.reload(true);
+			}, 1500);
 		}
-	);
-	setTimeout(function() {
-		location.reload(true);
-	}, 3000);
+	});
 }

@@ -29,6 +29,20 @@ if (!isset($_SESSION['username']) ||
     <link href="../css/bootstrap-responsive.css" rel="stylesheet">
     <link href="../css/admin.css" rel="stylesheet">
 
+    <!-- JQUERY -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <!-- BOOTSTRAP -->
+    <script src="../js/bootstrap.min.js"></script>
+    <!-- AJAX UPLOAD BY BRYAN GENTRY -->
+    <!-- http://bryangentry.us/ajax-upload-with-javascript-and-php-upload-an-image-and-display-a-preview/ -->
+    <script src="../js/ajaxupload.js"></script>
+    <!-- FORM VALIDATION USING JQUERY -->
+    <!-- http://alittlecode.com/jquery-form-validation-with-styles-from-twitter-bootstrap/ -->
+    <script src="../js/jquery.validate.min.js"></script>
+    <!-- <script src="../js/validate.js"></script> -->
+    <!-- INHOUSE JAVASCRIPT -->
+    <script src="../js/admin.js"></script>
+
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="../js/html5shiv.js"></script>
@@ -79,9 +93,5 @@ if (!isset($_SESSION['username']) ||
     </div>
     <div class="container">
     </div> <!-- /container -->
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script src="../js/bootstrap.min.js"></script>
-    <script src="../js/admin.js"></script>
-    <script src="../js/ajaxupload.js"></script>
   </body>
 </html>

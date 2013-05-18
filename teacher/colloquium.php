@@ -17,7 +17,7 @@ if (!$con)
   die('Could not connect: ' . mysql_error());
 mysql_select_db($db, $con);
 $teacher = $_SESSION['username'];
-$userid;
+$userid=NULL;
 //Grab all of the teacher's colloquiums
 $query = 'SELECT colloquiums.name, colloquiums.description, colloquiums.image, colloquiums.preferred_room, 
                  colloquiums.preferred_class_size, colloquiums.preferred_lunch_block, colloquiums.freshmen,
@@ -50,7 +50,8 @@ while($colRow = mysql_fetch_array($colResult)){
     $c_id = $colRow['c_id'];
     $duration = $colRow['duration'];
     $semester = $colRow['semester'];
-    $userid = $colRow['userid'];
+    if(is_null($userid))
+      $userid = $colRow['userid'];
     //If colloquium assignment is for a full year colloquium
     if(strcmp($duration, "y") == 0){
       //We have a Semester 1 and 2 assignment!
@@ -128,41 +129,56 @@ while($colRow = mysql_fetch_array($colResult)){
     <link href="../css/bootstrap-responsive.css" rel="stylesheet">
     <link href="../css/admin.css" rel="stylesheet">
 
+    <!-- JQUERY -->
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js'></script>
+    <!-- BOOTSTRAP -->
+    <script src='../js/bootstrap.min.js'></script>
+    <!-- AJAX UPLOAD BY BRYAN GENTRY -->
+    <!-- http://bryangentry.us/ajax-upload-with-javascript-and-php-upload-an-image-and-display-a-preview/ -->
+    <script src='../js/ajaxupload.js'></script>
+    <!-- FORM VALIDATION USING JQUERY -->
+    <!-- http://alittlecode.com/jquery-form-validation-with-styles-from-twitter-bootstrap/ -->
+    <script src='../js/jquery.validate.min.js'></script>
+    <!-- <script src='../js/validate.js'></script> -->
+    <!-- INHOUSE JAVASCRIPT -->
+    <script src='../js/admin.js'></script>
+
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="../js/html5shiv.js"></script>
     <![endif]-->
   </head>
   <body>
-    <?php include_once("../admin/analyticstracking.php") ?>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
+    <?php include_once('../admin/analyticstracking.php') ?>
+    <!-- TOP MENU -->
+    <div class='navbar navbar-inverse navbar-fixed-top'>
+      <div class='navbar-inner'>
+        <div class='container'>
+          <button type='button' class='btn btn-navbar' data-toggle='collapse' data-target='.nav-collapse'>
+            <span class='icon-bar'></span>
+            <span class='icon-bar'></span>
+            <span class='icon-bar'></span>
           </button>
-          <a class="brand appname" href="#">Enroll</a>
-          <div class="nav-collapse collapse">
-            <ul class="nav">
-              <li><a href="agenda.php">Agenda</a></li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">X/Y <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                  <li><a href="xy.php#assign">Assign</a></li>
-                  <li><a href="xy.php#manage">Manage</a></li>
+          <a class='brand appname' href='#'>Enroll</a>
+          <div class='nav-collapse collapse'>
+            <ul class='nav'>
+              <li><a href='agenda.php'>Agenda</a></li>
+              <li class='dropdown'>
+                <a href='#' class='dropdown-toggle' data-toggle='dropdown'>X/Y <b class='caret'></b></a>
+                <ul class='dropdown-menu'>
+                  <li><a href='xy.php#assign'>Assign</a></li>
+                  <li><a href='xy.php#manage'>Manage</a></li>
                 </ul>
               </li>
-              <li class="dropdown active">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Colloquium <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                  <li><a id="assignLink" href="colloquium.php#assign">Assign</a></li>
-                  <li><a id="manageLink" href="colloquium.php#manage">Manage</a></li>
+              <li class='dropdown active'>
+                <a href='#' class='dropdown-toggle' data-toggle='dropdown'>Colloquium <b class='caret'></b></a>
+                <ul class='dropdown-menu'>
+                  <li><a id='assignLink' href='colloquium.php#assign'>Assign</a></li>
+                  <li><a id='manageLink' href='colloquium.php#manage'>Manage</a></li>
                 </ul>
               </li>
             </ul>
-            <ul class="nav pull-right">
+            <ul class='nav pull-right'>
               <?php 
                 if(!isset($_SESSION['username']))
                   echo "<li><a href='../login.html'>Login</a></li>";
@@ -174,13 +190,13 @@ while($colRow = mysql_fetch_array($colResult)){
         </div>
       </div>
     </div>
-    <div class="container">
-      <h2 id="assignLabel">Assign</h2>
+    <div class='container'>
+      <h2 id='assignLabel'>Assign</h2>
       <hr />
-      <div id="assign">
+      <div id='assign'>
         <!-- Semester 1 Choice -->
-        <div class="controls controls-row">
-          <div class="span5">
+        <div class='controls controls-row'>
+          <div class='span5'>
             <h4>Semester 1:</h4>
             <!-- Form Name sem1Selection -->
             <?php 
@@ -192,9 +208,9 @@ while($colRow = mysql_fetch_array($colResult)){
                 echo '<form id="sem1Selection">';
               }
             ?>
-            <div class="control-group">
-              <label class="control-label">Colloquium</label>
-              <div class="controls">
+            <div class='control-group'>
+              <label class='control-label'>Colloquium</label>
+              <div class='controls'>
                 <?php 
                   if($sem1Col){ 
                     echo '<select name="c_id" id="sem1Colloquium" disabled>';
@@ -240,8 +256,8 @@ while($colRow = mysql_fetch_array($colResult)){
                   ?>
                 -->
                 <!-- Hidden variables to be used for form processing -->
-                <input name="semester" type="hidden" value="1" />
-                <input name="teacher" type="hidden" value='<?php echo $_SESSION["username"] ?>' />
+                <input name='semester' type='hidden' value='1' />
+                <input name='teacher' type='hidden' value='<?php echo $_SESSION["username"] ?>' />
                 <input name="existing" type="hidden" value='<?php if($sem1Col){ echo "true"; }else{ echo "false"; } ?>' />
                 <input name="assnID" type="hidden" value='<?php echo "$sem1ColAssnID" ?>' />
                 <div class="control-group">
@@ -411,94 +427,88 @@ while($colRow = mysql_fetch_array($colResult)){
 
       <!-- MANAGEMENT MODULE -->
 
-      <div id="manage">
+      <div id='manage'>
         <h2>Manage</h2>
         <hr />
-        <div class="accordion" id="accordion2">
-          <div class="accordion-group">
-            <div class="accordion-heading">
-              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#addColloquium">
-                <i class="icon-folder-close"></i> Add Colloquium...
+        <div class='accordion' id='accordion2'>
+          <div class='accordion-group'>
+            <div class='accordion-heading'>
+              <a class='accordion-toggle' data-toggle='collapse' data-parent='#accordion2' href='#addColloquium'>
+                <i class='icon-folder-close'></i> Add Colloquium...
               </a>
             </div>
-            <div id="addColloquium" class="accordion-body collapse">
-              <div class="accordion-inner">
+            <div id='addColloquium' class='accordion-body collapse'>
+              <div class='accordion-inner'>
                 <!-- Add Colloquium Form -->
-                <form class="form-horizontal" id="addColloquiumForm" enctype="multipart/form-data">
+                <form class='form-horizontal' id='addColloquiumForm' enctype='multipart/form-data'>
+                  <input name='teacher' type='hidden' value='<?php echo $userid; ?>' />
                   <!-- Colloquium Name -->
-                  <div class="control-group">
-                    <label class="control-label">Name</label>
-                    <div class="controls">
-                      <?php
-                        echo "<input name=\"teacher\" type=\"hidden\" value=\"" . $_SESSION['username'] . "\" />";
-                      ?>
-                      <input type="text" class="span5" name="name">
+                  <div class='control-group'>
+                    <label class='control-label'>Name</label>
+                    <div class='controls'>
+                      <input type='text' class='span5' name='name' required />
                     </div>
                   </div>
-                  <div class="control-group">
-                    <label class="control-label">Description</label>
-                    <div class="controls">
-                      <textarea name="description" class="span5" rows="10"></textarea>
+                  <div class='control-group'>
+                    <label class='control-label'>Description</label>
+                    <div class='controls'>
+                      <textarea name='description' class='span5' rows='10' required></textarea>
                     </div>
                   </div>
-                  <div class="control-group">
-                    <label class="control-label">Image</label>
-                    <div class="controls">
-                      <img id="preview" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image" width="200px" height="200px" />
-                      <p><i class="icon-resize-small"></i>Currently all images are resized to 200 x 200</p>
-                      <button id="imageUpload" class="btn btn-small" type="button">Upload Image</button>
-                      <input name="uploadedImg" id="uploadedImg" type="hidden" value="" />
+                  <div class='control-group'>
+                    <label class='control-label'>Image</label>
+                    <div class='controls'>
+                      <img id='preview' src='http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image' width='200px' height='200px' />
+                      <p><i class='icon-resize-small'></i>Currently all images are resized to 200 x 200</p>
+                      <button id='imageUpload' class='btn btn-small' type='button'>Upload Image</button>
+                      <input name='uploadedImg' id='uploadedImg' type='hidden' value='' />
                     </div>
                   </div>
-                  <div class="control-group">
-                    <label class="control-label">Preferred Room</label>
-                    <div class="controls">
-                      <input name="preferred_room" type="text" maxlength="4" />
+                  <div class='control-group'>
+                    <label class='control-label'>Preferred Room</label>
+                    <div class='controls'>
+                      <input name='preferred_room' type='text' maxlength='4' required />
                     </div>
                   </div>
-                  <div class="control-group">
-                    <label class="control-label">Preferred Class Size</label>
-                    <div class="controls">
-                      <select name="preferred_class_size">
-                        <?php
-                          for($i=0; $i<=31; $i++)
-                            echo "<option value='" . $i . "'>" . $i . "</option>";
-                        ?>
+                  <div class='control-group'>
+                    <label class='control-label'>Preferred Class Size</label>
+                    <div class='controls'>
+                      <input name='preferred_class_size' type='number' min='10' maxlength='4' required />
+                    </div>
+                  </div>
+                  <div class='control-group'>
+                    <label class='control-label'>Preferred Lunch Block</label>
+                    <div class='controls'>
+                      <select name='preferred_lunch_block' required>
+                        <option value=''></option>
+                        <option value='A'>A</option>
+                        <option value='B'>B</option>
+                        <option value='C'>C</option>
+                        <option value='D'>D</option>
                       </select>
                     </div>
                   </div>
-                  <div class="control-group">
-                    <label class="control-label">Preferred Lunch Block</label>
-                    <div class="controls">
-                      <select name="preferred_lunch_block">
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
-                        <option value="D">D</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="control-group">
-                    <label class="control-label">Course open to </label>
-                    <div class="controls">
-                      <label class="checkbox inline">
-                        <input type="checkbox" name="freshmen" value="1" checked>Freshmen
+                  <div class='control-group'>
+                    <label class='control-label'>Course open to </label>
+                    <div class='controls'>
+                      <label class='checkbox inline'>
+                        <input type='checkbox' name='freshmen' value='1' checked>Freshmen
                       </label>
-                      <label class="checkbox inline">
-                        <input type="checkbox" name="sophomores" value="1" checked>Sophomores
+                      <label class='checkbox inline'>
+                        <input type='checkbox' name='sophomores' value='1' checked>Sophomores
                       </label>
-                      <label class="checkbox inline">
-                        <input type="checkbox" name="juniors" value="1" checked>Juniors
+                      <label class='checkbox inline'>
+                        <input type='checkbox' name='juniors' value='1' checked>Juniors
                       </label>
-                      <label class="checkbox inline">
-                        <input type="checkbox" name="seniors" value="1" checked>Seniors
+                      <label class='checkbox inline'>
+                        <input type='checkbox' name='seniors' value='1' checked>Seniors
                       </label>
                     </div>
                   </div>
-                  <div class="control-group">
-                    <div class="controls">
-                      <button type="submit" class="btn">Add Course</button>
-                      <div id="status"></div>
+                  <div class='control-group'>
+                    <div class='controls'>
+                      <button type='submit' class='btn'>Add Course</button>
+                      <div id='status'></div>
                     </div>
                   </div>
                 </form>
@@ -532,23 +542,21 @@ while($colRow = mysql_fetch_array($colResult)){
             <div id="<?php echo $numCourse; ?>" class="accordion-body collapse">
               <div class="accordion-inner">
                 <!-- Add Colloquium Form -->
-                <form class="form-horizontal" id="updateColloquium<?php echo $numCourse; ?>" enctype="multipart/form-data">
+                <form class="form-horizontal" id="updateColloquiumForm<?php echo $numCourse; ?>" enctype="multipart/form-data">
+                  <input name='teacher' type='hidden' value='<?php echo $userid; ?>' />
+                  <input name='form_id' type='hidden' value='<?php echo $courseName; ?>' />
+                  <input name='mysql_id' type='hidden' value='<?php echo $mysql_id; ?>' />
                   <!-- Colloquium Name -->
                   <div class="control-group">
                     <label class="control-label">Name</label>
-                    <div class="controls">
-                      <?php
-                        echo "<input name=\"teacher\" type=\"hidden\" value=\"" . $_SESSION['username'] . "\" />";
-                        echo "<input name=\"form_id\" type=\"hidden\" value=\"" . $courseName . "\"  />";
-                        echo "<input name=\"mysql_id\" type=\"hidden\" value=\"" . $mysql_id . "\"  />";
-                      ?>
-                      <input id='name<?php echo $numCourse; ?>' name='name' class="span5" type='text'value='<?php echo $courseName; ?>' disabled /> 
+                    <div class="controls">  
+                      <input id='name<?php echo $numCourse; ?>' name='name' class="span5" type='text' value='<?php echo $courseName; ?>' disabled required /> 
                     </div>
                   </div>
                   <div class="control-group">
                     <label class="control-label">Description</label>
                     <div class="controls">
-                      <textarea id='description<?php echo $numCourse; ?>' name='description' class="span5" rows='10' disabled><?php echo $description; ?></textarea>
+                      <textarea id='description<?php echo $numCourse; ?>' name='description' class="span5" rows='10' disabled required><?php echo $description; ?></textarea>
                     </div>
                   </div>
                   <div class="control-group">
@@ -566,45 +574,33 @@ while($colRow = mysql_fetch_array($colResult)){
                     <label class="control-label">Preferred Room</label>
                     <div class="controls">
                       <input id='preferred_room<?php echo $numCourse; ?>' name='preferred_room' 
-                           type='text' maxlength='4' value='<?php echo $preferred_room; ?>' disabled />
+                           type='text' maxlength='4' value='<?php echo $preferred_room; ?>' disabled required />
                     </div>
                   </div>
-                  <div class="control-group">
-                    <label class="control-label">Preferred Class Size</label>
-                    <div class="controls">
-                      <select id='preferred_class_size<?php echo $numCourse; ?>' 
-                            name='preferred_class_size' disabled>
-                        <?php
-                        for($i=0; $i<=31; $i++)
-                        if($i == $preferred_class_size)
-                          echo "<option selected value='" . $i . "'>" . $i . "</option>";
-                        else
-                          echo "<option value='" . $i . "'>" . $i . "</option>";
-                        ?>
-                      </select>
+                  <div class='control-group'>
+                    <label class='control-label'>Preferred Class Size</label>
+                    <div class='controls'>
+                      <input id='preferred_class_size<?php echo $numCourse; ?>' name='preferred_class_size' type='number' min='10' maxlength='4' disabled required />
                     </div>
                   </div>
-                  <div class="control-group">
-                    <label class="control-label">Preferred Lunch Block</label>
-                    <div class="controls">
+                  <div class='control-group'>
+                    <label class='control-label'>Preferred Lunch Block</label>
+                    <div class='controls'>
                       <select id='preferred_lunch_block<?php echo $numCourse; ?>' 
-                            name='preferred_lunch_block' disabled>
+                            name='preferred_lunch_block' disabled required>
                         <?php 
                         if (strcmp($preferred_lunch_block, "A") == 0)
                           echo '<option selected value="A">A</option>';
                         else
                           echo '<option value="A">A</option>';
-                          
                         if (strcmp($preferred_lunch_block, "B") == 0)
                           echo '<option selected value="B">B</option>';
                         else
                           echo '<option value="B">B</option>';
-                          
                         if (strcmp($preferred_lunch_block, "C") == 0)
                           echo '<option selected value="C">C</option>';
                         else
                           echo '<option value="C">C</option>';
-                          
                         if (strcmp($preferred_lunch_block, "D") == 0)
                           echo '<option selected value="D">D</option>';
                         else
@@ -613,10 +609,10 @@ while($colRow = mysql_fetch_array($colResult)){
                       </select> 
                     </div>
                   </div>
-                  <div class="control-group">
-                    <label class="control-label">Course open to </label>
-                    <div class="controls">
-                      <label class="checkbox inline">
+                  <div class='control-group'>
+                    <label class='control-label'>Course open to </label>
+                    <div class='controls'>
+                      <label class='checkbox inline'>
                         <?php 
                           if ($freshmen == 1)
                             echo '<input id=freshmen' . $numCourse . ' type="checkbox" name="freshmen" value="1" checked disabled>Freshmen';
@@ -650,24 +646,24 @@ while($colRow = mysql_fetch_array($colResult)){
                       </label>
                     </div>
                   </div>
-                  <div class="control-group">
-                    <label class="control-label">Delete?</label>
-                    <div class="controls">
+                  <div class='control-group'>
+                    <label class='control-label'>Delete?</label>
+                    <div class='controls'>
                       <select id='delete<?php echo $numCourse; ?>' name='delete' disabled>
                           <option selected value='n'>No</option>
                           <option value='y'>Yes</option>
                       </select>
                     </div>
                   </div>
-                  <div class="control-group">
-                    <div class="controls">
-                      <div id="editColloquiumButton<?php echo $numCourse; ?>">
-                        <button class="btn" type="button" onClick='edit_colloquium("<?php echo $numCourse ?>")'>Edit</button>
+                  <div class='control-group'>
+                    <div class='controls'>
+                      <div id='editColloquiumButton<?php echo $numCourse; ?>'>
+                        <button class='btn' type='button' onClick='edit_colloquium("<?php echo $numCourse ?>")'>Edit</button>
                       </div>
                       <div id="updateColloquiumButton<?php echo $numCourse; ?>" style="display: none;">
                         <button class="btn" type="button" onClick='update_colloquium("<?php echo $numCourse ?>")'>Update</button>
                       </div>
-                      <div id="status<?php echo $numCourse ?>"></div>
+                      <div id='status<?php echo $numCourse ?>'></div>
                     </div>
                   </div>
                 </form>
@@ -681,9 +677,5 @@ while($colRow = mysql_fetch_array($colResult)){
         </div>
       </div>
     </div> <!-- /container -->
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script src="../js/bootstrap.min.js"></script>
-    <script src="../js/admin.js"></script>
-    <script src="../js/ajaxupload.js"></script>
   </body>
 </html>
