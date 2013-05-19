@@ -222,6 +222,7 @@ function edit_XY(clicked_id){
 }
 
 function update_XY(clicked_id){
+	/**
 	$("#updateXYForm" + clicked_id).validate({
 		rules: {
 			name: "required",
@@ -239,7 +240,7 @@ function update_XY(clicked_id){
 		success: function(element) {
 			$(element).text('OK!').addClass('valid').closest('.control-group').removeClass('error').addClass('success');
 		},
-		submitHandler: function(form){
+		submitHandler: function(form){ **/
 			$.post(
 				'update_xy.php',
 				$("#updateXYForm" + clicked_id).serialize(),
@@ -250,8 +251,9 @@ function update_XY(clicked_id){
 			setTimeout(function() {
 				location.reload(true);
 			}, 1500);
+			/**
 		}
-	});
+	});**/
 }
 
 //COLLOQUIUM FUNCTIONS
@@ -293,6 +295,7 @@ function edit_colloquium(clicked_id){
 
 //When user clicks submit button to update colloquium
 function update_colloquium(clicked_id){
+	/**
 	$("#updateColloquiumForm" + clicked_id).validate({
 		rules: {
 			name: "required",
@@ -310,7 +313,7 @@ function update_colloquium(clicked_id){
 		success: function(element) {
 			$(element).text('OK!').addClass('valid').closest('.control-group').removeClass('error').addClass('success');
 		},
-		submitHandler: function(form){
+		submitHandler: function(form){**/
 			$.post(
 				'update_colloquium.php',
 				$("#updateColloquiumForm" + clicked_id).serialize(),
@@ -321,8 +324,9 @@ function update_colloquium(clicked_id){
 			setTimeout(function() {
 				location.reload(true);
 			}, 1500);
+			/**
 		}
-	});
+	});**/
 }
 
 //Assign colloquium details to specific semester

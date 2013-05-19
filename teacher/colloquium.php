@@ -414,10 +414,10 @@
             </div>
           </div>
           <?php 
-            $numCourse = 1;
-            mysql_data_seek($result,0);
+            $numCourse = 11;
+            mysql_data_seek($get_colloquium_repository_result,0);
             //Generates rows for colloquiums
-            while($row = mysql_fetch_array($result)){
+            while($row = mysql_fetch_array($get_colloquium_repository_result)){
               $mysql_id = $row['id'];
               $courseName = $row['name'];
               $description = $row['description'];
@@ -478,7 +478,8 @@
                   <div class='control-group'>
                     <label class='control-label'>Preferred Class Size</label>
                     <div class='controls'>
-                      <input id='preferred_class_size<?php echo $numCourse; ?>' name='preferred_class_size' type='number' min='10' maxlength='4' disabled required />
+                      <input id='preferred_class_size<?php echo $numCourse; ?>' name='preferred_class_size' 
+                        type='number' min='10' maxlength='4' value=<?php echo $preferred_class_size; ?> disabled required />
                     </div>
                   </div>
                   <div class='control-group'>
