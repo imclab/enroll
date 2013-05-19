@@ -4,10 +4,17 @@
   //Credentials aren't legit or user isn't an admin, kick back to login screen
   if (!isset($_SESSION['username']) || 
     $_SESSION['login']!=true || 
-    $_SESSION['teacher']!=true) {
+    $_SESSION['student']) {
       $_SESSION['from_teacher']=true;
       header("Location: ../login.html");
   }
+
+  $master_username=$_SESSION['username'];
+  $ghostuser=$_SESSION['ghostuser'];
+  if(!is_null($ghostuser))
+    $username=$_SESSION['ghostuser'];
+  else
+    $username=$_SESSION['username'];
 
   //Code to connect to database
   include_once '../admin/db.php';
@@ -96,7 +103,10 @@
               </li>
             </ul>
             <ul class="nav pull-right">
+              <?php if(!is_null($ghostuser)){ ?>
+              <li><a href="javascript:void(0)" onclick='ghost_user("<?php echo $master_username; ?>","admin");'><?php echo $master_username; ?></a></li>
               <?php 
+                }
                 if(!isset($_SESSION['username']))
                   echo "<li><a href='../login.html'>Login</a></li>";
                 else

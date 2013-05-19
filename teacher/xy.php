@@ -3,7 +3,7 @@
   //Not logged in or doesn't have the teacher role
   if (!isset($_SESSION['username']) || 
     $_SESSION['login']!=true || 
-    $_SESSION['teacher']!=true) 
+    $_SESSION['student']) 
   {
       header("Location: ../login.html");
   }
@@ -15,11 +15,15 @@
     die('Could not connect: ' . mysql_error());
   //Select DB
   mysql_select_db($db, $con);
-  //Teacher's username
-  $teacher=$_SESSION['username'];
+  $master_username=$_SESSION['username'];
+  $ghostuser=$_SESSION['ghostuser'];
+  if(!is_null($ghostuser))
+    $username=$_SESSION['ghostuser'];
+  else
+    $username=$_SESSION['username'];
   //Internal user id
   $userid=NULL;
-  $get_userid_result=mysql_query("SELECT id FROM users WHERE username=\"$teacher\"") or die(mysql_error());
+  $get_userid_result=mysql_query("SELECT id FROM users WHERE username=\"$username\"") or die(mysql_error());
   $get_userid_array=mysql_fetch_array($get_userid_result);
   $userid=$get_userid_array['id'];
   //Grab all dates xy is offered 
@@ -113,7 +117,10 @@
               </li>
             </ul>
             <ul class="nav pull-right">
+              <?php if(!is_null($ghostuser)){ ?>
+              <li><a href="javascript:void(0)" onclick='ghost_user("<?php echo $master_username; ?>","admin");'><?php echo $master_username; ?></a></li>
               <?php 
+                }
                 if(!isset($_SESSION['username']))
                   echo "<li><a href='../login.html'>Login</a></li>";
                 else

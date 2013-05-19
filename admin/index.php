@@ -65,12 +65,10 @@
             <ul class="nav">
             </ul>
             <ul class="nav pull-right">
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Login as... <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                  <li><a href="xy.php#assign">Assign</a></li>
-                  <li><a href="xy.php#manage">Manage</a></li>
-                </ul>
+                <li>
+                <form id="ghostuserform" class="navbar-form pull-right">
+                  <input class="span2 search-query" name="username" type="text" placeholder="Login as..." />
+                </form>
               </li>
               <?php 
                 if(!isset($_SESSION['username']))

@@ -24,6 +24,8 @@ else {
 			if ($entries['count'] > 0){
 				$_SESSION['login']=true;
 				$_SESSION['username']=$username;
+				$_SESSION['ghostuser']=null;
+				$_SESSION['ghostrole']=null;
 
 				//finds role based on AD group
 				$role_array_key = array_search('GG-1740-Registration-', $entries[0]["memberof"]);

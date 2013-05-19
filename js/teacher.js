@@ -362,3 +362,23 @@ function assign_colloquium(clicked_id){
 		}
 	});
 }
+function ghost_user(username,role){
+	$.post(
+		'../admin/ghostuser.php',
+		{ ghostuser: username, ghostrole: role },
+		function(data) {
+			if(role=="admin"){
+				// similar behavior as an HTTP redirect
+				window.location.replace("../admin/index.php");
+			}
+			else if(role=="teacher"){
+				// similar behavior as an HTTP redirect
+				window.location.replace("agenda.php");
+			}
+			else if(role=="student"){
+				// similar behavior as an HTTP redirect
+				window.location.replace("../xy.php");
+			}
+		}
+	);
+}

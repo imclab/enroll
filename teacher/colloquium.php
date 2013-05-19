@@ -4,7 +4,7 @@
   //Credentials aren't legit or user isn't an admin, kick back to login screen
   if (!isset($_SESSION['username']) || 
     $_SESSION['login']!=true || 
-    $_SESSION['teacher']!=true) {
+    $_SESSION['student']) {
       $_SESSION['from_teacher']=true;
       header('Location: ../login.html');
   }
@@ -16,21 +16,26 @@
   if (!$con)
     die('Could not connect: ' . mysql_error());
   mysql_select_db($db, $con);
-  $teacher = $_SESSION['username'];
+  $master_username=$_SESSION['username'];
+  $ghostuser=$_SESSION['ghostuser'];
+  if(!is_null($ghostuser))
+    $username=$_SESSION['ghostuser'];
+  else
+    $username=$_SESSION['username'];
   //Internal user id
   $userid=NULL;
-  $get_userid_result=mysql_query("SELECT id FROM users WHERE username=\"$teacher\"") or die(mysql_error());
+  $get_userid_result=mysql_query("SELECT id FROM users WHERE username=\"$username\"") or die(mysql_error());
   $get_userid_array=mysql_fetch_array($get_userid_result);
   $userid=$get_userid_array['id'];
   //Grab all of the teacher's colloquiums
   $get_colloquium_repository_result=mysql_query('SELECT colloquiums.id,colloquiums.name, colloquiums.description, colloquiums.image, colloquiums.preferred_room, 
                    colloquiums.preferred_class_size, colloquiums.preferred_lunch_block, colloquiums.freshmen,
                    colloquiums.sophomores, colloquiums.juniors, colloquiums.seniors, users.id AS userid 
-            FROM colloquiums INNER JOIN `users` on colloquiums.teacher_id = users.id WHERE users.username="' . $teacher . '"')
+            FROM colloquiums INNER JOIN `users` on colloquiums.teacher_id = users.id WHERE users.username="' . $username . '"')
             or die (mysql_error());
   //Grab all of the teachers assigned colloquiums
   $get_colloquium_assignments_result=mysql_query('SELECT c_assignments.duration, c_assignments.semester, c_assignments.c_id, c_assignments.notes, users.id AS userid
-               FROM c_assignments INNER JOIN `users` on c_assignments.teacher_id = users.id WHERE users.username="' . $teacher . '"')
+               FROM c_assignments INNER JOIN `users` on c_assignments.teacher_id = users.id WHERE users.username="' . $username . '"')
                 or die (mysql_error());
   //Teacher has no assigned colloquiums
   $sem1Col=false;
@@ -174,7 +179,10 @@
               </li>
             </ul>
             <ul class='nav pull-right'>
+              <?php if(!is_null($ghostuser)){ ?>
+              <li><a href="javascript:void(0)" onclick='ghost_user("<?php echo $master_username; ?>","admin");'><?php echo $master_username; ?></a></li>
               <?php 
+                }
                 if(!isset($_SESSION['username']))
                   echo "<li><a href='../login.html'>Login</a></li>";
                 else

@@ -9,7 +9,12 @@
   }
   else{
     $loggedin=true;
-    $username=$_SESSION['username'];
+    $master_username=$_SESSION['username'];
+    $ghostuser=$_SESSION['ghostuser'];
+    if(!is_null($ghostuser))
+      $username=$_SESSION['ghostuser'];
+    else
+      $username=$_SESSION['username'];
   }
   //Code to connect to database
   include_once 'admin/db.php';
@@ -110,7 +115,10 @@
               <li class="active"><a href="colloquium.php">Colloquium</a></li>
             </ul>
             <ul class="nav pull-right">
+              <?php if(!is_null($ghostuser)){ ?>
+                <li><a href="javascript:void(0)" onclick='ghost_user("<?php echo $master_username; ?>","admin");'><?php echo $master_username; ?></a></li>
               <?php 
+                }
                 if(!$loggedin)
                   echo "<li><a href='login.html'>Login</a></li>";
                 else
