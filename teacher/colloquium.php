@@ -123,8 +123,7 @@
     <link href='../css/admin.css' rel='stylesheet'>
 
     <!-- JQUERY -->
-    <!-- <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js'></script> -->
-    <script src='../js/jquery.min.js'></script>
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js'></script>
     <!-- BOOTSTRAP -->
     <script src='../js/bootstrap.min.js'></script>
     <!-- AJAX UPLOAD BY BRYAN GENTRY -->

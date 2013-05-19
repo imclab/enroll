@@ -1,31 +1,47 @@
 <?php
-session_start();
+  session_start();
 
-//Credentials aren't legit or user isn't an admin, kick back to login screen
-if (!isset($_SESSION['username']) || 
-  $_SESSION['login']!=true || 
-  $_SESSION['teacher']!=true) {
-    $_SESSION['from_teacher']=true;
-    header("Location: ../login.html");
-}
+  //Credentials aren't legit or user isn't an admin, kick back to login screen
+  if (!isset($_SESSION['username']) || 
+    $_SESSION['login']!=true || 
+    $_SESSION['teacher']!=true) {
+      $_SESSION['from_teacher']=true;
+      header("Location: ../login.html");
+  }
+
+  //Code to connect to database
+  include_once '../admin/db.php';
+  //Connects to MySQL and Selects Database
+  $con = mysql_connect($host,$db_username,$db_password);
+  if (!$con)
+    die('Could not connect: ' . mysql_error());
+  //Select DB
+  mysql_select_db($db, $con);
+
+  //Get next date for XY Courses
+  $next_xy_result=mysql_query("SELECT id,date FROM dates WHERE date > " .  date('Y-m-d') . " AND schedule=\"a\" ORDER BY date LIMIT 1") or die(mysql_error());
+  $next_xy_row= mysql_fetch_array($next_xy_result);
+  $next_xy=$next_xy_row['date'];
+
+  mysql_close();
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
   <head>
-    <meta charset="utf-8">
+    <meta charset='utf-8'>
     <title>Enroll: Northside Prep</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Flexible Scheduling for Today's Classroom">
-    <meta name="author" content="Marcos Alcozer">
-    <meta name="keywords" content="Education, Scheduling">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta name='description' content="Flexible Scheduling for Today's Classroom">
+    <meta name='author' content='Marcos Alcozer'>
+    <meta name='keywords' content='Education, Scheduling'>
 
-    <!-- Le styles -->
-    <link href="../css/bootstrap.css" rel="stylesheet">
+    <!-- CSS -->
     <style>
       body {
         padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
       }
     </style>
+    <link href="../css/bootstrap.css" rel="stylesheet">
     <link href="../css/bootstrap-responsive.css" rel="stylesheet">
     <link href="../css/admin.css" rel="stylesheet">
 
@@ -38,7 +54,7 @@ if (!isset($_SESSION['username']) ||
     <script src="../js/ajaxupload.js"></script>
     <!-- FORM VALIDATION USING JQUERY -->
     <!-- http://alittlecode.com/jquery-form-validation-with-styles-from-twitter-bootstrap/ -->
-    <script src="../js/jquery.validate.min.js"></script>
+    <!-- <script src="../js/jquery.validate.min.js"></script> -->
     <!-- <script src="../js/validate.js"></script> -->
     <!-- INHOUSE JAVASCRIPT -->
     <script src="../js/admin.js"></script>
@@ -92,6 +108,15 @@ if (!isset($_SESSION['username']) ||
       </div>
     </div>
     <div class="container">
+        <h1 class='hidden-phone'>
+          Agenda for <?php echo date('l F jS, Y', strtotime($next_xy)); ?>
+        </h1>
+        <h3 class='visible-phone'>
+          Agenda for <?php echo date('l F jS, Y', strtotime($next_xy)); ?>
+        </h3>
+        <hr />
+        <div id="main" role="main">
+        </div>
     </div> <!-- /container -->
   </body>
 </html>
