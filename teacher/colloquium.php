@@ -17,7 +17,11 @@
     die('Could not connect: ' . mysql_error());
   mysql_select_db($db, $con);
   $teacher = $_SESSION['username'];
+  //Internal user id
   $userid=NULL;
+  $get_userid_result=mysql_query("SELECT id FROM users WHERE username=\"$teacher\"") or die(mysql_error());
+  $get_userid_array=mysql_fetch_array($get_userid_result);
+  $userid=$get_userid_array['id'];
   //Grab all of the teacher's colloquiums
   $get_colloquium_repository_result=mysql_query('SELECT colloquiums.name, colloquiums.description, colloquiums.image, colloquiums.preferred_room, 
                    colloquiums.preferred_class_size, colloquiums.preferred_lunch_block, colloquiums.freshmen,
@@ -46,8 +50,6 @@
       $c_id = $colRow['c_id'];
       $duration = $colRow['duration'];
       $semester = $colRow['semester'];
-      if(is_null($userid))
-        $userid = $colRow['userid'];
       //If colloquium assignment is for a full year colloquium
       if(strcmp($duration, 'y') == 0){
         //We have a Semester 1 and 2 assignment!

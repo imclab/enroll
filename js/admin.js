@@ -14,7 +14,9 @@ $(document).ready(
 					preview.unbind();
 				});
 				preview.attr('src', '../img/courses/' + response); //make the preview image display the uploaded file
-				$('#uploadedImg').val(response); //drop the path to the file into the hidden field
+				if(response != 'error.png'){
+					$('#uploadedImg').val(response); //drop the path to the file into the hidden field
+				}
 			}
 		});
 
