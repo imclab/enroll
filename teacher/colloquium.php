@@ -23,7 +23,7 @@
   $get_userid_array=mysql_fetch_array($get_userid_result);
   $userid=$get_userid_array['id'];
   //Grab all of the teacher's colloquiums
-  $get_colloquium_repository_result=mysql_query('SELECT colloquiums.name, colloquiums.description, colloquiums.image, colloquiums.preferred_room, 
+  $get_colloquium_repository_result=mysql_query('SELECT colloquiums.id,colloquiums.name, colloquiums.description, colloquiums.image, colloquiums.preferred_room, 
                    colloquiums.preferred_class_size, colloquiums.preferred_lunch_block, colloquiums.freshmen,
                    colloquiums.sophomores, colloquiums.juniors, colloquiums.seniors, users.id AS userid 
             FROM colloquiums INNER JOIN `users` on colloquiums.teacher_id = users.id WHERE users.username="' . $teacher . '"')
@@ -196,12 +196,13 @@
             <!-- Form Name sem1Selection -->
             <form id='sem1Selection'>
               <input name='semester' type='hidden' value='1' />
-              <input name='teacher' type='hidden' value='<?php echo $userid ?>' />
-              <input name='existing' type='hidden' value='<?php if($sem1Col){ echo "true"; }else{ echo "false"; } ?>' />
+              <input name='teacher' type='hidden' value='<?php echo $userid; ?>' />
+              <input name='previous_duration' type='hidden' value='<?php echo $duration; ?>' />
+              <input name='existing' type='hidden' value='<?php if($sem1Col){ echo true; }else{ echo false; } ?>' />
             <div class='control-group'>
               <label class='control-label'>Colloquium</label>
               <div class='controls'>
-                  <select name='c_id' id='sem1Colloquium' <?php if($sem1Col){ echo 'disabled'; } ?> >
+                  <select name='c_id' id='sem1Colloquium'>
                     <option value=''></option>
                   <?php
                     //Traverse through teacher's colloquium repository
@@ -218,7 +219,7 @@
             <div class='control-group'>
               <label class='control-label'>Duration: </label>
               <div class='controls'>
-                <select name='duration' id='sem1Duration' <?php if($sem1Col){ echo 'disabled'; } ?> >
+                <select name='duration' id='sem1Duration' >
                   <option selected value=''></option>
                   <?php 
                     if($sem1Col && strcmp($duration, "s") == 0)
@@ -241,7 +242,7 @@
                 <div class='control-group'>
                   <label class='control-label'>Notes for programmer: </label>
                   <div class='controls'>
-                    <textarea name='notes' rows='5' id='sem1Notes' <?php if($sem1Col){ echo 'disabled'; } ?> ><?php if($sem1Col){ echo $sem1ColNotes; } ?></textarea>
+                    <textarea name='notes' rows='5' id='sem1Notes' ><?php if($sem1Col){ echo $sem1ColNotes; } ?></textarea>
                   </div>
                 </div>
                 <div class='control-group'>
@@ -261,11 +262,13 @@
                     <form id='sem2Selection'>
                       <input name='semester' type='hidden' value='2' />
                       <input name='teacher' type='hidden' value='<?php echo $userid ?>' />
-                      <input name='existing' type='hidden' value='<?php if($sem2Col){ echo "true"; }else{ echo "false"; } ?>' />
+                      <input name='duration' type='hidden' value='s' />
+                      <input name='previous_duration' type='hidden' value='s' />
+                      <input name='existing' type='hidden' value='<?php if($sem2Col){ echo true; }else{ echo false; } ?>' />
                     <div class='control-group'>
                       <label class='control-label'>Colloquium</label>
                       <div class='controls'>
-                          <select name='c_id' id='sem2Colloquium' <?php if($sem2Col){ echo 'disabled'; } ?> >
+                          <select name='c_id' id='sem2Colloquium' >
                             <option value=''></option>
                           <?php
                             //Traverse through teacher's colloquium repository
@@ -280,41 +283,18 @@
                       </div>
                     </div>
                     <div class='control-group'>
-                      <label class='control-label'>Duration: </label>
+                      <label class='control-label'>Notes for programmer: </label>
                       <div class='controls'>
-                        <select name='duration' id='sem2Duration' <?php if($sem2Col){ echo 'disabled'; } ?> >
-                          <option selected value=''></option>
-                          <?php 
-                            if($sem2Col && strcmp($duration, "s") == 0)
-                            {
-                              echo '<option selected value="s">Semester</option>';
-                              echo '<option value="y">Year</option>';
-                            }
-                            else if($sem1Col && strcmp($duration, "y") == 0){
-                              echo '<option value="s">Semester</option>';
-                              echo '<option selected value="y">Year</option>';
-                            }
-                            else{
-                              echo '<option value="s">Semester</option>';
-                              echo '<option value="y">Year</option>';
-                            }
-                          ?>
-                        </select>
+                        <textarea name='notes' rows='5' id='sem2Notes' ><?php if($sem2Col){ echo $sem2ColNotes; } ?></textarea>
                       </div>
                     </div>
-                        <div class='control-group'>
-                          <label class='control-label'>Notes for programmer: </label>
-                          <div class='controls'>
-                            <textarea name='notes' rows='5' id='sem2Notes' <?php if($sem2Col){ echo 'disabled'; } ?> ><?php if($sem2Col){ echo $sem2ColNotes; } ?></textarea>
-                          </div>
-                        </div>
-                        <div class='control-group'>
-                          <div class='controls'>
-                            <button class='btn' type='submit' onClick='assign_colloquium("2")' >Update</button>
-                            <div id='sem2Status'></div>
-                          </div>
-                        </div>
-                      </form>
+                    <div class='control-group'>
+                      <div class='controls'>
+                        <button class='btn' type='submit' onClick='assign_colloquium("2")' >Update</button>
+                        <div id='sem2Status'></div>
+                      </div>
+                    </div>
+                  </form>
                 <?php 
                   if(strcmp($sem1ColDuration, "y") == 0){echo "</div>"; }
                 ?>

@@ -8,28 +8,43 @@
  	mysql_select_db($db, $con);
  	$semester=$_POST['semester'];
  	$duration=trim($_POST['duration']);
+ 	$previous_duration=trim($_POST['previous_duration']);
  	$notes=trim($_POST['notes']);
  	$c_id=trim($_POST['c_id']);
  	$teacher=trim($_POST['teacher']);
  	$existing=$_POST['existing'];
- 	if(strcmp($existing, "true") == 0){
+ 	$result;
+ 	if($existing){
  		//Update MySQL Entry
- 		$query=mysql_query("UPDATE c_assignments SET duration='$duration',
- 				c_id='$c_id',notes='$notes' WHERE semester=$semester AND teacher_id=$teacher");
- 		if(strcmp($duration, "y") == 0){
- 			$delquery=mysql_query("DELETE FROM c_assignments WHERE semester='2' AND teacher_id='$teacher' LIMIT 1");
+ 		if(mysql_query("UPDATE c_assignments SET duration='$duration',
+ 				c_id='$c_id',notes='$notes' WHERE semester=$semester AND teacher_id=$teacher")){
+ 			if(strcmp($duration, "y") == 0){
+ 				if(mysql_query("DELETE FROM c_assignments WHERE semester='2' AND teacher_id='$teacher' LIMIT 1")){
+ 					$result="Course Updated!";
+ 				}
+ 				else{
+ 					$result="An error occurred!";
+ 				}
+ 			}
+ 			else if(strcmp($previous_duration, "y") == 0 && strcmp($duration, "s") == 0){
+ 				$result="Course Updated!";
+ 			}
+ 			else{
+ 				$result="Successfully Updated!";
+ 			}
+ 		}
+ 		else{
+ 			$result="An error occurred!";
  		}
  	}
  	else{
  		//Insert Data into MySQL
-		$query=mysql_query("INSERT INTO c_assignments(duration,semester,c_id,notes,teacher_id) 
-							VALUES('$duration','$semester','$c_id','$notes','$teacher')");
+		if(mysql_query("INSERT INTO c_assignments(duration,semester,c_id,notes,teacher_id) 
+							VALUES('$duration','$semester','$c_id','$notes','$teacher')")){
+			$result="Successfully Updated!";
+		}
+
  	}
-  	if($query){
-		echo "Successfully Updated!";
-   	}
-	else{ 
-		echo "An error occurred!"; 
-	}
+	echo $result;
 	mysql_close($con);
 ?>

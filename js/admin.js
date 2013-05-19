@@ -354,9 +354,9 @@ function assign_colloquium(clicked_id){
 				$("#sem" + clicked_id + "Selection").serialize(),
 				function(data) {
 					$("#sem" + clicked_id + "Status").append(data);
-					$("#sem" + clicked_id + "Status").fadeOut(3000, function(){
-						$("#sem" + clicked_id + "Status").empty().fadeIn();
-					});
+					setTimeout(function() {
+							location.reload(true);
+						}, 1500);
 				}
 			);
 		}

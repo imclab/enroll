@@ -7,7 +7,7 @@
   }
   mysql_select_db($db, $con);
   //Pull data from manage_courses.php front-end page
-  $mysql_id = trim($_POST['mysql_id']);
+  $mysql_id=$_POST['mysql_id'];
   $name=trim($_POST['name']);
   $description=trim($_POST['description']);
   $image=$_POST['uploadedImg'];
@@ -28,28 +28,24 @@
   if($seniors==null)
     $seniors=0;
   $delete=$_POST['delete'];  	
-  $result = "";
+  $result=null;
   if(strcmp($delete,'n') == 0){
     //Insert Data into mysql
-    $query=mysql_query("UPDATE colloquiums SET name='$name',description='$description',
-  			image='$image',teacher_id=$teacher,preferred_room='$preferred_room',
-  			preferred_class_size=$preferred_class_size,preferred_lunch_block='$preferred_lunch_block',
-  			freshmen='$freshmen',sophomores='$sophomores',juniors='$juniors',seniors='$seniors'
-  			WHERE id='$mysql_id'");
-    if($query)
+    if(mysql_query("UPDATE colloquiums SET name='$name',description='$description',
+        image='$image',teacher_id=$teacher,preferred_room='$preferred_room',
+        preferred_class_size=$preferred_class_size,preferred_lunch_block='$preferred_lunch_block',
+        freshmen='$freshmen',sophomores='$sophomores',juniors='$juniors',seniors='$seniors'
+        WHERE id='$mysql_id'"))
       $result = "Course updated!";
     else
       $result = "Error Code:001";
   }
   else{
-    $query=mysql_query("DELETE FROM colloquiums WHERE id='$mysql_id' LIMIT 1");	
-    if($query)
+    if(mysql_query("DELETE FROM colloquiums WHERE id=$mysql_id LIMIT 1"))
       $result = "Course deleted!";
     else
       $result = "Error Code:002";
   } 
-
   echo "$result";
-
   mysql_close($con);
 ?>
