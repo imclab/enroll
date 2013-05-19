@@ -52,7 +52,9 @@ else {
 					$_SESSION['student']=false;
 				}
 
-				if ($_SESSION['teacher'])
+				if ($_SESSION['admin'])
+					header ("Location: admin/index.php");
+				else if ($_SESSION['teacher'])
 					header ("Location: teacher/agenda.php");
 				else if ($_SESSION['student'])
 					header ("Location: xy.php");

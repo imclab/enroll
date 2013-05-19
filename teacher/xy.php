@@ -74,7 +74,7 @@
     <script src="../js/ajaxupload.js"></script>
     <!-- <script src="../js/validate.js"></script> -->
     <!-- INHOUSE JAVASCRIPT -->
-    <script src="../js/admin.js"></script>
+    <script src="../js/teacher.js"></script>
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
