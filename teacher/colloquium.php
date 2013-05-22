@@ -34,7 +34,8 @@
             FROM colloquiums INNER JOIN `users` on colloquiums.teacher_id = users.id WHERE users.username="' . $username . '"')
             or die (mysql_error());
   //Grab all of the teachers assigned colloquiums
-  $get_colloquium_assignments_result=mysql_query('SELECT c_assignments.duration, c_assignments.semester, c_assignments.c_id, c_assignments.notes, users.id AS userid
+  $get_colloquium_assignments_result=mysql_query(
+              'SELECT c_assignments.duration, c_assignments.semester, c_assignments.c_id, c_assignments.notes, c_assignments.final, users.id AS userid
                FROM c_assignments INNER JOIN `users` on c_assignments.teacher_id = users.id WHERE users.username="' . $username . '"')
                 or die (mysql_error());
   //Teacher has no assigned colloquiums
@@ -44,10 +45,12 @@
   $sem1ColName=null;
   $sem1ColDuration=null;
   $sem1ColNotes=null;
+  $sem1ColFinal=null;
   //Attributes of the teacher's semester 1 colloquium
   $sem2ColName=null;
   $sem2ColDuration=null;
   $sem2ColNotes=null;
+  $sem2ColFinal=null;
   //Traverse through existing colloquium assignments
   mysql_data_seek($get_colloquium_assignments_result,0);
   while($colRow = mysql_fetch_array($get_colloquium_assignments_result)){
@@ -73,6 +76,7 @@
         //Semester 2 fields besides name will be disabled
         $sem1ColDuration = $colRow['duration'];
         $sem1ColNotes = $colRow['notes'];
+        $sem1ColFinal = $colRow['final'];
       }
       //else if assignment is 1st Semester
       else if(strcmp($duration, 'y') != 0 && $semester == 1){
@@ -89,6 +93,7 @@
         //Set fields for Semester 1
         $sem1ColDuration = $colRow['duration'];
         $sem1ColNotes = $colRow['notes'];
+        $sem1ColFinal = $colRow['final'];
       }
       //if assignment is 2nd Semester
       else if(strcmp($duration, "y") != 0 && $semester == 2){
@@ -105,6 +110,7 @@
         //Set fields for Semester 2
         $sem2ColDuration = $colRow['duration'];
         $sem2ColNotes = $colRow['notes'];
+        $sem2ColFinal = $colRow['final'];
       }
   }
     mysql_close($con);
@@ -210,7 +216,7 @@
             <div class='control-group'>
               <label class='control-label'>Colloquium</label>
               <div class='controls'>
-                  <select name='c_id' id='sem1Colloquium'>
+                  <select name='c_id' id='sem1Colloquium' <?php if($sem1ColFinal==1){ echo " disabled "; } ?> >
                     <option value=''></option>
                   <?php
                     //Traverse through teacher's colloquium repository
@@ -227,7 +233,7 @@
             <div class='control-group'>
               <label class='control-label'>Duration: </label>
               <div class='controls'>
-                <select name='duration' id='sem1Duration' >
+                <select name='duration' id='sem1Duration' <?php if($sem1ColFinal==1){ echo " disabled "; } ?> >
                   <option selected value=''></option>
                   <?php 
                     if($sem1Col && strcmp($duration, "s") == 0)
@@ -250,13 +256,23 @@
                 <div class='control-group'>
                   <label class='control-label'>Notes for programmer: </label>
                   <div class='controls'>
-                    <textarea name='notes' rows='5' id='sem1Notes' ><?php if($sem1Col){ echo $sem1ColNotes; } ?></textarea>
+                    <textarea name='notes' rows='5' id='sem1Notes'<?php if($sem1ColFinal==1){ echo " disabled "; } ?> ><?php if($sem1Col){ echo $sem1ColNotes; } ?></textarea>
                   </div>
                 </div>
                 <div class='control-group'>
                   <div class='controls'>
-                    <button class='btn' type='submit' onClick='assign_colloquium("1")' >Update</button>
-                    <div id='sem1Status'></div>
+                    <?php
+                      if($sem1ColFinal==0){
+                    ?>
+                      <div><button class='btn' type='submit' onClick='assign_colloquium("1")' >Update</button></div>
+                      <div><em class='text-info'>Pending Approval</em></div>
+                      <div id='sem1Status'></div>
+                    <?php
+                      }
+                      else{
+                    ?>
+                      <div><em class='text-success'>Finalized, no changes possible.</em></div>
+                    <?php } ?>
                   </div>
                 </div>
               </form>
@@ -276,7 +292,7 @@
                     <div class='control-group'>
                       <label class='control-label'>Colloquium</label>
                       <div class='controls'>
-                          <select name='c_id' id='sem2Colloquium' >
+                          <select name='c_id' id='sem2Colloquium' <?php if($sem2ColFinal==1){ echo " disabled "; } ?> >
                             <option value=''></option>
                           <?php
                             //Traverse through teacher's colloquium repository
@@ -293,13 +309,23 @@
                     <div class='control-group'>
                       <label class='control-label'>Notes for programmer: </label>
                       <div class='controls'>
-                        <textarea name='notes' rows='5' id='sem2Notes' ><?php if($sem2Col){ echo $sem2ColNotes; } ?></textarea>
+                        <textarea name='notes' rows='5' id='sem2Notes' <?php if($sem2ColFinal==1){ echo " disabled "; } ?> ><?php if($sem2Col){ echo $sem2ColNotes; } ?></textarea>
                       </div>
                     </div>
                     <div class='control-group'>
                       <div class='controls'>
-                        <button class='btn' type='submit' onClick='assign_colloquium("2")' >Update</button>
-                        <div id='sem2Status'></div>
+                        <?php
+                          if($sem2ColFinal==0){
+                        ?>
+                          <div><button class='btn' type='submit' onClick='assign_colloquium("2")' >Update</button></div>
+                          <div><em class='text-info'>Pending Approval</em></div>
+                          <div id='sem2Status'></div>
+                        <?php
+                          }
+                          else{
+                        ?>
+                          <div><em class='text-success'>Finalized, no changes possible.</em></div>
+                        <?php } ?>
                       </div>
                     </div>
                   </form>

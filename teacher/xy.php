@@ -29,7 +29,9 @@
   //Grab all dates xy is offered 
   $get_dates_result=mysql_query("SELECT id, date FROM dates WHERE schedule='a'") or die(mysql_error());
   //Get all xy assignments
-  $get_xy_assignments_result=mysql_query("SELECT dates.date, dates.id AS dateid, xy.name, xy_assignments.notes, xy_assignments.preferred_block 
+  $get_xy_assignments_result=mysql_query(
+              "SELECT dates.date, dates.id AS dateid, xy.name, xy_assignments.notes, 
+                      xy_assignments.preferred_block,xy_assignments.final 
               FROM `dates` 
               LEFT JOIN `xy_assignments` on xy_assignments.date_id = dates.id 
               LEFT JOIN `xy` on xy_assignments.xy_id = xy.id 
@@ -171,6 +173,7 @@
                       $xyNotes=$xy_assignment['notes'];
                       $xyPreferredBlock=$xy_assignment['preferred_block'];
                       $xyDateID=$xy_assignment['dateid'];
+                      $xyFinal=$xy_assignment['final'];
                       break;
                     }
                   }
@@ -193,7 +196,9 @@
                           <?php
                             $courseName;
                             //If there is already an XY assigned to this date
-                            echo "<select name='xy_id' id='name$xyDateID' class='selectedXYDate' required>";
+                            echo "<select name='xy_id' id='name$xyDateID' class='selectedXYDate' required";
+                            if($xyFinal==1){ echo " disabled "; }
+                            echo ">";
                             echo "<option value=''></option>";
                             //Traverse through teacher's XY repository
                             mysql_data_seek($get_xy_repository_result,0);
@@ -211,7 +216,7 @@
                       <div class="control-group">
                         <label class="control-label">Block Preference:</label>
                         <div class="controls">
-                          <select name='blockpreference' id='preferred_block<?php echo $xyDateID; ?>' required>
+                          <select name='blockpreference' id='preferred_block<?php echo $xyDateID; ?>' required  <?php if($xyFinal==1){ echo " disabled "; } ?> >
                             <option value=''></option>
                           <?php
                             if(strcmp($xyPreferredBlock, "x") == 0)
@@ -234,7 +239,9 @@
                         <label class="control-label">Notes for programmer:</label>
                         <div class="controls">
                           <?php
-                              echo "<textarea name='notes' id='notes$xyDateID' rows='5'>";
+                              echo "<textarea name='notes' id='notes$xyDateID' rows='5'";
+                              if($xyFinal==1){ echo " disabled "; }
+                              echo ">";
                               if($xyAssigned){ echo $xyNotes; }
                               echo "</textarea>";
                           ?>
@@ -242,8 +249,18 @@
                       </div>
                       <div class="control-group">
                         <div class="controls">
-                            <button class='btn' type='submit' onClick='assign_xy("<?php echo $xyDateID; ?>")' >Update</button>
-                          <div id='status<?php echo $xyDateID; ?>'></div>
+                          <?php
+                            if($xyFinal==0){
+                          ?>
+                            <div><button class='btn' type='submit' onClick='assign_xy("<?php echo $xyDateID; ?>")' >Update</button></div>
+                            <div><em class='text-info'>Pending Approval</em></div>
+                            <div id='status<?php echo $xyDateID; ?>'></div>
+                          <?php
+                            }
+                            else{
+                          ?>
+                            <div><em class='text-success'>Finalized, no changes possible.</em></div>
+                          <?php } ?>
                         </div>
                       </div>
                     </form>

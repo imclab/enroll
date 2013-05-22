@@ -18,36 +18,3 @@ label.error {
   padding: 2px 8px;
   margin-top: 2px;
  }
- .dashboard {
-    font-family: "Helvetica",sans-serif;
-    padding-top:10px;
-    padding-left:45px;
-    display:inline-block;
-    -webkit-transform:scale(8,25); /* Safari and Chrome */
-    -moz-transform:scale(8,25); /* Firefox */
-    -ms-transform:scale(8,25); /* IE 9 */
-    -o-transform:scale(8,25); /* Opera */
-    transform:scale(8,25); /* W3C */
- }
- .verify {
-    font-family: "Helvetica",sans-serif;
-    padding-top:27px;
-    padding-left:0px;
-    display:inline-block;
-    -webkit-transform:scale(8,25); /* Safari and Chrome */
-    -moz-transform:scale(8,25); /* Firefox */
-    -ms-transform:scale(8,25); /* IE 9 */
-    -o-transform:scale(8,25); /* Opera */
-    transform:scale(8,25); /* W3C */
- }
- .rosters {
-    font-family: "Helvetica",sans-serif;
-    padding-top:44px;
-    padding-left:0px;
-    display:inline-block;
-    -webkit-transform:scale(8,25); /* Safari and Chrome */
-    -moz-transform:scale(8,25); /* Firefox */
-    -ms-transform:scale(8,25); /* IE 9 */
-    -o-transform:scale(8,25); /* Opera */
-    transform:scale(8,25); /* W3C */
- }

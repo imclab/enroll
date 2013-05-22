@@ -1,13 +1,11 @@
 <?php
   session_start();
-
   //Credentials aren't legit or user isn't an admin, kick back to login screen
   if (!isset($_SESSION['username']) || 
     $_SESSION['login']!=true || 
     $_SESSION['admin']!=true) {
       header("Location: ../login.html");
   }
-
   //Code to connect to database
   include_once 'db.php';
   //Connects to MySQL and Selects Database
@@ -18,35 +16,18 @@
   mysql_select_db($db, $con);
   //Get XY dates for Approvals menu
   $dates_result=mysql_query("SELECT * FROM dates WHERE schedule='a'") or die(mysql_error());
-  //Get next date
-  $next_date_result=mysql_query("SELECT id,date,semester FROM dates WHERE date > " .  date('Y-m-d') . "  LIMIT 1") or die(mysql_error());
-  $next_date_row= mysql_fetch_array($next_date_result);
-  $next_date=$next_date_row['date'];
-  $next_date_id=$next_date_row['id'];
-  $next_date_semester=$next_date_row['semester'];
-
-  //Get number of xy courses assigned for that date
-  $xy_assignments_result=mysql_query("SELECT id,final FROM `xy_assignments` WHERE date_id=$next_date_id") or die(mysql_error());
-  $xy_assignments_count=0;
-  $xy_assignments_not_approved=0;
-  while($row = mysql_fetch_array($xy_assignments_result)){
-    $xy_assignments_count++;
-    if($row['final']==0)
-      $xy_assignments_not_approved++;
-  }
-
-  //Get number of colloquia assigned for that date
-  $c_assignments_result=mysql_query("SELECT id,final FROM `c_assignments` WHERE semester=$next_date_semester OR duration='y'") or die(mysql_error());
-  $c_assignments_count=0;
-  $c_assignments_not_approved=0;
-  while($row = mysql_fetch_array($c_assignments_result)){
-    $c_assignments_count++;
-    if($row['final']==0)
-      $c_assignments_not_approved++;
-  }
-
+  //Get selected semester from URL
+  $selected_semester=$_GET['semester'];
+  //Get colloquium assignments for selected date
+  $col_assignments_result=mysql_query(
+      "SELECT users.lastname, users.firstname, c_assignments.id, c_assignments.final, colloquiums.name, 
+              c_assignments.class_size, c_assignments.room, colloquiums.preferred_lunch_block, c_assignments.lunch_block, c_assignments.duration,
+              colloquiums.preferred_class_size, colloquiums.preferred_room 
+      FROM `users` 
+      INNER JOIN `c_assignments` on c_assignments.teacher_id=users.id 
+      INNER JOIN `colloquiums` on c_assignments.c_id=colloquiums.id 
+      WHERE c_assignments.semester=$selected_semester") or die(mysql_error());
   mysql_close();
-
 ?>
 <!DOCTYPE html>
 <html lang='en'>
@@ -102,31 +83,31 @@
           <a class="brand appname" href="#">Enroll</a>
           <div class="nav-collapse collapse">
            <ul class="nav">
-             <li class="active"><a href="index.php">Dashboard</a></li>
-              <li class="dropdown">
-               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Approvals <b class="caret"></b></a>
-               <ul class="dropdown-menu">
+             <li><a href="index.php">Dashboard</a></li>
+             <li class="dropdown active">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Approvals <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li class="dropdown-submenu">
+                   <a tabindex="-1" href="#">XY</a>
+                   <ul class="dropdown-menu">
+                     <?php
+                       while($row=mysql_fetch_array($dates_result)){
+                           $id=$row['id'];
+                           $date=$row['date'];
+                           echo "<li><a href='approvals_xy.php?id=$id&date=$date'>" . date('F jS, Y', strtotime($date)) . "</a></li>";
+                       }
+                     ?>
+                   </ul>
+                 </li>
                  <li class="dropdown-submenu">
-                     <a tabindex="-1" href="#">XY</a>
+                     <a tabindex="-1" href="#">Colloquium</a>
                      <ul class="dropdown-menu">
-                       <?php
-                         while($row=mysql_fetch_array($dates_result)){
-                             $id=$row['id'];
-                             $date=$row['date'];
-                             echo "<li><a href='approvals_xy.php?id=$id&date=$date'>" . date('F jS, Y', strtotime($date)) . "</a></li>";
-                         }
-                       ?>
+                        <li><a href='approvals_col.php?semester=1'>Semester 1</a></li>
+                        <li><a href='approvals_col.php?semester=2'>Semester 2</a></li>
                      </ul>
-                   </li>
-                   <li class="dropdown-submenu">
-                       <a tabindex="-1" href="#">Colloquium</a>
-                       <ul class="dropdown-menu">
-                          <li><a href='approvals_col.php?semester=1'>Semester 1</a></li>
-                          <li><a href='approvals_col.php?semester=2'>Semester 2</a></li>
-                       </ul>
-                   </li>
-               </ul>
-             </li>
+                 </li>
+              </ul>
+            </li>
            </ul>
             <ul class="nav pull-right">
                 <li>
@@ -146,17 +127,45 @@
       </div>
     </div>
     <div class='container'>
-      <h1><?php echo date('l F jS, Y', strtotime($next_date)); ?></h1>
+      <h1>
+        <?php 
+          echo "Semester " . $selected_semester;
+        ?>
+      </h1>
       <hr />
       <div id='main' role='main'>
-        <div>
-          There are <?php echo $xy_assignments_count; ?> XY courses assigned to this date, 
-          <?php echo $xy_assignments_not_approved; ?> are waiting to be approved.
-        </div>
-        <div>
-          There are <?php echo $c_assignments_count; ?> colloquium courses assigned to this date,
-          <?php echo $c_assignments_not_approved; ?> are waiting to be approved.
-        </div>
+          <table class="table table-striped">
+            <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Colloquium</th>
+                  <th>Duration</th>
+                  <th>Preferred Class Size</th>
+                  <th>Class Size</th>
+                  <th>Preferred Room</th>
+                  <th>Room</th>
+                  <th>Preferred Lunch Block</th>
+                  <th>Lunch Block</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php
+                  while ($row=mysql_fetch_array($col_assignments_result)) {
+                    echo "<tr>";
+                    echo "<td>" . $row['lastname'] . ", " . $row['firstname'] . "</td>";
+                    echo "<td>" . $row['name'] . "</td>";
+                    echo "<td>" . $row['duration'] . "</td>";
+                    echo "<td>" . $row['preferred_class_size'] . "</td>";
+                    echo "<td>" . $row['class_size'] . "</td>";
+                    echo "<td>" . $row['preferred_room'] . "</td>";
+                    echo "<td>" . $row['room'] . "</td>";
+                    echo "<td>" . $row['preferred_lunch_block'] . "</td>";
+                    echo "<td>" . $row['lunch_block'] . "</td>";
+                    echo "</tr>";
+                  }
+                ?>
+              </tbody>
+          </table>
       </div>
     </div> <!-- /container -->
   </body>
