@@ -360,7 +360,7 @@
                   <input name='teacher' type='hidden' value='<?php echo $userid; ?>' />
                   <!-- Colloquium Name -->
                   <div class='control-group'>
-                    <label class='control-label'>Name</label>
+                    <label class='control-label'>Course Name</label>
                     <div class='controls'>
                       <input type='text' class='span5' name='name' required />
                     </div>
@@ -464,7 +464,7 @@
                   <input name='mysql_id' type='hidden' value='<?php echo $mysql_id; ?>' />
                   <!-- Colloquium Name -->
                   <div class="control-group">
-                    <label class="control-label">Name</label>
+                    <label class="control-label">Course Name</label>
                     <div class="controls">  
                       <input id='name<?php echo $numCourse; ?>' name='name' class="span5" type='text' value='<?php echo $courseName; ?>' disabled required /> 
                     </div>

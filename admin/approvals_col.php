@@ -146,6 +146,7 @@
                   <th>Room</th>
                   <th>Preferred Lunch Block</th>
                   <th>Lunch Block</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -194,7 +195,11 @@
                       echo "<td>" . $row['lunch_block'] . "</td>";
                     }
                     if(!$row['final']){
+                      echo "<td><button class='btn btn-medium btn-warning' type='button' onClick='finalize_col(\"" . $row['id'] . "\")' >Finalize</button></td>";
                       echo "</form>";
+                    }
+                    else{
+
                     }
                     echo "</tr>";
                   }

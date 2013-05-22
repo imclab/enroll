@@ -294,7 +294,7 @@
                   <input name='teacher' type='hidden' value='<?php echo $userid; ?>' />
                   <!-- XY Name -->
                   <div class='control-group'>
-                    <label class='control-label'>Name</label>
+                    <label class='control-label'>Course Name</label>
                     <div class='controls'>
                       <input type='text' class='span5' name='name' required />
                     </div>
@@ -393,7 +393,7 @@
                 <form class='form-horizontal' id='updateXYForm<?php echo $numCourse; ?>' enctype='multipart/form-data'>
                   <!-- XY Name -->
                   <div class='control-group'>
-                    <label class='control-label'>Name</label>
+                    <label class='control-label'>Course Name</label>
                     <div class='controls'>
                         <input name='teacher' type='hidden' value='<?php echo $userid; ?>' />
                         <input name='form_id' type='hidden' value='<?php echo $courseName; ?>'  />
