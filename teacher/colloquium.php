@@ -317,7 +317,7 @@
                     <div class='control-group'>
                       <div class='controls'>
                         <?php
-                          if($sem2ColFinal==0&&$sem2Col){
+                          if($sem2ColFinal==0){
                         ?>
                           <div><button class='btn' type='submit' onClick='assign_colloquium("2")' >Update</button></div>
                           <?php if($sem2Col){ ?>
