@@ -152,15 +152,50 @@
                 <?php
                   while ($row=mysql_fetch_array($col_assignments_result)) {
                     echo "<tr>";
+                    if(!$row['final']){
+                      echo "<form id='colAssignment" . $row['id'] . "' >";
+                    }
                     echo "<td>" . $row['lastname'] . ", " . $row['firstname'] . "</td>";
                     echo "<td>" . $row['name'] . "</td>";
-                    echo "<td>" . $row['duration'] . "</td>";
+                    echo "<td>";
+                        if(strcmp($row['duration'],'s')==0)
+                          echo "Semester";
+                        else
+                          echo "Year";
+                    echo "</td>";
                     echo "<td>" . $row['preferred_class_size'] . "</td>";
-                    echo "<td>" . $row['class_size'] . "</td>";
+                    if(!$row['final']){
+                      echo "<td><input class='input-mini' name='class_size' type='number' maxlength='4' value='" . $row['preferred_class_size'] . "' required /></td>";
+                    }
+                    else{
+                      echo "<td>" . $row['class_size'] . "</td>";
+                    }
                     echo "<td>" . $row['preferred_room'] . "</td>";
-                    echo "<td>" . $row['room'] . "</td>";
+                    if(!$row['final']){
+                      echo "<td><input class='input-mini' name='room' type='text' value='" . $row['preferred_room'] . "' required /></td>";
+                    }
+                    else{
+                      echo "<td>" . $row['room'] . "</td>";
+                    }
                     echo "<td>" . $row['preferred_lunch_block'] . "</td>";
-                    echo "<td>" . $row['lunch_block'] . "</td>";
+                    if(!$row['final']){ ?>
+                      <td>
+                        <select class='input-mini' name='lunch_block' required>
+                          <option value=''></option>
+                          <option <?php if(strcmp($row['preferred_lunch_block'],'A')==0) echo ' selected '; ?> value='A'>A</option>
+                          <option <?php if(strcmp($row['preferred_lunch_block'],'B')==0) echo ' selected '; ?> value='B'>B</option>
+                          <option <?php if(strcmp($row['preferred_lunch_block'],'C')==0) echo ' selected '; ?> value='C'>C</option>
+                          <option <?php if(strcmp($row['preferred_lunch_block'],'D')==0) echo ' selected '; ?> value='D'>D</option>
+                        </select>
+                      </td>
+                    <?php
+                    }
+                    else{
+                      echo "<td>" . $row['lunch_block'] . "</td>";
+                    }
+                    if(!$row['final']){
+                      echo "</form>";
+                    }
                     echo "</tr>";
                   }
                 ?>
