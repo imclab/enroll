@@ -253,7 +253,9 @@
                             if($xyFinal==0){
                           ?>
                             <div><button class='btn' type='submit' onClick='assign_xy("<?php echo $xyDateID; ?>")' >Update</button></div>
-                            <div><em class='text-info'>Pending Approval</em></div>
+                            <?php if($xyAssigned){ ?>
+                              <div><em class='text-info'>Pending Approval</em></div>
+                            <?php } ?>
                             <div id='status<?php echo $xyDateID; ?>'></div>
                           <?php
                             }
