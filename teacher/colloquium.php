@@ -182,7 +182,7 @@
                 <ul class='dropdown-menu'>
                   <li><a href='colloquium.php#assign'>Assign Course</a></li>
                   <li><a href='colloquium.php#manage'>Course Repository</a></li>
-                  <li><a href="preenroll_col.php">Pre-Enroll Students</a></li>
+                  <li><a href="preenroll_col.php?semester=1">Pre-Enroll Students</a></li>
                 </ul>
               </li>
             </ul>
