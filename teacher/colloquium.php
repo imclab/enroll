@@ -212,7 +212,7 @@
               <input name='semester' type='hidden' value='1' />
               <input name='teacher' type='hidden' value='<?php echo $userid; ?>' />
               <input name='previous_duration' type='hidden' value='<?php echo $duration; ?>' />
-              <input name='existing' type='hidden' value='<?php if($sem1Col){ echo true; }else{ echo false; } ?>' />
+              <input name='existing' type='hidden' value=<?php if($sem1Col){ echo 1; }else{ echo 0; } ?> />
             <div class='control-group'>
               <label class='control-label'>Colloquium</label>
               <div class='controls'>
@@ -290,7 +290,7 @@
                       <input name='teacher' type='hidden' value='<?php echo $userid ?>' />
                       <input name='duration' type='hidden' value='s' />
                       <input name='previous_duration' type='hidden' value='s' />
-                      <input name='existing' type='hidden' value='<?php if($sem2Col){ echo true; }else{ echo false; } ?>' />
+                      <input name='existing' type='hidden' value=<?php if($sem2Col){ echo 1; }else{ echo 0; } ?> />
                     <div class='control-group'>
                       <label class='control-label'>Colloquium</label>
                       <div class='controls'>
