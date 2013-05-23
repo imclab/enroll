@@ -39,8 +39,8 @@
  	}
  	else{
  		//Insert Data into MySQL
-		if(mysql_query("INSERT INTO c_assignments(duration,semester,c_id,notes,teacher_id) 
-							VALUES('$duration','$semester','$c_id','$notes','$teacher')")){
+		if(mysql_query("INSERT INTO c_assignments(duration,semester,c_id,notes,teacher_id,final) 
+							VALUES('$duration','$semester','$c_id','$notes','$teacher',0)")){
 			$result="Successfully Updated!";
 		}
 		else{

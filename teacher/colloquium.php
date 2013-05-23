@@ -209,7 +209,7 @@
             <h4>Semester 1:</h4>
             <!-- Form Name sem1Selection -->
             <form id='sem1Selection'>
-              <input name='semester' type='hidden' value='1' />
+              <input name='semester' type='hidden' value=1 />
               <input name='teacher' type='hidden' value='<?php echo $userid; ?>' />
               <input name='previous_duration' type='hidden' value='<?php echo $duration; ?>' />
               <input name='existing' type='hidden' value=<?php if($sem1Col){ echo 1; }else{ echo 0; } ?> />
@@ -286,7 +286,7 @@
                   <!-- Semester 2 Choice -->
                     <h4>Semester 2:</h4>
                     <form id='sem2Selection'>
-                      <input name='semester' type='hidden' value='2' />
+                      <input name='semester' type='hidden' value=2 />
                       <input name='teacher' type='hidden' value='<?php echo $userid ?>' />
                       <input name='duration' type='hidden' value='s' />
                       <input name='previous_duration' type='hidden' value='s' />
