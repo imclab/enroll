@@ -30,7 +30,7 @@
   $userid=$get_userid_array['id'];
   //Get Colloquium assignment for selected Semester
   $col_assignment_result=mysql_query(
-        "SELECT c_assignments.id, colloquiums.name 
+        "SELECT c_assignments.id, colloquiums.name, c_assignments.final 
          FROM c_assignments 
          INNER JOIN `colloquiums` on c_assignments.c_id=colloquiums.id  
          WHERE c_assignments.teacher_id=$userid AND semester=$selected_semester 
@@ -38,14 +38,17 @@
   $col_assignment_row=mysql_fetch_array($col_assignment_result);
   $col_id=$col_assignment_row['id'];
   $col_name=$col_assignment_row['name'];
-  //Get Current Roster for Course
-  $col_roster_result=mysql_query(
-      "SELECT c_enrollments.id,users.firstname,users.lastname 
-       FROM c_enrollments 
-       INNER JOIN `users` on c_enrollments.users_id=users.id
-       WHERE c_assignments_id=$col_id") or die(mysql_error());
-  //Get Student List
-  $students_result=mysql_query("SELECT id,firstname,lastname FROM users WHERE role='student'") or die(mysql_error());
+  $col_final=$col_assignment_row['final'];
+  if($col_final){
+    //Get Current Roster for Course
+    $col_roster_result=mysql_query(
+        "SELECT c_enrollments.id,users.firstname,users.lastname 
+         FROM c_enrollments 
+         INNER JOIN `users` on c_enrollments.users_id=users.id
+         WHERE c_assignments_id=$col_id") or die(mysql_error());
+    //Get Student List
+    $students_result=mysql_query("SELECT id,firstname,lastname FROM users WHERE role='student'") or die(mysql_error());
+  }
   mysql_close();
   //If status returned is 0
   if($_GET['status']==3)
@@ -155,87 +158,93 @@
           Semester <?php echo $selected_semester; ?>
         </p>
         <hr />
-        <div id="main" role="main">
-          <div class='row'>
-            <div class='span4'>
-              <h3>Current Roster</h3>
-              <table class="table table-striped table-hover table-condensed">
-                <thead>
-                  <tr>
-                    <th>Last Name</th>
-                    <th>First Name</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php
-                    if (mysql_num_rows($col_roster_result) == 0){
-                      echo "<tr>";
-                      echo "<td></td>";
-                      echo "<td></td>";
-                      echo "<td></td>";
-                      echo "</form>";
-                      echo "</tr>";
-                    }
-                    else{
-                      while($row=mysql_fetch_array($col_roster_result)){
+        <?php if($col_final) { ?>
+          <div id="main" role="main">
+            <div class='row'>
+              <div class='span4'>
+                <h3>Current Roster</h3>
+                <table class="table table-striped table-hover table-condensed">
+                  <thead>
+                    <tr>
+                      <th>Last Name</th>
+                      <th>First Name</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php
+                      if (mysql_num_rows($col_roster_result) == 0){
                         echo "<tr>";
-                        echo "<form action='unenroll.php' method='post'>";
-                        echo "<input name='id' type='hidden' value='" . $row['id'] . "' />";
-                        echo "<input name='type' type='hidden' value='colloquium' />";
-                        echo "<input name='semester' type='hidden' value=" . $selected_semester . " />";
-                        echo "<td>" . $row['lastname'] . "</td>";
-                        echo "<td>" . $row['firstname'] . "</td>";
-                        echo "<td><button class='btn btn-medium btn-warning' type='submit'>Remove</button></td>";
+                        echo "<td></td>";
+                        echo "<td></td>";
+                        echo "<td></td>";
                         echo "</form>";
                         echo "</tr>";
                       }
-                    }
-                  ?>
-                </tbody>
-              </table>
-            </div>
-            <div class="span4 offset2">
-              <h3>Available Students</h3>
-              <table class="table table-striped table-hover table-condensed">
-                <thead>
-                  <tr>
-                    <th>Last Name</th>
-                    <th>First Name</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php
-                    if (mysql_num_rows($students_result) == 0){
-                      echo "<tr>";
-                      echo "<td></td>";
-                      echo "<td></td>";
-                      echo "<td></td>";
-                      echo "</form>";
-                      echo "</tr>";
-                    }
-                    else{
-                      while($row=mysql_fetch_array($students_result)){
+                      else{
+                        while($row=mysql_fetch_array($col_roster_result)){
+                          echo "<tr>";
+                          echo "<form action='unenroll.php' method='post'>";
+                          echo "<input name='id' type='hidden' value='" . $row['id'] . "' />";
+                          echo "<input name='type' type='hidden' value='colloquium' />";
+                          echo "<input name='semester' type='hidden' value=" . $selected_semester . " />";
+                          echo "<td>" . $row['lastname'] . "</td>";
+                          echo "<td>" . $row['firstname'] . "</td>";
+                          echo "<td><button class='btn btn-medium btn-warning' type='submit'>Remove</button></td>";
+                          echo "</form>";
+                          echo "</tr>";
+                        }
+                      }
+                    ?>
+                  </tbody>
+                </table>
+              </div>
+              <div class="span4 offset2">
+                <h3>Available Students</h3>
+                <table class="table table-striped table-hover table-condensed">
+                  <thead>
+                    <tr>
+                      <th>Last Name</th>
+                      <th>First Name</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php
+                      if (mysql_num_rows($students_result) == 0){
                         echo "<tr>";
-                        echo "<form action='enroll.php' method='post'>";
-                        echo "<input name='id' type='hidden' value=" . $row['id'] . " />";
-                        echo "<input name='type' type='hidden' value='colloquium' />";
-                        echo "<input name='semester' type='hidden' value=" . $selected_semester . " />";
-                        echo "<input name='col_id' type='hidden' value='" . $col_id . "' />";
-                        echo "<td>" . $row['lastname'] . "</td>";
-                        echo "<td>" . $row['firstname'] . "</td>";
-                        echo "<td><button class='btn btn-medium btn-primary' type='submit'>Enroll</button></td>";
+                        echo "<td></td>";
+                        echo "<td></td>";
+                        echo "<td></td>";
                         echo "</form>";
                         echo "</tr>";
                       }
-                    }
-                  ?>
-                </tbody>
-              </table>
+                      else{
+                        while($row=mysql_fetch_array($students_result)){
+                          echo "<tr>";
+                          echo "<form action='enroll.php' method='post'>";
+                          echo "<input name='id' type='hidden' value=" . $row['id'] . " />";
+                          echo "<input name='type' type='hidden' value='colloquium' />";
+                          echo "<input name='semester' type='hidden' value=" . $selected_semester . " />";
+                          echo "<input name='col_id' type='hidden' value='" . $col_id . "' />";
+                          echo "<td>" . $row['lastname'] . "</td>";
+                          echo "<td>" . $row['firstname'] . "</td>";
+                          echo "<td><button class='btn btn-medium btn-primary' type='submit'>Enroll</button></td>";
+                          echo "</form>";
+                          echo "</tr>";
+                        }
+                      }
+                    ?>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
-        </div>
+        <?php } else { ?>
+          <div id="main" role="main">
+            Colloquium not finalized by administrator, cannot assign students.
+          </div>
+        <?php } ?>
     </div> <!-- /container -->
   </body>
 </html>
