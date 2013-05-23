@@ -172,15 +172,15 @@
               <li class='dropdown'>
                 <a href='#' class='dropdown-toggle' data-toggle='dropdown'>X/Y <b class='caret'></b></a>
                 <ul class='dropdown-menu'>
-                  <li><a href='xy.php#assign'>Assign</a></li>
-                  <li><a href='xy.php#manage'>Manage</a></li>
+                  <li><a href='xy.php#assign'>Assign Course</a></li>
+                  <li><a href='xy.php#manage'>Course Repository</a></li>
                 </ul>
               </li>
               <li class='dropdown active'>
                 <a href='#' class='dropdown-toggle' data-toggle='dropdown'>Colloquium <b class='caret'></b></a>
                 <ul class='dropdown-menu'>
-                  <li><a id='assignLink' href='colloquium.php#assign'>Assign</a></li>
-                  <li><a id='manageLink' href='colloquium.php#manage'>Manage</a></li>
+                  <li><a id='assignLink' href='colloquium.php#assign'>Assign Course</a></li>
+                  <li><a id='manageLink' href='colloquium.php#manage'>Course Repository</a></li>
                 </ul>
               </li>
             </ul>
@@ -200,7 +200,7 @@
       </div>
     </div>
     <div class='container'>
-      <h2 id='assignLabel'>Assign</h2>
+      <h2 id='assignLabel'>Assign Course</h2>
       <hr />
       <div id='assign'>
         <!-- Semester 1 Choice -->
@@ -343,7 +343,7 @@
       <!-- MANAGEMENT MODULE -->
 
       <div id='manage'>
-        <h2>Manage</h2>
+        <h2>Course Repository</h2>
         <hr />
         <!-- CODE TO ADD A NEW COLLOQUIUM COURSE -->
         <div class='accordion' id='accordion2'>
