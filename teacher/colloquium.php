@@ -264,7 +264,7 @@
                     <?php
                       if($sem1ColFinal==0){
                     ?>
-                      <div><button class='btn' type='submit' onClick='assign_colloquium("1")' >Update</button></div>
+                      <div><button class='btn' type='submit' onClick='assign_colloquium(1)' >Update</button></div>
                       <?php if($sem1Col){ ?>
                         <div><em class='text-info'>Pending Approval</em></div>
                       <?php } ?>
@@ -319,7 +319,7 @@
                         <?php
                           if($sem2ColFinal==0){
                         ?>
-                          <div><button class='btn' type='submit' onClick='assign_colloquium("2")' >Update</button></div>
+                          <div><button class='btn' type='submit' onClick='assign_colloquium(2)' >Update</button></div>
                           <?php if($sem2Col){ ?>
                             <div><em class='text-info'>Pending Approval</em></div>
                           <?php } ?>

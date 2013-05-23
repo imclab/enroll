@@ -43,6 +43,9 @@
 							VALUES('$duration','$semester','$c_id','$notes','$teacher')")){
 			$result="Successfully Updated!";
 		}
+		else{
+			$result="An error occurred!";
+		}
 
  	}
 	echo $result;
