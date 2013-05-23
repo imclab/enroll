@@ -19,7 +19,7 @@
       //Get current dimensions and file type
       list($width, $height,$type)=getimagesize($uploadfile);
       if($width==0 || $height==0)
-        header('Location: colloquium.php');
+        header('Location: repository_col.php');
       switch ($type){
         case 1:   //   gif -> jpg
             $originalImage=imagecreatefromgif($uploadfile);
@@ -31,10 +31,10 @@
             $originalImage=imagecreatefrompng($uploadfile);
             break;
           default:
-            header('Location: colloquium.php');
+            header('Location: repository_col.php');
           if(!$originalImage){
             mysql_close($con);
-            header('Location: colloquium.php');
+            header('Location: repository_col.php');
           }
       }
       if (imagecopyresampled($resizedImage, $originalImage, 0, 0, 0, 0, 200, 200, $width, $height)) {
@@ -48,17 +48,17 @@
         }
         else{
           mysql_close($con);
-          header('Location: colloquium.php');
+          header('Location: repository_col.php');
         }
       } 
       else {
         mysql_close($con);
-        header('Location: colloquium.php');
+        header('Location: repository_col.php');
       }
     }
     else{
       mysql_close($con);
-      header('Location: colloquium.php');
+      header('Location: repository_col.php');
     }
   }
   else{
@@ -109,5 +109,5 @@
                 $juniors,$seniors)");
   }
   mysql_close($con);
-  header('Location: colloquium.php');
+  header('Location: repository_col.php');
 ?>

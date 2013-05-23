@@ -90,17 +90,23 @@
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">X/Y <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                  <li><a href="xy.php#assign">Assign Course</a></li>
-                  <li><a href="xy.php#manage">Course Repository</a></li>
+                  <li><a href="assigned_xy.php">Assign Course</a></li>
+                  <li><a href="repository_xy.php">Course Repository</a></li>
                   <li><a href="preenroll_xy.php">Pre-Enroll Students</a></li>
                 </ul>
               </li>
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Colloquium <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                  <li><a href="colloquium.php#assign">Assign Course</a></li>
-                  <li><a href="colloquium.php#manage">Course Repository</a></li>
-                  <li><a href="preenroll_col.php?semester=1">Pre-Enroll Students</a></li>
+                  <li><a href="assigned_col.php">Assign Course</a></li>
+                  <li><a href="repository_col.php">Course Repository</a></li>
+                  <li class="dropdown-submenu">
+                      <a tabindex="-1" href="#">Pre-Enroll Students</a>
+                      <ul class="dropdown-menu">
+                        <li><a href="preenroll_col.php?semester=1">Semester 1</a></li>
+                        <li><a href="preenroll_col.php?semester=2">Semester 2</a></li>
+                      </ul>
+                  </li>
                 </ul>
               </li>
             </ul>

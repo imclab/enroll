@@ -19,7 +19,7 @@
         //Get current dimensions and file type
         list($width, $height,$type)=getimagesize($uploadfile);
         if($width==0 || $height==0)
-          header('Location: xy.php');
+          header('Location: repository_xy.php');
         switch ($type){
           case 1:   //   gif -> jpg
               $originalImage=imagecreatefromgif($uploadfile);
@@ -31,9 +31,9 @@
               $originalImage=imagecreatefrompng($uploadfile);
               break;
             default:
-              header('Location: xy.php');
+              header('Location: repository_xy.php');
             if(!$originalImage)
-              header('Location: xy.php');
+              header('Location: repository_xy.php');
         }
         if (imagecopyresampled($resizedImage, $originalImage, 0, 0, 0, 0, 200, 200, $width, $height)) {
           if(imagejpeg($resizedImage, $jpegversion)){
@@ -46,17 +46,17 @@
           }
           else{
             mysql_close($con);
-            header('Location: xy.php');
+            header('Location: repository_xy.php');
           }
         } 
         else {
           mysql_close($con);
-          header('Location: xy.php');
+          header('Location: repository_xy.php');
         }
       }
       else{
         mysql_close($con);
-        header('Location: xy.php');
+        header('Location: repository_xy.php');
       }
     }
     else{
@@ -106,5 +106,5 @@
           $preferred_class_size,$freshmen,$sophomores,$juniors,$seniors)");
   } 
   mysql_close($con);
-  header('Location: xy.php');
+  header('Location: repository_xy.php');
 ?>
