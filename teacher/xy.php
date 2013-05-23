@@ -108,13 +108,15 @@
                 <ul class="dropdown-menu">
                   <li><a href="xy.php#assign">Assign Course</a></li>
                   <li><a href="xy.php#manage">Course Repository</a></li>
+                  <li><a href="preenroll_xy.php">Pre-Enroll Students</a></li>
                 </ul>
               </li>
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Colloquium <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                  <li><a id="assignLink" href="colloquium.php#assign">Assign Course</a></li>
-                  <li><a id="manageLink" href="colloquium.php#manage">Course Repository</a></li>
+                  <li><a href="colloquium.php#assign">Assign Course</a></li>
+                  <li><a href="colloquium.php#manage">Course Repository</a></li>
+                  <li><a href="preenroll_col.php">Pre-Enroll Students</a></li>
                 </ul>
               </li>
             </ul>
