@@ -45,14 +45,17 @@
             $image=$path_parts['filename'] . '.jpg';
           }
           else{
+            mysql_close($con);
             header('Location: xy.php');
           }
         } 
         else {
+          mysql_close($con);
           header('Location: xy.php');
         }
       }
       else{
+        mysql_close($con);
         header('Location: xy.php');
       }
     }
@@ -102,6 +105,6 @@
           VALUES('$name','$description','$image',$category,'$teacher','$preferred_room',
           $preferred_class_size,$freshmen,$sophomores,$juniors,$seniors)");
   } 
+  mysql_close($con);
   header('Location: xy.php');
-	mysql_close($con);
 ?>

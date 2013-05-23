@@ -192,7 +192,7 @@ function assign_colloquium(clicked_id){
 					$("#sem" + clicked_id + "Status").append(data);
 					setTimeout(function() {
 							location.reload(true);
-						}, 1500);
+						}, 1000);
 				}
 			);
 		}

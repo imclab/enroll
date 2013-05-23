@@ -48,6 +48,6 @@
 		}
 
  	}
+ 	mysql_close($con);
 	echo $result;
-	mysql_close($con);
 ?>

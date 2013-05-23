@@ -25,9 +25,11 @@
  		$query=mysql_query("UPDATE xy_assignments SET xy_id=$xy_id,notes='$notes',
  				preferred_block='$blockpreference' WHERE date_id=$date_id");
 	  	if($query){
+	  		mysql_close($con);
 			echo "Successfully Updated!";
 	   	}
 		else{ 
+			mysql_close($con);
 			echo "Failed!"; 
 		}
  	}
@@ -36,9 +38,11 @@
 		$query=mysql_query("INSERT INTO xy_assignments(xy_id,date_id,notes,teacher_id,preferred_block) 
 							VALUES($xy_id,$date_id,'$notes',$teacher,'$blockpreference')");
 	  	if($query){
+	  		mysql_close($con);
 			echo "XY Assigned!";
 	   	}
 		else{ 
+			mysql_close($con);
 			echo "Failed!";
 		}
  	}

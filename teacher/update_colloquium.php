@@ -32,8 +32,10 @@
             break;
           default:
             header('Location: colloquium.php');
-          if(!$originalImage)
+          if(!$originalImage){
+            mysql_close($con);
             header('Location: colloquium.php');
+          }
       }
       if (imagecopyresampled($resizedImage, $originalImage, 0, 0, 0, 0, 200, 200, $width, $height)) {
         if(imagejpeg($resizedImage, $jpegversion)){
@@ -45,14 +47,17 @@
           $image=$path_parts['filename'] . '.jpg';
         }
         else{
+          mysql_close($con);
           header('Location: colloquium.php');
         }
       } 
       else {
+        mysql_close($con);
         header('Location: colloquium.php');
       }
     }
     else{
+      mysql_close($con);
       header('Location: colloquium.php');
     }
   }
@@ -103,6 +108,6 @@
                 $preferred_class_size,'$preferred_lunch_block',$freshmen,$sophomores,
                 $juniors,$seniors)");
   }
-  header('Location: colloquium.php');
   mysql_close($con);
+  header('Location: colloquium.php');
 ?>

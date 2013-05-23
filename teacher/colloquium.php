@@ -262,7 +262,7 @@
                 <div class='control-group'>
                   <div class='controls'>
                     <?php
-                      if($sem1ColFinal==0){
+                      if(!$sem1ColFinal){
                     ?>
                       <div><button class='btn' type='submit' onClick='assign_colloquium(1)' >Update</button></div>
                       <?php if($sem1Col){ ?>

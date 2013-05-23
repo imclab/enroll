@@ -22,11 +22,17 @@
   $col_assignments_result=mysql_query(
       "SELECT users.lastname, users.firstname, c_assignments.id, c_assignments.final, colloquiums.name, 
               c_assignments.class_size, c_assignments.room, colloquiums.preferred_lunch_block, c_assignments.lunch_block, c_assignments.duration,
-              colloquiums.preferred_class_size, colloquiums.preferred_room 
+              colloquiums.preferred_class_size, colloquiums.preferred_room, c_assignments.notes
       FROM `users` 
       INNER JOIN `c_assignments` on c_assignments.teacher_id=users.id 
       INNER JOIN `colloquiums` on c_assignments.c_id=colloquiums.id 
       WHERE c_assignments.semester=$selected_semester") or die(mysql_error());
+  //Calculate total seats offered
+  $col_seats=0;
+  $col_seats_result=mysql_query("SELECT class_size FROM c_assignments WHERE semester=$selected_semester AND final=1") or die(mysql_error());
+  while ($row=mysql_fetch_array($col_seats_result)) {
+    $col_seats+=$row['class_size'];
+  }
   mysql_close();
 ?>
 <!DOCTYPE html>
@@ -134,6 +140,9 @@
       </h1>
       <hr />
       <div id='main' role='main'>
+        <p class="lead pull-right">
+          <?php echo $col_seats; ?> seats assigned.
+        </p>
           <table class="table table-striped">
             <thead>
                 <tr>
@@ -146,6 +155,7 @@
                   <th>Room</th>
                   <th>Preferred Lunch Block</th>
                   <th>Lunch Block</th>
+                  <th>Notes</th>
                   <th></th>
                 </tr>
               </thead>
@@ -154,8 +164,14 @@
                   while ($row=mysql_fetch_array($col_assignments_result)) {
                     echo "<tr>";
                     if(!$row['final']){
-                      echo "<form id='colAssignment" . $row['id'] . "' >";
+                      echo "<form action='finalize.php' method='post'>";
                     }
+                    else{
+                      echo "<form action='unfinalize.php' method='post'>";
+                    }
+                    echo "<input name='id' type='hidden' value='" . $row['id'] . "' />";
+                    echo "<input name='type' type='hidden' value='colloquium' />";
+                    echo "<input name='semester' type='hidden' value=$selected_semester />";
                     echo "<td>" . $row['lastname'] . ", " . $row['firstname'] . "</td>";
                     echo "<td>" . $row['name'] . "</td>";
                     echo "<td>";
@@ -166,20 +182,37 @@
                     echo "</td>";
                     echo "<td>" . $row['preferred_class_size'] . "</td>";
                     if(!$row['final']){
-                      echo "<td><input class='input-mini' name='class_size' type='number' maxlength='4' value='" . $row['preferred_class_size'] . "' required /></td>";
+                      if($row['class_size']!=0)
+                        echo "<td><input class='input-mini' name='class_size' type='number' maxlength='4' value='" . $row['class_size'] . "' required /></td>";
+                      else
+                        echo "<td><input class='input-mini' name='class_size' type='number' maxlength='4' value='" . $row['preferred_class_size'] . "' required /></td>";
                     }
                     else{
                       echo "<td>" . $row['class_size'] . "</td>";
                     }
                     echo "<td>" . $row['preferred_room'] . "</td>";
                     if(!$row['final']){
-                      echo "<td><input class='input-mini' name='room' type='text' value='" . $row['preferred_room'] . "' required /></td>";
+                      if(!is_null($row['room']))
+                        echo "<td><input class='input-mini' name='room' type='text' value='" . $row['room'] . "' required /></td>";
+                      else
+                        echo "<td><input class='input-mini' name='room' type='text' value='" . $row['preferred_room'] . "' required /></td>";
                     }
                     else{
                       echo "<td>" . $row['room'] . "</td>";
                     }
                     echo "<td>" . $row['preferred_lunch_block'] . "</td>";
-                    if(!$row['final']){ ?>
+                    if(!$row['final']){
+                      if(!is_null($row['lunch_block'])){ ?>
+                        <td>
+                          <select class='input-mini' name='lunch_block' required>
+                            <option value=''></option>
+                            <option <?php if(strcmp($row['lunch_block'],'A')==0) echo ' selected '; ?> value='A'>A</option>
+                            <option <?php if(strcmp($row['lunch_block'],'B')==0) echo ' selected '; ?> value='B'>B</option>
+                            <option <?php if(strcmp($row['lunch_block'],'C')==0) echo ' selected '; ?> value='C'>C</option>
+                            <option <?php if(strcmp($row['lunch_block'],'D')==0) echo ' selected '; ?> value='D'>D</option>
+                          </select>
+                        </td>
+                      <?php } else{ ?>
                       <td>
                         <select class='input-mini' name='lunch_block' required>
                           <option value=''></option>
@@ -190,17 +223,21 @@
                         </select>
                       </td>
                     <?php
-                    }
+                    }}
                     else{
                       echo "<td>" . $row['lunch_block'] . "</td>";
                     }
+                    echo "<td>";
+                      if(strcmp($row['notes'],"")!=0)
+                        echo "<a href='#'' title='" . $row['notes'] . "'>Note</a>";
+                    echo "</td>";
                     if(!$row['final']){
-                      echo "<td><button class='btn btn-medium btn-warning' type='button' onClick='finalize_col(\"" . $row['id'] . "\")' >Finalize</button></td>";
-                      echo "</form>";
+                      echo "<td><button class='btn btn-medium btn-warning' type='submit'>Finalize</button></td>";
                     }
                     else{
-
+                      echo "<td><button class='btn btn-medium btn-success' type='submit'>Unfinalize</button></td>";
                     }
+                    echo "</form>";
                     echo "</tr>";
                   }
                 ?>
