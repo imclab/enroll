@@ -290,8 +290,9 @@
             <div id='addXY' class='accordion-body collapse'>
               <div class='accordion-inner'>
                 <!-- Add XY Form -->
-                <form class='form-horizontal' id='addXYForm' enctype='multipart/form-data'>
+                <form class='form-horizontal' action="update_xy.php" method="post" enctype='multipart/form-data'>
                   <input name='teacher' type='hidden' value='<?php echo $userid; ?>' />
+                  <input name='existing' type='hidden' value=0 />
                   <!-- XY Name -->
                   <div class='control-group'>
                     <label class='control-label'>Course Name</label>
@@ -307,11 +308,9 @@
                   </div>
                   <div class='control-group'>
                     <label class='control-label'>Image:</label>
-                    <div class='controls'>
-                      <img id='preview' src='http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image' width='200px' height='200px' />
-                      <p><i class='icon-resize-small'></i>Currently all images are resized to 200 x 200</p>
-                      <button id='imageUpload' class='btn btn-small' type='button'>Upload Image</button>
-                      <input name='uploadedImg' id='uploadedImg' type='hidden' value='' />
+                    <div class="controls">
+                      <input type="file" name="image" id="image" />
+                      <p><i class="icon-resize-small"></i>Currently all images are resized to 200 x 200</p>
                     </div>
                   </div>
                   <div class='control-group'>
@@ -390,14 +389,15 @@
             </div>
             <div id='<?php echo $numCourse; ?>' class='accordion-body collapse'>
               <div class='accordion-inner'>
-                <form class='form-horizontal' id='updateXYForm<?php echo $numCourse; ?>' enctype='multipart/form-data'>
+                <form class='form-horizontal' action="update_xy.php" method="post" enctype='multipart/form-data'>
+                  <input name='teacher' type='hidden' value='<?php echo $userid; ?>' />
+                  <input name='mysql_id' type='hidden' value='<?php echo $mysql_id; ?>'  />
+                  <input name='originalimage' type='hidden' value='<?php echo $image; ?>' />
+                  <input name='existing' type='hidden' value=1 />
                   <!-- XY Name -->
                   <div class='control-group'>
                     <label class='control-label'>Course Name</label>
                     <div class='controls'>
-                        <input name='teacher' type='hidden' value='<?php echo $userid; ?>' />
-                        <input name='form_id' type='hidden' value='<?php echo $courseName; ?>'  />
-                        <input name='mysql_id' type='hidden' value='<?php echo $mysql_id; ?>'  />
                       <input id='name<?php echo $numCourse; ?>' name='name' class='span5' type='text' value='<?php echo $courseName; ?>' disabled required /> 
                     </div>
                   </div>
@@ -410,34 +410,11 @@
                   <div class="control-group">
                     <label class="control-label">Image</label>
                     <div class="controls">
-                      <img id="preview<?php echo $numCourse; ?>" src="../img/courses/<?php echo $image; ?>" width="200px" height="200px" />
-                      <p><i class="icon-resize-small"></i>Currently all images are resized to 200 x 200</p>
+                      <img id="currentImage" src="../img/courses/<?php echo $image; ?>" width="200px" height="200px" />
                       <div id="changeButton<?php echo $numCourse; ?>" style="display: none;">
-                        <button id="imageUpload<?php echo $numCourse; ?>" class="btn btn-small" type="button">Change Image</button>
-                        <script type="text/javascript">
-                          $(document).ready(
-                            function() {
-                              //IMAGE UPLOAD
-                              var preview = $('#preview<?php echo $numCourse; ?>'); //id of the preview image
-                              new AjaxUpload('imageUpload<?php echo $numCourse; ?>', {
-                                action: 'upload_image.php', //the php script that receives and saves the image
-                                name: 'image', //upload_image.php will find the image info in the variable $_FILES['image']
-                                onSubmit: function(file, extension) {
-                                  preview.attr('src', '../img/loading.gif'); //replace the image SRC with an animated GIF with a 'loading...' message 
-                                },
-                                onComplete: function(file, response) {
-                                  preview.load(function(){
-                                    preview.unbind();
-                                  });
-                                  preview.attr('src', '../img/courses/' + response); //make the preview image display the uploaded file
-                                  $('#uploadedImg<?php echo $numCourse; ?>').val(response); //drop the path to the file into the hidden field
-                                }
-                              });
-                            }
-                          );
-                        </script>
+                        <input type="file" name="image" id="image" />
                       </div>
-                      <input name="uploadedImg" id="uploadedImg<?php echo $numCourse; ?>" type="hidden" value="<?php echo $image; ?>" />
+                      <p><i class="icon-resize-small"></i>Currently all images are resized to 200 x 200</p>
                     </div>
                   </div>
                   <div class="control-group">
@@ -530,7 +507,7 @@
                         <button class="btn" type="button" onClick='edit_XY("<?php echo $numCourse ?>")'>Edit</button>
                       </div>
                       <div id="updateXYButton<?php echo $numCourse; ?>" style="display: none;">
-                        <button class="btn" type="button" onClick='update_XY("<?php echo $numCourse ?>")'>Update</button>
+                        <button class="btn" type="submit" >Update</button>
                       </div>
                       <div id="status<?php echo $numCourse ?>"></div>
                     </div>

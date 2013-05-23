@@ -356,8 +356,9 @@
             <div id='addColloquium' class='accordion-body collapse'>
               <div class='accordion-inner'>
                 <!-- Add Colloquium Form -->
-                <form class='form-horizontal' id='addColloquiumForm' enctype='multipart/form-data'>
+                <form class='form-horizontal' action="update_colloquium.php" method="post" enctype='multipart/form-data'>
                   <input name='teacher' type='hidden' value='<?php echo $userid; ?>' />
+                  <input name='existing' type='hidden' value=0 />
                   <!-- Colloquium Name -->
                   <div class='control-group'>
                     <label class='control-label'>Course Name</label>
@@ -373,11 +374,9 @@
                   </div>
                   <div class='control-group'>
                     <label class='control-label'>Image</label>
-                    <div class='controls'>
-                      <img id='preview' src='http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image' width='200px' height='200px' />
-                      <p><i class='icon-resize-small'></i>Currently all images are resized to 200 x 200</p>
-                      <button id='imageUpload' class='btn btn-small' type='button'>Upload Image</button>
-                      <input name='uploadedImg' id='uploadedImg' type='hidden' value='' />
+                    <div class="controls">
+                      <input type="file" name="image" id="image" />
+                      <p><i class="icon-resize-small"></i>Currently all images are resized to 200 x 200</p>
                     </div>
                   </div>
                   <div class='control-group'>
@@ -458,10 +457,12 @@
             <div id="<?php echo $numCourse; ?>" class="accordion-body collapse">
               <div class="accordion-inner">
                 <!-- Add Colloquium Form -->
-                <form class="form-horizontal" id="updateColloquiumForm<?php echo $numCourse; ?>" enctype="multipart/form-data">
+                <form class="form-horizontal" action="update_colloquium.php" method="post" enctype="multipart/form-data">
                   <input name='teacher' type='hidden' value='<?php echo $userid; ?>' />
                   <input name='form_id' type='hidden' value='<?php echo $courseName; ?>' />
+                  <input name='existing' type='hidden' value=1 />
                   <input name='mysql_id' type='hidden' value='<?php echo $mysql_id; ?>' />
+                  <input name='originalimage' type='hidden' value='<?php echo $image; ?>' />
                   <!-- Colloquium Name -->
                   <div class="control-group">
                     <label class="control-label">Course Name</label>
@@ -478,12 +479,11 @@
                   <div class="control-group">
                     <label class="control-label">Image</label>
                     <div class="controls">
-                      <img id="preview" src="../img/courses/<?php echo $image; ?>" width="200px" height="200px" />
-                      <p><i class="icon-resize-small"></i>Currently all images are resized to 200 x 200</p>
+                      <img id="currentImage" src="../img/courses/<?php echo $image; ?>" width="200px" height="200px" />
                       <div id="changeButton<?php echo $numCourse; ?>" style="display: none;">
-                        <button id="imageUpload" class="btn btn-small" type="button">Change Image</button>
+                        <input type="file" name="image" id="image" />
                       </div>
-                      <input name="uploadedImg" id="uploadedImg" type="hidden" value="<?php echo $image; ?>" />
+                      <p><i class="icon-resize-small"></i>Currently all images are resized to 200 x 200</p>
                     </div>
                   </div>
                   <div class="control-group">
@@ -578,7 +578,7 @@
                         <button class='btn' type='button' onClick='edit_colloquium("<?php echo $numCourse ?>")'>Edit</button>
                       </div>
                       <div id="updateColloquiumButton<?php echo $numCourse; ?>" style="display: none;">
-                        <button class="btn" type="button" onClick='update_colloquium("<?php echo $numCourse ?>")'>Update</button>
+                        <button class="btn" type="submit">Update</button>
                       </div>
                       <div id='status<?php echo $numCourse ?>'></div>
                     </div>

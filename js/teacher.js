@@ -1,60 +1,6 @@
 $(document).ready(
 
 	function() {
-		//IMAGE UPLOAD
-		var preview = $('#preview'); //id of the preview image
-		new AjaxUpload('imageUpload', {
-			action: 'upload_image.php', //the php script that receives and saves the image
-			name: 'image', //upload_image.php will find the image info in the variable $_FILES['image']
-			onSubmit: function(file, extension) {
-				preview.attr('src', '../img/loading.gif'); //replace the image SRC with an animated GIF with a 'loading...' message 
-			},
-			onComplete: function(file, response) {
-				preview.load(function(){
-					preview.unbind();
-				});
-				preview.attr('src', '../img/courses/' + response); //make the preview image display the uploaded file
-				if(response != 'error.png'){
-					$('#uploadedImg').val(response); //drop the path to the file into the hidden field
-				}
-			}
-		});
-
-		//XY FUNCTIONS
-		$("#addXYForm").submit(
-			function(event) {
-				/* stop form from submitting normally */
-				event.preventDefault();
-			}).validate({
-				rules: {
-					name: "required",
-					description: "required",
-					category: {
-						required: true,
-						minlength: 1
-					},
-					preferred_room: "required",
-					preferred_class_size: "required"
-				},
-				highlight: function(element) {
-					$(element).closest('.control-group').removeClass('success').addClass('error');
-				},
-				success: function(element) {
-					$(element).text('OK!').addClass('valid').closest('.control-group').removeClass('error').addClass('success');
-				},
-				submitHandler: function(form){
-					$.post(
-						'insert_xy.php',
-						$("#addXYForm").serialize(),
-						function(data) {
-							$("#status").append(data);
-						}
-					);
-					setTimeout(function() {
-						location.reload(true);
-					}, 1500);
-				}
-			});
 
 		months = new Array("January","February","March","April","May","June","July","August","September","October","November","December");
 		currentMonth = new Date().getMonth() + 1;
@@ -95,49 +41,10 @@ $(document).ready(
 				$('#assign').toggle();
 			}
 		);
-
-		//COLLOQUIUM FUNCTIONS
-
-		//When user clicks submit button to add coloquium
-		$("#addColloquiumForm").submit(
-			function(event) {
-				/* stop form from submitting normally */
-				event.preventDefault();
-			}).validate({
-				rules: {
-					name: "required",
-					description: "required",
-					preferred_room: "required",
-					preferred_class_size: "required",
-					preferred_lunch_block: {
-						required: true,
-						minlength: 1
-					}
-				},
-				highlight: function(element) {
-					$(element).closest('.control-group').removeClass('success').addClass('error');
-				},
-				success: function(element) {
-					$(element).text('OK!').addClass('valid').closest('.control-group').removeClass('error').addClass('success');
-				},
-				submitHandler: function(form){
-					$.post(
-						'insert_colloquium.php',
-						$("#addColloquiumForm").serialize(),
-						function(data) {
-							$("#status").append(data);
-						}
-					);
-					setTimeout(function() {
-						location.reload(true);
-					}, 1500);
-				}
-			});
 	}
 );
 
 //XY FUNCTIONS
-
 //Scrolls through XY dates
 function setXYPicker(){
 	$("#month").text(months[currentMonth-1]);
@@ -221,41 +128,6 @@ function edit_XY(clicked_id){
 	$($updateXYButton).toggle();
 }
 
-function update_XY(clicked_id){
-	/**
-	$("#updateXYForm" + clicked_id).validate({
-		rules: {
-			name: "required",
-			description: "required",
-			category: {
-				required: true,
-				minlength: 1
-			},
-			preferred_room: "required",
-			preferred_class_size: "required"
-		},
-		highlight: function(element) {
-			$(element).closest('.control-group').removeClass('success').addClass('error');
-		},
-		success: function(element) {
-			$(element).text('OK!').addClass('valid').closest('.control-group').removeClass('error').addClass('success');
-		},
-		submitHandler: function(form){ **/
-			$.post(
-				'update_xy.php',
-				$("#updateXYForm" + clicked_id).serialize(),
-				function(data) {
-					$("#status" + clicked_id).append(data);
-				}
-			);
-			setTimeout(function() {
-				location.reload(true);
-			}, 1500);
-			/**
-		}
-	});**/
-}
-
 //COLLOQUIUM FUNCTIONS
 
 //Enable options to edit existing colloquium
@@ -291,42 +163,6 @@ function edit_colloquium(clicked_id){
 	$($delete).removeAttr("disabled");
 	//Show the update button
 	$($updateColloquiumButton).toggle();
-}
-
-//When user clicks submit button to update colloquium
-function update_colloquium(clicked_id){
-	/**
-	$("#updateColloquiumForm" + clicked_id).validate({
-		rules: {
-			name: "required",
-			description: "required",
-			preferred_room: "required",
-			preferred_class_size: "required",
-			preferred_lunch_block: {
-				required: true,
-				minlength: 1
-			}
-		},
-		highlight: function(element) {
-			$(element).closest('.control-group').removeClass('success').addClass('error');
-		},
-		success: function(element) {
-			$(element).text('OK!').addClass('valid').closest('.control-group').removeClass('error').addClass('success');
-		},
-		submitHandler: function(form){**/
-			$.post(
-				'update_colloquium.php',
-				$("#updateColloquiumForm" + clicked_id).serialize(),
-				function(data) {
-					$("#status" + clicked_id).append(data);
-				}
-			);
-			setTimeout(function() {
-				location.reload(true);
-			}, 1500);
-			/**
-		}
-	});**/
 }
 
 //Assign colloquium details to specific semester
