@@ -13,6 +13,7 @@
     die('Could not connect: ' . mysql_error());
   //Select DB
   mysql_select_db($db, $con);
+  //Get the date of the next XY
   $next_date=null;
   $next_date_id=null;
   $next_xy_result=mysql_query(
@@ -22,6 +23,7 @@
   $next_xy_row= mysql_fetch_array($next_xy_result);
   $next_date=$next_xy_row['date'];
   $next_date_id=$next_xy_row['id'];
+  //Get all dates where XY is offered
   $dates_result=mysql_query("SELECT * FROM dates WHERE schedule='a'") or die(mysql_error());
   $xy_assignments_result=mysql_query(
     "SELECT users.lastname, users.firstname, xy_assignments.date_id, xy_assignments.id, 
@@ -30,6 +32,7 @@
      FROM `users` 
      INNER JOIN `xy_assignments` on xy_assignments.teacher_id=users.id 
      INNER JOIN `xy` on xy_assignments.xy_id=xy.id") or die(mysql_error());
+  $xy_assignments_array=mysql_fetch_array($xy_assignments_result);
   mysql_close();
 ?>
 <!DOCTYPE html>
@@ -120,15 +123,17 @@
     </div>
     <div class='container'>
       <div class="row">
-        <div class="span3 bs-docs-sidebar">
+        <div class="span3 bs-docs-sidebar hidden-phone hidden-tablet">
           <ul class="nav nav-list bs-docs-sidenav">
             <?php
               //Iterate through the dates and create side navigation menu
               while($row=mysql_fetch_array($dates_result)){
-                echo "<li";
-                if(strcmp($row['date'], $next_date)==0)
-                  echo " class='active' ";
-                echo "><a href='#" . $row['id'] . "'><i class='icon-chevron-right'></i>" . date('D F jS, Y', strtotime($row['date'])) . "</a></li>";
+                if(in_array($row['id'], $xy_assignments_array)){
+                  echo "<li";
+                  if(strcmp($row['date'], $next_date)==0)
+                    echo " class='active' ";
+                  echo "><a href='#" . $row['id'] . "'><i class='icon-chevron-right'></i>" . date('D F jS, Y', strtotime($row['date'])) . "</a></li>";
+                }
               }
             ?>
           </ul>
@@ -138,7 +143,8 @@
           //Iterate through the dates and create a section for each date that will house current assigned courses
           mysql_data_seek($dates_result,0);
           while($date=mysql_fetch_array($dates_result)){
-            $seats_assigned=0;
+            if(in_array($date['id'], $xy_assignments_array)){
+              $seats_assigned=0;
         ?>
             <section id="<?php echo $date['id']; ?>">
               <div class='page-header'>
@@ -246,6 +252,7 @@
             </section>
         <?php
           }
+        }
         ?>
       </div>    
     </div>
