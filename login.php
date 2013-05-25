@@ -9,11 +9,8 @@ if (!isset($username) && !isset($pwd)) {
 }
 //username and password are not null
 else {
-
-
 	$ldap_connection=ldap_connect($ldap_server) or die("Error while connecting to LDAP server.");
 	if (is_resource($ldap_connection)) {
-
 		//Try binding to LDAP server with credentials
 		if ($bind = ldap_bind($ldap_connection,$username.$ldap_user_suffix,$pwd)) {
 			$filter = "(samAccountName=" . $username . ")";
@@ -70,7 +67,6 @@ else {
 				header("Location: login.html");
 			}
 		}
-
 		//LDAP connection failed
 		else {
 			header("Location: login.html");

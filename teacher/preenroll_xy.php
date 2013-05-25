@@ -103,7 +103,7 @@
           <div class="nav-collapse collapse">
             <ul class="nav">
               <li><a href="agenda.php">Agenda</a></li>
-              <li class="dropdown">
+              <li class="dropdown active">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">X/Y <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                   <li><a href="assigned_xy.php">Assign Course</a></li>
@@ -111,7 +111,7 @@
                   <li><a href="preenroll_xy.php">Enroll Students</a></li>
                 </ul>
               </li>
-              <li class="dropdown active">
+              <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Colloquium <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                   <li><a href="assigned_col.php">Assign Course</a></li>
