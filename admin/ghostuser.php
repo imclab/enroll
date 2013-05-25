@@ -1,6 +1,6 @@
 <?php
 	session_start();
-	require_once 'db.php';
+	require_once 'settings.php';
 	//Configure and Connect to the Databse
 	$con = mysql_connect($host,$db_username,$db_password);
  	if (!$con) {

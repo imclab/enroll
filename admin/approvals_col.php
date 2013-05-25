@@ -6,8 +6,7 @@
     $_SESSION['admin']!=true) {
       header("Location: ../login.html");
   }
-  //Code to connect to database
-  include_once 'db.php';
+  include_once 'settings.php';
   //Connects to MySQL and Selects Database
   $con = mysql_connect($host,$db_username,$db_password);
   if (!$con)
@@ -37,7 +36,7 @@
 <html lang='en'>
   <head>
     <meta charset='utf-8'>
-    <title>Enroll: Northside Prep</title>
+    <title>Enroll: <?php echo $school_name; ?></title>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <meta name='description' content="Flexible Scheduling for Today's Classroom">
     <meta name='author' content='Marcos Alcozer'>

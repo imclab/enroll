@@ -9,7 +9,7 @@
   }
 
   //Code to connect to database
-  include_once 'db.php';
+  include_once 'settings.php';
   //Connects to MySQL and Selects Database
   $con = mysql_connect($host,$db_username,$db_password);
   if (!$con)

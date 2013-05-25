@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once 'admin/ldap.conf.php';
+include_once 'admin/settings.php';
 $username=$_POST["username"];
 $pwd=$_POST["password"];
 //either username or password are not set

@@ -1,5 +1,5 @@
 <?php
-	require_once '../admin/db.php';
+	require_once '../admin/settings.php';
 	//Configure and Connect to the Databse
 	$con = mysql_connect($host,$db_username,$db_password);
  	if (!$con) {
