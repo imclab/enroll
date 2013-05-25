@@ -14,26 +14,23 @@
     die('Could not connect: ' . mysql_error());
   //Select DB
   mysql_select_db($db, $con);
-  //Get XY dates for Approvals menu
+  $next_date=null;
+  $next_date_id=null;
+  $next_xy_result=mysql_query(
+      "SELECT *
+       FROM dates 
+       WHERE date >= " .  date('Y-m-d') . " AND schedule='a' ORDER BY date LIMIT 1") or die(mysql_error());
+  $next_xy_row= mysql_fetch_array($next_xy_result);
+  $next_date=$next_xy_row['date'];
+  $next_date_id=$next_xy_row['id'];
   $dates_result=mysql_query("SELECT * FROM dates WHERE schedule='a'") or die(mysql_error());
-  /**
-  $dates_row= mysql_fetch_array($dates_result);
-  $next_date=$dates_row['date'];
-  $next_date_id=$dates_row['id'];
-  $next_date_semester=$dates_row['semester'];
-  $next_date_schedule=$dates_row['schedule'];
-  //if next date schedule is a then get the xy assignments for that date
-  if(strcmp($next_date_schedule, "a")){
-    $xy_assignments_result=mysql_query(
-        "SELECT users.lastname, users.firstname, xy_assignments.id, xy_assignments.final, xy.name, 
-                xy_assignments.block, xy_assignments.class_size, xy_assignments.room, xy_assignments.preferred_block, 
-                xy.preferred_class_size, xy.preferred_room 
-        FROM `users` 
-        INNER JOIN `xy_assignments` on xy_assignments.teacher_id = users.id 
-        INNER JOIN `xy` on xy_assignments.xy_id = xy.id 
-        WHERE xy_assignments.date_id=$next_date_id") or die(mysql_error());
-  }
-  **/
+  $xy_assignments_result=mysql_query(
+    "SELECT users.lastname, users.firstname, xy_assignments.date_id, xy_assignments.id, 
+            xy_assignments.final, xy.name, xy_assignments.class_size, xy_assignments.room, 
+            xy_assignments.preferred_block, xy_assignments.block, xy.preferred_class_size, xy.preferred_room, xy_assignments.notes 
+     FROM `users` 
+     INNER JOIN `xy_assignments` on xy_assignments.teacher_id=users.id 
+     INNER JOIN `xy` on xy_assignments.xy_id=xy.id") or die(mysql_error());
   mysql_close();
 ?>
 <!DOCTYPE html>
@@ -94,19 +91,8 @@
              <li class="dropdown active">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Approvals <b class="caret"></b></a>
               <ul class="dropdown-menu">
+                <li><a href='approvals_xy.php'>XY</a></li>
                 <li class="dropdown-submenu">
-                 <a tabindex="-1" href="#">XY</a>
-                 <ul class="dropdown-menu">
-                   <?php
-                     while($row=mysql_fetch_array($dates_result)){
-                         $id=$row['id'];
-                         $date=$row['date'];
-                         echo "<li><a href='approvals_xy.php?id=$id&date=$date'>" . date('F jS, Y', strtotime($date)) . "</a></li>";
-                     }
-                   ?>
-                 </ul>
-               </li>
-               <li class="dropdown-submenu">
                    <a tabindex="-1" href="#">Colloquium</a>
                    <ul class="dropdown-menu">
                       <li><a href='approvals_col.php?semester=1'>Semester 1</a></li>
@@ -134,18 +120,135 @@
       </div>
     </div>
     <div class='container'>
-      <h1>
-        <?php 
-          $selected_date=$_GET['date'];
-          echo date('l F jS, Y', strtotime($selected_date)); 
-        ?>
-      </h1>
-      <hr />
-      <div id='main' role='main'>
-        <div>
-
-        </div>
+      <div class="row">
+        <div class="span3 bs-docs-sidebar">
+          <ul class="nav nav-list bs-docs-sidenav">
+            <?php
+              //Iterate through the dates and create side navigation menu
+              while($row=mysql_fetch_array($dates_result)){
+                echo "<li";
+                if(strcmp($row['date'], $next_date)==0)
+                  echo " class='active' ";
+                echo "><a href='#" . $row['id'] . "'><i class='icon-chevron-right'></i>" . date('D F jS, Y', strtotime($row['date'])) . "</a></li>";
+              }
+            ?>
+          </ul>
       </div>
+      <div class="span9">
+        <?php
+          //Iterate through the dates and create a section for each date that will house current assigned courses
+          mysql_data_seek($dates_result,0);
+          while($date=mysql_fetch_array($dates_result)){
+            $seats_assigned=0;
+        ?>
+            <section id="<?php echo $date['id']; ?>">
+              <div class='page-header'>
+                <h1><?php echo date('F jS, Y', strtotime($date['date'])); ?></h1>
+              </div>
+              <table class="table table-striped">
+                <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>XY</th>
+                      <th>Preferred Class Size</th>
+                      <th>Class Size</th>
+                      <th>Preferred Room</th>
+                      <th>Room</th>
+                      <th>Preferred Block</th>
+                      <th>Block</th>
+                      <th>Notes</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php
+                      //Iterate through xy assignments
+                      mysql_data_seek($xy_assignments_result,0);
+                      while ($row=mysql_fetch_array($xy_assignments_result)) {
+                        if($date['id']==$row['date_id']){
+                          if($row['final'])
+                            $seats_assigned+=$row['class_size'];
+                          echo "<tr>";
+                          if(!$row['final']){
+                            echo "<form action='finalize.php' method='post'>";
+                          }
+                          else{
+                            echo "<form action='unfinalize.php' method='post'>";
+                          }
+                          echo "<input name='id' type='hidden' value='" . $row['id'] . "' />";
+                          echo "<input name='type' type='hidden' value='xy' />";
+                          echo "<td>" . $row['lastname'] . ", " . $row['firstname'] . "</td>";
+                          echo "<td>" . $row['name'] . "</td>";
+                          echo "<td>" . $row['preferred_class_size'] . "</td>";
+                          if(!$row['final']){
+                            if($row['class_size']!=0)
+                              echo "<td><input class='input-mini' name='class_size' type='number' maxlength='4' value='" . $row['class_size'] . "' required /></td>";
+                            else
+                              echo "<td><input class='input-mini' name='class_size' type='number' maxlength='4' value='" . $row['preferred_class_size'] . "' required /></td>";
+                          }
+                          else{
+                            echo "<td>" . $row['class_size'] . "</td>";
+                          }
+                          echo "<td>" . $row['preferred_room'] . "</td>";
+                          if(!$row['final']){
+                            if(!is_null($row['room']))
+                              echo "<td><input class='input-mini' name='room' type='text' value='" . $row['room'] . "' required /></td>";
+                            else
+                              echo "<td><input class='input-mini' name='room' type='text' value='" . $row['preferred_room'] . "' required /></td>";
+                          }
+                          else{
+                            echo "<td>" . $row['room'] . "</td>";
+                          }
+                          echo "<td>" . strtoupper($row['preferred_block']) . "</td>";
+                          if(!$row['final']){
+                            if(!is_null($row['block'])){ ?>
+                              <td>
+                                <select class='input-mini' name='block' required>
+                                  <option value=''></option>
+                                  <option <?php if(strcmp($row['block'],'x')==0) echo ' selected '; ?> value='x'>X</option>
+                                  <option <?php if(strcmp($row['block'],'y')==0) echo ' selected '; ?> value='y'>Y</option>
+                                  <option <?php if(strcmp($row['block'],'xy')==0) echo ' selected '; ?> value='xy'>XY</option>
+                                </select>
+                              </td>
+                            <?php } else{ ?>
+                            <td>
+                              <select class='input-mini' name='block' required>
+                                <option value=''></option>
+                                <option <?php if(strcmp($row['preferred_block'],'x')==0) echo ' selected '; ?> value='x'>X</option>
+                                <option <?php if(strcmp($row['preferred_block'],'y')==0) echo ' selected '; ?> value='y'>Y</option>
+                                <option <?php if(strcmp($row['preferred_block'],'xy')==0) echo ' selected '; ?> value='xy'>XY</option>
+                              </select>
+                            </td>
+                          <?php
+                          }}
+                          else{
+                            echo "<td>" . strtoupper($row['block']) . "</td>";
+                          }
+                          echo "<td>";
+                            if(strcmp($row['notes'],"")!=0)
+                              echo "<a href='#'' title='" . $row['notes'] . "'>Note</a>";
+                          echo "</td>";
+                          if(!$row['final']){
+                            echo "<td><button class='btn btn-medium btn-warning' type='submit'>Finalize</button></td>";
+                          }
+                          else{
+                            echo "<td><button class='btn btn-medium btn-success' type='submit'>Unfinalize</button></td>";
+                          }
+                          echo "</form>";
+                          echo "</tr>";
+                        }
+                      }
+                    ?>
+                    <p class="lead pull-right">
+                      <?php echo $seats_assigned; ?> seats assigned.
+                    </p>
+                  </tbody>
+              </table>
+            </section>
+        <?php
+          }
+        ?>
+      </div>    
     </div> <!-- /container -->
   </body>
 </html>

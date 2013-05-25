@@ -26,7 +26,7 @@
   mysql_select_db($db, $con);
 
   //Get next date for XY Courses
-  $next_xy_result=mysql_query("SELECT id,date FROM dates WHERE date > " .  date('Y-m-d') . " AND schedule=\"a\" ORDER BY date LIMIT 1") or die(mysql_error());
+  $next_xy_result=mysql_query("SELECT id,date FROM dates WHERE date >= " .  date('Y-m-d') . " AND schedule=\"a\" ORDER BY date LIMIT 1") or die(mysql_error());
   $next_xy_row= mysql_fetch_array($next_xy_result);
   $next_xy=$next_xy_row['date'];
   $next_xy_id=$next_xy_row['id'];

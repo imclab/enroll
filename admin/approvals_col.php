@@ -14,8 +14,6 @@
     die('Could not connect: ' . mysql_error());
   //Select DB
   mysql_select_db($db, $con);
-  //Get XY dates for Approvals menu
-  $dates_result=mysql_query("SELECT * FROM dates WHERE schedule='a'") or die(mysql_error());
   //Get selected semester from URL
   $selected_semester=$_GET['semester'];
   //Get colloquium assignments for selected date
@@ -93,18 +91,7 @@
              <li class="dropdown active">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Approvals <b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li class="dropdown-submenu">
-                   <a tabindex="-1" href="#">XY</a>
-                   <ul class="dropdown-menu">
-                     <?php
-                       while($row=mysql_fetch_array($dates_result)){
-                           $id=$row['id'];
-                           $date=$row['date'];
-                           echo "<li><a href='approvals_xy.php?id=$id&date=$date'>" . date('F jS, Y', strtotime($date)) . "</a></li>";
-                       }
-                     ?>
-                   </ul>
-                 </li>
+                <li><a href='approvals_xy.php'>XY</a></li>
                  <li class="dropdown-submenu">
                      <a tabindex="-1" href="#">Colloquium</a>
                      <ul class="dropdown-menu">
@@ -162,6 +149,7 @@
               <tbody>
                 <?php
                   while ($row=mysql_fetch_array($col_assignments_result)) {
+                    $seats_assigned=0;
                     echo "<tr>";
                     if(!$row['final']){
                       echo "<form action='finalize.php' method='post'>";

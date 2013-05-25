@@ -16,8 +16,6 @@
     die('Could not connect: ' . mysql_error());
   //Select DB
   mysql_select_db($db, $con);
-  //Get XY dates for Approvals menu
-  $dates_result=mysql_query("SELECT * FROM dates WHERE schedule='a'") or die(mysql_error());
   //Get next date
   $next_date_result=mysql_query("SELECT id,date,semester FROM dates WHERE date > " .  date('Y-m-d') . "  LIMIT 1") or die(mysql_error());
   $next_date_row= mysql_fetch_array($next_date_result);
@@ -106,18 +104,7 @@
               <li class="dropdown">
                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Approvals <b class="caret"></b></a>
                <ul class="dropdown-menu">
-                 <li class="dropdown-submenu">
-                     <a tabindex="-1" href="#">XY</a>
-                     <ul class="dropdown-menu">
-                       <?php
-                         while($row=mysql_fetch_array($dates_result)){
-                             $id=$row['id'];
-                             $date=$row['date'];
-                             echo "<li><a href='approvals_xy.php?id=$id&date=$date'>" . date('F jS, Y', strtotime($date)) . "</a></li>";
-                         }
-                       ?>
-                     </ul>
-                   </li>
+                 <li><a href='approvals_xy.php'>XY</a></li>
                    <li class="dropdown-submenu">
                        <a tabindex="-1" href="#">Colloquium</a>
                        <ul class="dropdown-menu">
