@@ -16,7 +16,7 @@
   else
     $username=$_SESSION['username'];
 
-  include_once 'settings.php';
+  include_once '../admin/settings.php';
   //Connects to MySQL and Selects Database
   $con = mysql_connect($host,$db_username,$db_password);
   if (!$con)

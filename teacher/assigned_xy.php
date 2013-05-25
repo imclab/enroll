@@ -7,7 +7,7 @@
   {
       header("Location: ../login.html");
   }
-  include_once 'settings.php';
+  include_once '../admin/settings.php';
   //Connects to MySQL and Selects Database
   $con=mysql_connect($host,$db_username,$db_password);
   if (!$con)
@@ -167,6 +167,7 @@
                 $xyPreferredBlock=NULL;
                 $xyDateID=$selected_date['id'];
                 $xyMonth = date('F', strtotime($date)); //ie. January
+                $xyFinal=0;
                 //If the month that is selected matches the month of the variable in the array
                 if(strcmp($month, $xyMonth) == 0){
                   //Check to see if there is an xy assigned to this date

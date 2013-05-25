@@ -13,4 +13,9 @@
       mysql_close($con);
       header("Location: preenroll_col.php?semester=$semester");
   }
+  elseif(strcmp($_POST['type'],"xy")==0){
+      mysql_query("DELETE FROM xy_enrollments WHERE id=$id LIMIT 1");
+      mysql_close($con);
+      header("Location: preenroll_xy.php#$id");
+  }
 ?>

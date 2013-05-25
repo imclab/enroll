@@ -7,9 +7,9 @@
   }
   mysql_select_db($db, $con);
   $studentid=$_POST['id'];
-  $semester=$_POST['semester'];
   $status=0;
   if(strcmp($_POST['type'],"colloquium")==0){
+    $semester=$_POST['semester'];
     $col_id=$_POST['col_id'];
     //Check to see if user is already enrolled
     $check_enrollment_result=mysql_query(
@@ -27,5 +27,24 @@
       $status=3;
     }
     header("Location: preenroll_col.php?semester=$semester&status=$status");
+  }
+  elseif(strcmp($_POST['type'],"xy")==0){
+    $xy_id=$_POST['xy_id'];
+    //Check to see if user is already enrolled
+    $check_enrollment_result=mysql_query(
+        "SELECT xy_enrollments.id,xy_assignments.date_id
+         FROM xy_enrollments
+         INNER JOIN `xy_assignments` on xy_enrollments.xy_assignments_id=xy_assignments.id 
+         WHERE users_id=$studentid") or die(mysql_error());
+    if (mysql_num_rows($check_enrollment_result) == 0){
+      //Enroll user
+      mysql_query("INSERT INTO xy_enrollments(xy_assignments_id,users_id) VALUES($xy_id,$studentid)");
+      mysql_close($con);
+      $status=1;
+    }
+    else{
+      $status=3;
+    }
+    header("Location: preenroll_xy.php?#$xy_id");
   }
 ?>
