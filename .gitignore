@@ -1,8 +1,6 @@
 ## APPLICATION SPECIFIC ##
 img/courses/
-admin/db.php
 admin/analyticstracking.php
-admin/ldap.conf.php
 admin/settings.php
 
 ## SUBLIME ##
