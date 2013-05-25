@@ -50,7 +50,7 @@
 <html lang='en'>
   <head>
     <meta charset='utf-8'>
-    <title>Enroll: Northside Prep</title>
+    <title>Enroll: <?php echo $school_name; ?></title>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <meta name='description' content="Flexible Scheduling for Today's Classroom">
     <meta name='author' content='Marcos Alcozer'>
