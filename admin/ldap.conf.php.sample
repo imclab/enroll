@@ -1,0 +1,11 @@
+<?php 
+	
+	$ldap_server="";
+	$ldap_user_suffix="";
+	$ldap_search_ou="";
+	$ldap_group_prefix='';
+	$ldap_group_administrator="";
+	$ldap_group_teacher="";
+	$ldap_group_student="";
+
+?>

@@ -2,6 +2,7 @@
 img/courses/
 admin/db.php
 admin/analyticstracking.php
+admin/ldap.conf.php
 
 ## SUBLIME ##
 *.sublime-workspace
