@@ -164,6 +164,9 @@
         </div>
         <div class="span9">
           <?php
+            if (mysql_num_rows($dates_result) == 0){
+              echo "Looks like the programmer has not finalized your XY selection just yet. <p>You may not enroll a student until it has been finalized, check back soon.</p>";
+            }
             //Iterate through the dates and create a section for each date that will house enrollment rosters
             mysql_data_seek($dates_result,0);
             while($date=mysql_fetch_array($dates_result)){

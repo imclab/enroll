@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <?php
   session_start();
-
   //Credentials aren't legit or user isn't an admin, kick back to login screen
   if (!isset($_SESSION['username'])){
     $loggedin=false;
@@ -23,7 +22,6 @@
     die('Could not connect: ' . mysql_error());
   //Select DB
   mysql_select_db($db, $con);
-
   //Get next date for XY Courses
   $next_xy_result=mysql_query("SELECT id,date FROM dates WHERE date >= " .  date('Y-m-d') . " AND schedule=\"a\" ORDER BY date LIMIT 1") or die(mysql_error());
   $next_xy_row= mysql_fetch_array($next_xy_result);

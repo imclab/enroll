@@ -219,7 +219,8 @@
               if(($row['freshmen'] && strcmp($class_level,'freshman')==0) ||
                  ($row['sophomore'] && strcmp($class_level,'sophomore')==0) ||
                  ($row['junior'] && strcmp($class_level,'junior')==0) ||
-                 ($row['senior'] && strcmp($class_level,'senior')==0))
+                 ($row['senior'] && strcmp($class_level,'senior')==0 ||
+                  !$loggedin))
               {
                 $cassnid = $row['cassnid'];
                 $image = $row['image'];
