@@ -6,7 +6,6 @@
   position: relative; /** Needed to ensure items are laid out relative to this container **/
   margin: 0;
 }
-
 /**
  * Grid items
  */
@@ -25,25 +24,20 @@
      -moz-border-radius: 2px;
           border-radius: 2px;
 }
-
 #tiles li.inactive {
   opacity: 0;
 }
-
 #tiles li img {
   display: block;
   width: 200px;
   height: auto;
 }
-
 #filters {
-
   list-style-type: none;
   text-align: center;
   height: 125px;
   margin: 0 0 15px 0;
 }
-
 #filters li {
   font-size: 12px;
   float: left;
@@ -60,16 +54,13 @@
      -moz-border-radius: 3px;
           border-radius: 3px;
 }
-
 #filters li:hover {
   background: #dedede;
 }
-
 #filters li.active {
   background: #333333;
   color: #ffffff;
 }
-
 /**
  * Grid item text
  */
@@ -78,18 +69,15 @@
   font-size: 12px;
   margin: 7px 0 0 7px;
 }
-
 /**
  * Some extra styles to randomize heights of grid items.
  */
 #tiles ali:nth-child(3n) {
   height: 175px;
 }
-
 #tiles ali:nth-child(4n-3) {
   padding-bottom: 30px;
 }
-
 #tiles ali:nth-child(5n) {
   height: 250px;
 }

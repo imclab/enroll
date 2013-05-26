@@ -57,7 +57,7 @@
             FROM `users` 
             INNER JOIN `c_assignments` on c_assignments.teacher_id = users.id
             INNER JOIN `colloquiums` on c_assignments.c_id = colloquiums.id 
-            WHERE c_assignments.final=\"1\"";
+            WHERE c_assignments.final=1";
   //Result of above query
   $result = mysql_query($query) or die(mysql_error());
 
@@ -197,6 +197,8 @@
               <?php } ?>
             </ul>
           </div>
+        </div>
+        <div class="container">
         <?php }
           if(isset($_SESSION['username']) && 
             (isset($chosen_col1_name) || isset($chosen_col2_name)) )
@@ -286,6 +288,7 @@
 
           // Prepare layout options.
           var options = {
+            align: 'left',
             autoResize: true, // This will auto-update the layout when the browser window is resized.
             container: $('#main'), // Optional, used for some extra CSS styling
             offset: 15, // Optional, the distance between grid items
