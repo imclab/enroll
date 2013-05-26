@@ -23,16 +23,37 @@
     die('Could not connect: ' . mysql_error());
   //Select DB
   mysql_select_db($db, $con);
-
+  //Get class levels
+  $get_settings_result=mysql_query(
+    "SELECT freshman,sophomore,junior,senior FROM settings LIMIT 1") or die(mysql_error());
+  $get_settings_array=mysql_fetch_array($get_settings_result);
+  $freshman=$get_settings_array['freshman'];
+  $sophomore=$get_settings_array['sophomore'];
+  $junior=$get_settings_array['junior'];
+  $senior=$get_settings_array['senior'];
+  //Get user's class level
+  $class_level=null;
+  $get_graduation_year_result=mysql_query(
+      "SELECT graduation_year FROM users WHERE username='$username' LIMIT 1") or die(mysql_error());
+  $get_graduation_year_array=mysql_fetch_array($get_graduation_year_result);
+  $graduation_year=$get_graduation_year_array['graduation_year'];
+  if($graduation_year==$freshman)
+    $class_level="freshman";
+  elseif($graduation_year==$sophomore)
+    $class_level="sophomore";
+  elseif($graduation_year==$junior)
+    $class_level="junior";
+  elseif($graduation_year==$senior)
+    $class_level="senior";
   //Get next date for colloquium courses
-  $next_col_result=mysql_query("SELECT id,date FROM dates WHERE date > " .  date('Y-m-d') . " ORDER BY date LIMIT 1") or die(mysql_error());
+  $next_col_result=mysql_query("SELECT id,date FROM dates WHERE date >= " .  date('Y-m-d') . " ORDER BY date LIMIT 1") or die(mysql_error());
   $next_col_row= mysql_fetch_array($next_col_result);
   $next_col=$next_col_row['date'];
   $next_col_id=$next_col_row['id'];
-
   //Grab all of the teacher's colloquium options
-  $query = "SELECT users.lastname, users.firstname, c_assignments.id AS cassnid, c_assignments.duration, c_assignments.semester, colloquiums.name, 
-            colloquiums.description, colloquiums.image, c_assignments.class_size 
+  $query = "SELECT users.lastname, users.firstname, c_assignments.id AS cassnid, c_assignments.duration, 
+                   c_assignments.semester, colloquiums.name, colloquiums.description, colloquiums.image, 
+                   colloquiums.freshmen, colloquiums.sophomores, colloquiums.juniors, colloquiums.seniors, c_assignments.class_size 
             FROM `users` 
             INNER JOIN `c_assignments` on c_assignments.teacher_id = users.id
             INNER JOIN `colloquiums` on c_assignments.c_id = colloquiums.id 
@@ -49,7 +70,8 @@
   $chosen_col2_id=NULL;
   //If user is logged in
   if(isset($_SESSION['username'])){
-    $chosen_col_result=mysql_query("SELECT users.username, colloquiums.name, colloquiums.image, c_assignments.duration, c_assignments.semester, c_assignments.id 
+    $chosen_col_result=mysql_query("SELECT users.username, users.graduation_year, colloquiums.name, colloquiums.image, 
+                                           c_assignments.duration, c_assignments.semester, c_assignments.id 
                                    FROM `users` 
                                    INNER JOIN `c_enrollments` on users_id = users.id 
                                    INNER JOIN `c_assignments` on c_assignments.id = c_enrollments.c_assignments_id 
@@ -186,46 +208,55 @@
         <?php } ?>
         <ul id="tiles">
           <?php
+            //Iterate through all of colloquium options
             while($row = mysql_fetch_array($result)){
-              $cassnid = $row['cassnid'];
-              $image = $row['image'];
-              $name = $row['name'];
-              $description = $row['description'];
-              $lastname = $row['lastname'];
-              $firstname = $row['firstname'];
-              $duration = $row['duration'];
-              $semester = $row['semester'];
-              $class_size = $row['class_size'];
-              $spots_left_result=mysql_query("SELECT COUNT(*) AS count FROM `c_enrollments` WHERE c_assignments_id=$cassnid") or die(mysql_error());
-              $spots_left_array=mysql_fetch_array($spots_left_result);
-              $spots_left=$class_size - $spots_left_array['count'];
-              if($spots_left > 0 && 
-                ((is_null($chosen_col1_name) && strcmp($semester, "1") == 0) || (is_null($chosen_col2_name) && strcmp($semester, "2") == 0) ) ){
+              if(($row['freshmen'] && strcmp($class_level,'freshman')==0) ||
+                 ($row['sophomore'] && strcmp($class_level,'sophomore')==0) ||
+                 ($row['junior'] && strcmp($class_level,'junior')==0) ||
+                 ($row['senior'] && strcmp($class_level,'senior')==0))
+              {
+                $cassnid = $row['cassnid'];
+                $image = $row['image'];
+                $name = $row['name'];
+                $description = $row['description'];
+                $lastname = $row['lastname'];
+                $firstname = $row['firstname'];
+                $duration = $row['duration'];
+                $semester = $row['semester'];
+                $class_size = $row['class_size'];
+                $spots_left_result=mysql_query("SELECT COUNT(*) AS count FROM `c_enrollments` WHERE c_assignments_id=$cassnid") or die(mysql_error());
+                $spots_left_array=mysql_fetch_array($spots_left_result);
+                $spots_left=$class_size - $spots_left_array['count'];
+                if($spots_left > 0 && 
+                  ((is_null($chosen_col1_name) && strcmp($semester, "1") == 0) || 
+                   (is_null($chosen_col2_name) && strcmp($semester, "2") == 0) ) )
+                {
 
           ?>
-              <li class="<?php echo $semester; ?> card" value="<?php echo $cassnid; ?>"  >
-                <form id='enroll<?php echo $cassnid; ?>' >
-                  <input name='type' type='hidden' value='colloquium' />
-                  <input name='courseid' type='hidden' value='<?php echo $cassnid; ?>' />
-                  <input name='username' type='hidden' value='<?php echo $_SESSION["username"]; ?>' />
-                  <input name='class_size' type='hidden' value='<?php echo $class_size; ?>' />
-                </form>
-                <img class="img-rounded" src="img/courses/<?php echo $image; ?>" width="200"  />
-                <p><?php echo $name; ?></p>
-                <p><?php echo $firstname . " " . $lastname; ?></p>
-                <p>Semester <?php echo $semester; ?></p>
-                <?php 
-                  if(isset($_SESSION['username'])) {
-                    echo "<p>$spots_left Spots Left</p>";
-                  } ?>
-                <p><?php echo $description; ?></p>
-                <div id='status<?php echo $cassnid; ?>'></div>
-                <?php
-                  if($_SESSION['student']) 
-                    echo "<p><button class='btn' type='button' id='enrollbutton" . $cassnid . "' onClick='enroll(\"$cassnid\")' >Enroll</button></p>";
-                ?>  
-              </li>
+                  <li class="<?php echo $semester; ?> card" value="<?php echo $cassnid; ?>"  >
+                    <form id='enroll<?php echo $cassnid; ?>' >
+                      <input name='type' type='hidden' value='colloquium' />
+                      <input name='courseid' type='hidden' value='<?php echo $cassnid; ?>' />
+                      <input name='username' type='hidden' value='<?php echo $_SESSION["username"]; ?>' />
+                      <input name='class_size' type='hidden' value='<?php echo $class_size; ?>' />
+                    </form>
+                    <img class="img-rounded" src="img/courses/<?php echo $image; ?>" width="200"  />
+                    <p><?php echo $name; ?></p>
+                    <p><?php echo $firstname . " " . $lastname; ?></p>
+                    <p>Semester <?php echo $semester; ?></p>
+                    <?php 
+                      if(isset($_SESSION['username'])) {
+                        echo "<p>$spots_left Spots Left</p>";
+                      } ?>
+                    <p><?php echo $description; ?></p>
+                    <div id='status<?php echo $cassnid; ?>'></div>
+                    <?php
+                      if($_SESSION['student']) 
+                        echo "<p><button class='btn' type='button' id='enrollbutton" . $cassnid . "' onClick='enroll(\"$cassnid\")' >Enroll</button></p>";
+                    ?>  
+                  </li>
           <?php
+                }
               }
             }
             mysql_close();
