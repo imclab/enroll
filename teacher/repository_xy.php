@@ -261,7 +261,7 @@
                     <div class="controls">
                       <img id="currentImage" src="../img/courses/<?php echo $image; ?>" width="200px" height="200px" />
                       <div id="changeButton<?php echo $numCourse; ?>" style="display: none;">
-                        <input type="file" name="image" id="image" />
+                        <input type="file" name="image" id="image" required />
                       </div>
                       <p><i class="icon-resize-small"></i>Currently all images are resized to 200 x 200</p>
                     </div>

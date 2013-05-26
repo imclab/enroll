@@ -17,6 +17,15 @@
 			  die('Could not connect: ' . mysql_error());
 			//Select DB
 			mysql_select_db($db, $con);
+			//Get graduation years
+			//Get Settings
+			$get_settings_result=mysql_query(
+			  "SELECT * FROM settings LIMIT 1") or die(mysql_error());
+			$get_settings_array=mysql_fetch_array($get_settings_result);
+			$freshman=$get_settings_array['freshman'];
+			$sophomore=$get_settings_array['sophomore'];
+			$junior=$get_settings_array['junior'];
+			$senior=$get_settings_array['senior'];
 			//Get user credentials
 			$post_username=$_POST['username'];
 			$password=$_POST['password'];

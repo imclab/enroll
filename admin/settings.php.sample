@@ -16,8 +16,5 @@
 
 	/** SCHOOL SETTINGS **/
 	$school_name="";
-	$freshman="";
-	$sophomore="";
-	$junior="";
-	$senior="";
+
 ?>

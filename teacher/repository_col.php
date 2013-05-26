@@ -162,7 +162,7 @@
                   <div class='control-group'>
                     <label class='control-label'>Image</label>
                     <div class="controls">
-                      <input type="file" name="image" id="image" />
+                      <input type="file" name="image" id="image" required />
                       <p><i class="icon-resize-small"></i>Currently all images are resized to 200 x 200</p>
                     </div>
                   </div>

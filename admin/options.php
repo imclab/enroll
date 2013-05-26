@@ -23,6 +23,34 @@
   while($row=mysql_fetch_array($get_teacher_usernames)){
     $teacher_usernames[]="\"" . $row['username'] . "\"";
   }
+  //Handle form updates
+  $status=null;
+  if($_SERVER['REQUEST_METHOD'] == "POST"){
+    if(isset($_POST['freshman'])){
+      $post_freshman=$_POST['freshman'];
+      $post_sophomore=$_POST['sophomore'];
+      $post_junior=$_POST['junior'];
+      $post_senior=$_POST['senior'];
+      if(mysql_query("UPDATE settings 
+                         SET freshman='$post_freshman',sophomore='$post_sophomore',
+                         junior='$post_junior',senior='$post_senior'
+                         WHERE id=1 LIMIT 1") or die(mysql_error()))
+      {
+        $status=1;
+      }
+      else{
+        $status=0;
+      }
+    }
+  }
+  //Get Settings
+  $get_settings_result=mysql_query(
+    "SELECT * FROM settings LIMIT 1") or die(mysql_error());
+  $get_settings_array=mysql_fetch_array($get_settings_result);
+  $freshman=$get_settings_array['freshman'];
+  $sophomore=$get_settings_array['sophomore'];
+  $junior=$get_settings_array['junior'];
+  $senior=$get_settings_array['senior'];
   mysql_close();
 ?>
 <!DOCTYPE html>
@@ -114,13 +142,63 @@
         </div>
       </div>
     </div>
-    <div class='container'>
-        <h1>Enroll Settings</h1>
-        <hr />
-        <div id='main' role='main'>
-
+      <div class='container'>
+        <?php if(!$status && !is_null($status)) { ?>
+        <div id="failed" class="alert alert-error">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          Sorry, changes did not save.
         </div>
+        <?php }else if($status && !is_null($status)) { ?>
+        <div id="success" class="alert alert-success">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          Changes saved successfully.
+        </div>
+        <?php } ?>
+        <div class="row">
+          <div class="span3 bs-docs-sidebar hidden-phone hidden-tablet">
+            <ul class="nav nav-list bs-docs-sidenav">
+              <li><a href='#graduation'><i class='icon-chevron-right'></i>Graduation Years</a></li>
+            </ul>
+        </div>
+        <div class="span8 offset1">
+          <section id="graduation">
+            <div class='page-header'>
+              <h1>Graduation Years</h1>
+              <form class="form-horizontal" action="#" method="post">
+                <div class="control-group">
+                  <label class="control-label" for="inputFreshman">Freshman</label>
+                  <div class="controls">
+                    <input type="number" name="freshman" id="inputFreshman" value=<?php echo $freshman; ?> required />
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label" for="inputSophomore">Sophomore</label>
+                  <div class="controls">
+                    <input type="number" name="sophomore" id="inputSophomore" value=<?php echo $sophomore; ?> required />
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label" for="inputJunior">Junior</label>
+                  <div class="controls">
+                    <input type="number" name="junior" id="inputJunior" value=<?php echo $junior; ?> required />
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label" for="inputSenior">Senior</label>
+                  <div class="controls">
+                    <input type="number" name="senior" id="inputSenior" value=<?php echo $senior; ?> required />
+                  </div>
+                </div>
+                <div class="control-group">
+                  <div class="controls">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </section>
+        </div>    
       </div>
-    </div> <!-- /container -->
+    </div>
   </body>
 </html>
