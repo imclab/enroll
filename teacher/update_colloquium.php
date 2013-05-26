@@ -18,8 +18,10 @@
       $resizedImage=imagecreatetruecolor(200, 200);
       //Get current dimensions and file type
       list($width, $height,$type)=getimagesize($uploadfile);
-      if($width==0 || $height==0)
-        header('Location: repository_col.php');
+      if($width==0 || $height==0){
+        mysql_close();
+        header('Location: repository_col.php?status=0');
+      }
       switch ($type){
         case 1:   //   gif -> jpg
             $originalImage=imagecreatefromgif($uploadfile);
@@ -33,8 +35,8 @@
           default:
             header('Location: repository_col.php');
           if(!$originalImage){
-            mysql_close($con);
-            header('Location: repository_col.php');
+            mysql_close();
+            header('Location: repository_col.php?status=0');
           }
       }
       if (imagecopyresampled($resizedImage, $originalImage, 0, 0, 0, 0, 200, 200, $width, $height)) {
@@ -47,18 +49,18 @@
           $image=$path_parts['filename'] . '.jpg';
         }
         else{
-          mysql_close($con);
-          header('Location: repository_col.php');
+          mysql_close();
+          header('Location: repository_col.php?status=0');
         }
       } 
       else {
-        mysql_close($con);
-        header('Location: repository_col.php');
+        mysql_close();
+        header('Location: repository_col.php?status=0');
       }
     }
     else{
-      mysql_close($con);
-      header('Location: repository_col.php');
+      mysql_close();
+      header('Location: repository_col.php?status=0');
     }
   }
   else{
@@ -95,9 +97,13 @@
           preferred_class_size=$preferred_class_size,preferred_lunch_block='$preferred_lunch_block',
           freshmen='$freshmen',sophomores='$sophomores',juniors='$juniors',seniors='$seniors'
           WHERE id='$mysql_id'");
+      mysql_close($con);
+      header('Location: repository_col.php?status=1');
     }
     else{
       mysql_query("DELETE FROM colloquiums WHERE id=$mysql_id LIMIT 1");
+      mysql_close($con);
+      header('Location: repository_col.php?status=1');
     } 
   }
   else{
@@ -107,7 +113,7 @@
             VALUES('$name','$description','$image',$teacher,'$preferred_room',
                 $preferred_class_size,'$preferred_lunch_block',$freshmen,$sophomores,
                 $juniors,$seniors)");
+    mysql_close($con);
+    header('Location: repository_col.php?status=1');
   }
-  mysql_close($con);
-  header('Location: repository_col.php');
 ?>
