@@ -162,162 +162,159 @@
       </div>
     </div>
     <div class="container">
-        <h1>XY for <?php echo date('l F jS, Y', strtotime($next_xy)); ?></h1>
-        <hr />
-      <div id="main" role="main">
-        <!-- SHOW AGENDA IS USER IS LOGGED IN AND HAS ALREADY CHOSEN A X OR Y COURSE -->
-        <?php if(isset($_SESSION['username']) && 
-                (!is_null($chosen_xy_name) || 
-                 !is_null($chosen_x_name) || 
-                 !is_null($chosen_y_name))) 
-              { ?>
-          <div id="agenda" class="container" style="height:275px;">
-            <h2>Agenda</h2>
-            <ul id="tiles">
-              <!-- IF USER HAS ALREADY CHOSEN AN XY -->
-              <?php 
-                if(isset($chosen_xy_name)) 
-                { ?>
-                  <div id="tile<?php echo $chosen_xy_id; ?>">
-                    <form id='remove<?php echo $chosen_xy_id; ?>' >
-                      <input name='type' type='hidden' value='xy' />
-                      <input name='courseid' type='hidden' value='<?php echo $chosen_xy_id; ?>' />
-                      <input name='username' type='hidden' value='<?php echo $_SESSION["username"]; ?>' />
-                    </form>
-                    <li>
-                      <i id="<?php echo $chosen_xy_id; ?>" class="icon-remove-sign remove_assignment"></i>
-                      <img class="img-rounded" src="img/courses/<?php echo $chosen_xy_image; ?>" width="200"  />
-                      <p><?php echo $chosen_xy_name; ?></p>
-                      <p>Room <?php echo $chosen_xy_room; ?></p>
-                      <p>Spans both X and Y blocks.</p>
-                    </li>
-                  </div>
-              <?php }
-              //IF USER HAS ALREADY CHOSEN AN X
-                if(isset($chosen_x_name)) 
-                { ?>
-                  <div id="tile<?php echo $chosen_x_id; ?>">
-                    <form id='remove<?php echo $chosen_x_id; ?>' >
-                      <input name='type' type='hidden' value='xy' />
-                      <input name='courseid' type='hidden' value='<?php echo $chosen_x_id; ?>' />
-                      <input name='username' type='hidden' value='<?php echo $_SESSION["username"]; ?>' />
-                    </form>
-                    <li>
-                      <i id="<?php echo $chosen_x_id; ?>" class="icon-remove-sign remove_assignment"></i>
-                      <img class="img-rounded" src="img/courses/<?php echo $chosen_x_image; ?>" width="200"  />
-                      <p><?php echo $chosen_x_name; ?></p>
-                      <p>X Block</p>
-                    </li>
-                  </div>
-              <?php }
-              //IF USER HAS ALREADY CHOSEN AN X
-              if(isset($chosen_y_name)) 
-              { ?>
-                <div id="tile<?php echo $chosen_y_id; ?>">
-                  <form id='remove<?php echo $chosen_y_id; ?>' >
-                    <input name='type' type='hidden' value='xy' />
-                    <input name='courseid' type='hidden' value='<?php echo $chosen_y_id; ?>' />
-                    <input name='username' type='hidden' value='<?php echo $_SESSION["username"]; ?>' />
-                  </form>
-                  <li>
-                    <i id="<?php echo $chosen_y_id; ?>" class="icon-remove-sign remove_assignment"></i>
-                    <img class="img-rounded" src="img/courses/<?php echo $chosen_y_image; ?>" width="200"  />
-                    <p><?php echo $chosen_y_name; ?></p>
-                    <p>Y Block</p>
-                  </li>
-                </div>
-              <?php } ?>
-            </ul>
-          </div>
-        </div>
-        <?php }
-        if(is_null($chosen_xy_name) && 
-           (is_null($chosen_x_name) || is_null($chosen_y_name)) )
-        {
-          echo "<div class='container'>";
-            //If user is logged in and either
-            //
-            if(isset($_SESSION['username']))
-              echo "<h2>Choices</h2><hr />";
-          ?>
-            <div id="choices" class="container">
-              <!-- FILTER BETWEEN X AND Y COURSES-->
-              <?php if(!isset($chosen_x_name) && 
-                       !isset($chosen_y_name))
+      <h1>XY for <?php echo date('l F jS, Y', strtotime($next_xy)); ?></h1>
+      <hr />
+      <!-- SHOW AGENDA IS USER IS LOGGED IN AND HAS ALREADY CHOSEN A X OR Y COURSE -->
+      <?php if(isset($_SESSION['username']) && 
+              (!is_null($chosen_xy_name) || 
+               !is_null($chosen_x_name) || 
+               !is_null($chosen_y_name))) 
+            { ?>
+                <div class="row" style="min-height: 450px;">
+                <h2>Agenda</h2>
+                <ul id="tiles">
+                  <!-- IF USER HAS ALREADY CHOSEN AN XY -->
+                  <?php 
+                    if(isset($chosen_xy_name)) 
                     { ?>
-                      <ul id="filters" >
-                          <div><li data-filter="x"><h2>X Period</h2></li></div>
-                          <div><li data-filter="y"><h2>Y Period</h2></li></div>
-                      </ul>
-              <?php } ?>
-              <ul id="tiles">
-                <?php
-                  while($row = mysql_fetch_array($result)){
-                    if(($row['freshmen'] && strcmp($class_level,'freshman')==0) ||
-                       ($row['sophomore'] && strcmp($class_level,'sophomore')==0) ||
-                       ($row['junior'] && strcmp($class_level,'junior')==0) ||
-                       ($row['senior'] && strcmp($class_level,'senior')==0 ||
-                        !$loggedin))
-                    {
-                      $xyassnid = $row['xyassnid'];
-                      $image = $row['image'];
-                      $name = $row['name'];
-                      $description = $row['description'];
-                      $lastname = $row['lastname'];
-                      $firstname = $row['firstname'];
-                      $block = $row['block'];
-                      $class_size = $row['class_size'];
-                      $spots_left_result=mysql_query("SELECT COUNT(*) AS count FROM `xy_enrollments` WHERE xy_assignments_id=$xyassnid") or die(mysql_error());
-                      $spots_left_array=mysql_fetch_array($spots_left_result);
-                      $spots_left=$class_size - $spots_left_array['count'];
-                      if($spots_left > 0 && 
-                        ((is_null($chosen_x_name) && (strcmp($block, "x") == 0) || strcmp($block, "xy") == 0) || 
-                         (is_null($chosen_y_name) && (strcmp($block, "y") == 0) || strcmp($block, "xy") == 0)) )
-                      {
-                  ?>
-                        <li class="<?php if(strcmp($block, 'xy')==0){echo 'x y';}else{echo $block;} ?> card" value="<?php echo $xyassnid; ?>"  >
-                          <form id='enroll<?php echo $xyassnid; ?>' >
-                            <input name='type' type='hidden' value='xy' />
-                            <input name='courseid' type='hidden' value='<?php echo $xyassnid; ?>' />
-                            <input name='username' type='hidden' value='<?php echo $_SESSION["username"]; ?>' />
-                            <input name='class_size' type='hidden' value='<?php echo $class_size; ?>' />
-                          </form>
-                          <img class="img-rounded" src="img/courses/<?php echo $image; ?>" width="200"  />
-                          <p><?php echo $name; ?></p>
-                          <p><?php echo $firstname . " " . $lastname; ?></p>
-                          <?php
-                            if(strcmp($block, 'xy')==0){
-                              echo "<p>Spans both X and  Y blocks.</p>";
-                            }
-                            else{
-                              echo "<p>" . strtoupper($block) . " Block</p>";
-                            }
-                          ?>
-                          <?php 
-                            if(isset($_SESSION['username'])) {
-                              echo "<p>$spots_left Spots Left</p>";
-                            } ?>
-                          <p onClick="expand_description('<?php echo $xyassnid; ?>')">
-                            <?php echo substr($description, 0, 200); ?><span id="ellipses<?php echo $xyassnid; ?>">...</span><span id="description<?php echo $xyassnid; ?>" style="display: none;"><?php echo substr($description, 200); ?></span>
-                          </p>
-                          <div id='status<?php echo $xyassnid; ?>'></div>
-                          <?php
-                            if($_SESSION['student']) 
-                              echo "<p><button class='btn' type='button' id='enrollbutton" . $xyassnid . "' onClick='enroll(\"$xyassnid\")' >Enroll</button></p>";
-                          ?>  
+                      <div id="tile<?php echo $chosen_xy_id; ?>">
+                        <form id='remove<?php echo $chosen_xy_id; ?>' >
+                          <input name='type' type='hidden' value='xy' />
+                          <input name='courseid' type='hidden' value='<?php echo $chosen_xy_id; ?>' />
+                          <input name='username' type='hidden' value='<?php echo $_SESSION["username"]; ?>' />
+                        </form>
+                        <li>
+                          <i id="<?php echo $chosen_xy_id; ?>" class="icon-remove-sign remove_assignment"></i>
+                          <img class="img-rounded" src="img/courses/<?php echo $chosen_xy_image; ?>" width="200"  />
+                          <p><?php echo $chosen_xy_name; ?></p>
+                          <p>Room <?php echo $chosen_xy_room; ?></p>
+                          <p>Spans both X and Y blocks.</p>
                         </li>
-                <?php
-                      }
-                    }
-                  }
-                  mysql_close();
-                ?>
-              </ul>
+                      </div>
+              <?php }
+                    //IF USER HAS ALREADY CHOSEN AN X
+                    if(isset($chosen_x_name)) 
+                    { ?>
+                      <div id="tile<?php echo $chosen_x_id; ?>">
+                        <form id='remove<?php echo $chosen_x_id; ?>' >
+                          <input name='type' type='hidden' value='xy' />
+                          <input name='courseid' type='hidden' value='<?php echo $chosen_x_id; ?>' />
+                          <input name='username' type='hidden' value='<?php echo $_SESSION["username"]; ?>' />
+                        </form>
+                        <li>
+                          <i id="<?php echo $chosen_x_id; ?>" class="icon-remove-sign remove_assignment"></i>
+                          <img class="img-rounded" src="img/courses/<?php echo $chosen_x_image; ?>" width="200"  />
+                          <p><?php echo $chosen_x_name; ?></p>
+                          <p>Room <?php echo $chosen_x_room; ?></p>
+                          <p>X Block</p>
+                        </li>
+                      </div>
+              <?php }
+                    //IF USER HAS ALREADY CHOSEN AN X
+                    if(isset($chosen_y_name)) 
+                    { ?>
+                      <div id="tile<?php echo $chosen_y_id; ?>">
+                        <form id='remove<?php echo $chosen_y_id; ?>' >
+                          <input name='type' type='hidden' value='xy' />
+                          <input name='courseid' type='hidden' value='<?php echo $chosen_y_id; ?>' />
+                          <input name='username' type='hidden' value='<?php echo $_SESSION["username"]; ?>' />
+                        </form>
+                        <li>
+                          <i id="<?php echo $chosen_y_id; ?>" class="icon-remove-sign remove_assignment"></i>
+                          <img class="img-rounded" src="img/courses/<?php echo $chosen_y_image; ?>" width="200"  />
+                          <p><?php echo $chosen_y_name; ?></p>
+                          <p>Room <?php echo $chosen_y_room; ?></p>
+                          <p>Y Block</p>
+                        </li>
+                      </div>
+              <?php } ?>
+                </ul>
             </div>
-          </div>
-        <?php } ?>
-      </div>
-    </div>
+      <?php } ?>
+    <div id='choices' class='row'>
+    <?php
+      if((is_null($chosen_xy_name) && is_null($chosen_x_name) && is_null($chosen_y_name)) ||
+         (is_null($chosen_xy_name) && is_null($chosen_y_name)) || 
+         (is_null($chosen_xy_name) && is_null($chosen_x_name)))
+      {
+          echo "<h2>Choices</h2><hr />";
+    ?>
+          <!-- FILTER BETWEEN X AND Y COURSES-->
+          <?php if(!isset($chosen_x_name) && 
+                   !isset($chosen_y_name))
+                { ?>
+                  <ul id="filters" >
+                      <div><li data-filter="x"><h2>X Period</h2></li></div>
+                      <div><li data-filter="y"><h2>Y Period</h2></li></div>
+                  </ul>
+          <?php } ?>
+          <ul id="tiles">
+            <?php
+              while($row = mysql_fetch_array($result)){
+                if(($row['freshmen'] && strcmp($class_level,'freshman')==0) ||
+                   ($row['sophomore'] && strcmp($class_level,'sophomore')==0) ||
+                   ($row['junior'] && strcmp($class_level,'junior')==0) ||
+                   ($row['senior'] && strcmp($class_level,'senior')==0 ||
+                    !$loggedin))
+                {
+                  $xyassnid = $row['xyassnid'];
+                  $image = $row['image'];
+                  $name = $row['name'];
+                  $description = $row['description'];
+                  $lastname = $row['lastname'];
+                  $firstname = $row['firstname'];
+                  $block = $row['block'];
+                  $class_size = $row['class_size'];
+                  $spots_left_result=mysql_query("SELECT COUNT(*) AS count FROM `xy_enrollments` WHERE xy_assignments_id=$xyassnid") or die(mysql_error());
+                  $spots_left_array=mysql_fetch_array($spots_left_result);
+                  $spots_left=$class_size - $spots_left_array['count'];
+                  if($spots_left > 0 && 
+                    ((is_null($chosen_x_name) && strcmp($block, "x") == 0 && is_null($chosen_xy_name)) || 
+                     (is_null($chosen_y_name) && strcmp($block, "y") == 0 && is_null($chosen_xy_name)) ||
+                     (is_null($chosen_y_name) && is_null($chosen_x_name) && strcmp($block, "xy") != 0)) )
+                  {
+              ?>
+                    <li class="<?php if(strcmp($block, 'xy')==0){echo 'x y';}else{echo $block;} ?> card" value="<?php echo $xyassnid; ?>"  >
+                      <form id='enroll<?php echo $xyassnid; ?>' >
+                        <input name='type' type='hidden' value='xy' />
+                        <input name='courseid' type='hidden' value='<?php echo $xyassnid; ?>' />
+                        <input name='username' type='hidden' value='<?php echo $_SESSION["username"]; ?>' />
+                        <input name='class_size' type='hidden' value='<?php echo $class_size; ?>' />
+                      </form>
+                      <img class="img-rounded" src="img/courses/<?php echo $image; ?>" width="200"  />
+                      <p><?php echo $name; ?></p>
+                      <p><?php echo $firstname . " " . $lastname; ?></p>
+                      <?php
+                        if(strcmp($block, 'xy')==0){
+                          echo "<p>Spans both X and  Y blocks.</p>";
+                        }
+                        else{
+                          echo "<p>" . strtoupper($block) . " Block</p>";
+                        }
+                      ?>
+                      <?php 
+                        if(isset($_SESSION['username'])) {
+                          echo "<p>$spots_left Spots Left</p>";
+                        } ?>
+                      <p onClick="expand_description('<?php echo $xyassnid; ?>')">
+                        <?php echo substr($description, 0, 200); ?><span id="ellipses<?php echo $xyassnid; ?>">...</span><span id="description<?php echo $xyassnid; ?>" style="display: none;"><?php echo substr($description, 200); ?></span>
+                      </p>
+                      <div id='status<?php echo $xyassnid; ?>'></div>
+                      <?php
+                        if($_SESSION['student']) 
+                          echo "<p><button class='btn' type='button' id='enrollbutton" . $xyassnid . "' onClick='enroll(\"$xyassnid\")' >Enroll</button></p>";
+                      ?>  
+                    </li>
+            <?php
+                  }
+                }
+              }
+              mysql_close();
+            ?>
+          </ul>
+<?php } ?>
+  </div>
+</div>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/jquery.wookmark.min.js"></script>
