@@ -47,5 +47,19 @@ $(document).ready(
 				}
 			);
 		});
+		$("#syncButton").click(function(event){
+			event.preventDefault();
+			$("#syncButton").toggle();
+			$("#please_wait").toggle();
+			$.post(
+				'sync_users.php',
+				$("#sync_users_form").serialize(),
+				function(data) {
+					$("#please_wait").toggle();
+					$("#status_text").text(data);
+					$("#status").toggle();
+				}
+			);
+		});
 	}
 );

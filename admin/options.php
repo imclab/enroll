@@ -1,13 +1,11 @@
 <?php
   session_start();
-
   //Credentials aren't legit or user isn't an admin, kick back to login screen
   if (!isset($_SESSION['username']) || 
     $_SESSION['login']!=true || 
     $_SESSION['admin']!=true) {
       header("Location: ../login.html");
   }
-
   //Code to connect to database
   include_once 'settings.php';
   //Connects to MySQL and Selects Database
@@ -149,21 +147,27 @@
           Sorry, changes did not save.
         </div>
         <?php }else if($status && !is_null($status)) { ?>
-        <div id="success" class="alert alert-success">
+        <div id="success" class="alert alert-info">
           <button type="button" class="close" data-dismiss="alert">&times;</button>
           Changes saved successfully.
         </div>
         <?php } ?>
+        <div id="status" class="alert alert-info" style="display: none;">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <span id="status_text"></span>
+        </div>
         <div class="row">
           <div class="span3 bs-docs-sidebar hidden-phone hidden-tablet">
             <ul class="nav nav-list bs-docs-sidenav">
               <li><a href='#graduation'><i class='icon-chevron-right'></i>Graduation Years</a></li>
+              <li><a href='#sync'><i class='icon-chevron-right'></i>Sync Users</a></li>
             </ul>
         </div>
         <div class="span8 offset1">
           <section id="graduation">
             <div class='page-header'>
               <h1>Graduation Years</h1>
+            </div>
               <form class="form-horizontal" action="#" method="post">
                 <div class="control-group">
                   <label class="control-label" for="inputFreshman">Freshman</label>
@@ -195,7 +199,36 @@
                   </div>
                 </div>
               </form>
+          </section>
+          <section id="sync">
+            <div class='page-header'>
+              <h1>Sync Users</h1>
             </div>
+            <form class="form-horizontal" id="sync_users_form" method="post">
+              <div class="control-group">
+                <label class="control-label" for="inputUsername">Username</label>
+                <div class="controls">
+                  <input type="text" name="username" id="inputUsername" value=<?php echo $_SESSION['username']; ?> required />
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label" for="inputPassword">Password</label>
+                <div class="controls">
+                  <input type="password" name="password" id="inputPassword" required />
+                </div>
+              </div>
+              <div class="control-group">
+                <div class="controls">
+                  <input type="submit" id="syncButton" class="btn btn-primary" value="Sync" />
+                </div>
+              </div>
+              <div class="control-group">
+                <div class="controls">
+                  <div id="please_wait" style="display: none;">
+                    <em>Working on it, please wait...</em>
+                  </div>
+              </div>
+            </form>
           </section>
         </div>    
       </div>
