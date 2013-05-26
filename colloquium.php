@@ -65,13 +65,15 @@
   $chosen_col1_image=NULL;
   $chosen_col1_id=NULL;
   $chosen_col1_duration=NULL;
+  $chosen_col1_room=NULL;
   $chosen_col2_name=NULL;
   $chosen_col2_image=NULL;
   $chosen_col2_id=NULL;
+  $chosen_col2_room=NULL;
   //If user is logged in
   if(isset($_SESSION['username'])){
     $chosen_col_result=mysql_query("SELECT users.username, users.graduation_year, colloquiums.name, colloquiums.image, 
-                                           c_assignments.duration, c_assignments.semester, c_assignments.id 
+                                           c_assignments.duration, c_assignments.semester, c_assignments.id,c_assignments.room 
                                    FROM `users` 
                                    INNER JOIN `c_enrollments` on users_id = users.id 
                                    INNER JOIN `c_assignments` on c_assignments.id = c_enrollments.c_assignments_id 
@@ -83,11 +85,13 @@
         $chosen_col1_image=$chosen_col_row['image'];
         $chosen_col1_id=$chosen_col_row['id'];
         $chosen_col1_duration=$chosen_col_row['duration'];
+        $chosen_col1_room=$chosen_col_row['room'];
       }
       else if(strcmp($chosen_col_row['semester'],"2") == 0){
         $chosen_col2_name=$chosen_col_row['name'];
         $chosen_col2_image=$chosen_col_row['image'];
         $chosen_col2_id=$chosen_col_row['id'];
+        $chosen_col2_room=$chosen_col_row['room'];
       }
     }
   }
@@ -171,6 +175,7 @@
                     <img class="img-rounded" src="img/courses/<?php echo $chosen_col1_image; ?>" width="200"  />
                     <p><?php echo $chosen_col1_name; ?></p>
                     <p>1st Semester</p>
+                    <p>Room <?php echo $chosen_col1_room; ?></p>
                   </li>
                 </div>
               <?php }
@@ -186,6 +191,7 @@
                     <img class="img-rounded" src="img/courses/<?php echo $chosen_col2_image; ?>" width="200"  />
                     <p><?php echo $chosen_col2_name; ?></p>
                     <p>2nd Semester</p>
+                    <p>Room <?php echo $chosen_col2_room; ?></p>
                   </li>
                 </div>
               <?php } ?>
