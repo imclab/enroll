@@ -10,40 +10,7 @@
 
   //Code to connect to database
   include_once 'settings.php';
-  //Connects to MySQL and Selects Database
-  $con = mysql_connect($host,$db_username,$db_password);
-  if (!$con)
-    die('Could not connect: ' . mysql_error());
-  //Select DB
-  mysql_select_db($db, $con);
-  //Get next date
-  $next_date_result=mysql_query("SELECT id,date,semester FROM dates WHERE date > " .  date('Y-m-d') . "  LIMIT 1") or die(mysql_error());
-  $next_date_row= mysql_fetch_array($next_date_result);
-  $next_date=$next_date_row['date'];
-  $next_date_id=$next_date_row['id'];
-  $next_date_semester=$next_date_row['semester'];
 
-  //Get number of xy courses assigned for that date
-  $xy_assignments_result=mysql_query("SELECT id,final FROM `xy_assignments` WHERE date_id=$next_date_id") or die(mysql_error());
-  $xy_assignments_count=0;
-  $xy_assignments_not_approved=0;
-  while($row = mysql_fetch_array($xy_assignments_result)){
-    $xy_assignments_count++;
-    if($row['final']==0)
-      $xy_assignments_not_approved++;
-  }
-
-  //Get number of colloquia assigned for that date
-  $c_assignments_result=mysql_query("SELECT id,final FROM `c_assignments` WHERE semester=$next_date_semester OR duration='y'") or die(mysql_error());
-  $c_assignments_count=0;
-  $c_assignments_not_approved=0;
-  while($row = mysql_fetch_array($c_assignments_result)){
-    $c_assignments_count++;
-    if($row['final']==0)
-      $c_assignments_not_approved++;
-  }
-
-  mysql_close();
 
 ?>
 <!DOCTYPE html>
@@ -134,16 +101,10 @@
       </div>
     </div>
     <div class='container'>
-      <h1><?php echo date('l F jS, Y', strtotime($next_date)); ?></h1>
-      <hr />
-      <div id='main' role='main'>
-        <div>
-          There are <?php echo $xy_assignments_count; ?> XY courses assigned to this date, 
-          <?php echo $xy_assignments_not_approved; ?> are waiting to be approved.
-        </div>
-        <div>
-          There are <?php echo $c_assignments_count; ?> colloquium courses assigned to this date,
-          <?php echo $c_assignments_not_approved; ?> are waiting to be approved.
+        <h1>Enroll Settings</h1>
+        <hr />
+        <div id='main' role='main'>
+
         </div>
       </div>
     </div> <!-- /container -->

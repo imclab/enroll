@@ -99,6 +99,7 @@
                      </ul>
                  </li>
               </ul>
+              <li><a href="options.php">Settings</a></li>
             </li>
            </ul>
             <ul class="nav pull-right">
