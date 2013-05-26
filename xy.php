@@ -237,7 +237,6 @@
          (is_null($chosen_xy_name) && is_null($chosen_y_name)) || 
          (is_null($chosen_xy_name) && is_null($chosen_x_name)))
       {
-          echo "<h2>Choices</h2><hr />";
     ?>
           <!-- FILTER BETWEEN X AND Y COURSES-->
           <?php if(!isset($chosen_x_name) && 
