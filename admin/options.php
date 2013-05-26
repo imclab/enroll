@@ -14,12 +14,12 @@
     die('Could not connect: ' . mysql_error());
   //Select DB
   mysql_select_db($db, $con);
-  //Get teacher's usernames
-  $teacher_usernames=array();
-  $get_teacher_usernames=mysql_query(
-    "SELECT username FROM users WHERE role='teacher'") or die(mysql_error());
-  while($row=mysql_fetch_array($get_teacher_usernames)){
-    $teacher_usernames[]="\"" . $row['username'] . "\"";
+  //Ghost usernames
+  $ghost_usernames=array();
+  $get_ghost_usernames=mysql_query(
+    "SELECT username FROM users WHERE role='teacher' OR role='student'") or die(mysql_error());
+  while($row=mysql_fetch_array($get_ghost_usernames)){
+    $ghost_usernames[]="\"" . $row['username'] . "\"";
   }
   //Handle form updates
   $status=null;
@@ -105,7 +105,7 @@
           <a class="brand appname" href="#">Enroll</a>
           <div class="nav-collapse collapse">
            <ul class="nav">
-             <li class="active"><a href="index.php">Dashboard</a></li>
+             <li><a href="index.php">Dashboard</a></li>
               <li class="dropdown">
                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Approvals <b class="caret"></b></a>
                <ul class="dropdown-menu">
@@ -118,7 +118,7 @@
                        </ul>
                    </li>
                </ul>
-               <li><a href="options.php">Settings</a></li>
+               <li class="active"><a href="options.php">Settings</a></li>
              </li>
            </ul>
             <ul class="nav pull-right">
@@ -126,7 +126,7 @@
                 <form id="ghostuserform" class="navbar-form pull-right">
                   <input class="span2 search-query" name="username" type="text" 
                          data-provide="typeahead" autocomplete="off" placeholder="Login as..."
-                         data-source='[<?php echo implode(',',$teacher_usernames); ?>]' />
+                         data-source='[<?php echo implode(',',$ghost_usernames); ?>]' />
                 </form>
               </li>
               <?php 
