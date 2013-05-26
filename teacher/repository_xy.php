@@ -124,6 +124,17 @@
       </div>
     </div>
     <div class="container">
+      <?php if($_GET['status']==0 && !is_null($_GET['status'])) { ?>
+      <div id="failed" class="alert alert-error">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        Sorry, changes did not save.
+      </div>
+      <?php }else if($_GET['status']==1 && !is_null($_GET['status'])) { ?>
+      <div id="success" class="alert alert-info">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        Changes saved successfully.
+      </div>
+      <?php } ?>
       <!-- MANAGEMENT MODULE -->
       <div id='manage'>
         <h2>Course Repository</h2>
