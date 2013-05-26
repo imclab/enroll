@@ -17,6 +17,10 @@ $(document).ready(
 		);
 	}
 );
+function expand_description(clicked_id){
+	$("#ellipses" + clicked_id).toggle();
+	$("#description" + clicked_id).toggle();
+}
 
 function enroll(clicked_id){
 	$("#enrollbutton" + clicked_id).toggle();
