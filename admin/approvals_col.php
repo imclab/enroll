@@ -30,6 +30,13 @@
   while ($row=mysql_fetch_array($col_seats_result)) {
     $col_seats+=$row['class_size'];
   }
+  //Get teacher's usernames
+  $teacher_usernames=array();
+  $get_teacher_usernames=mysql_query(
+    "SELECT username FROM users WHERE role='teacher'") or die(mysql_error());
+  while($row=mysql_fetch_array($get_teacher_usernames)){
+    $teacher_usernames[]="\"" . $row['username'] . "\"";
+  }
   mysql_close();
 ?>
 <!DOCTYPE html>
@@ -105,7 +112,9 @@
             <ul class="nav pull-right">
                 <li>
                 <form id="ghostuserform" class="navbar-form pull-right">
-                  <input class="span2 search-query" name="username" type="text" placeholder="Login as..." />
+                  <input class="span2 search-query" name="username" type="text" 
+                         data-provide="typeahead" autocomplete="off" placeholder="Login as..."
+                         data-source='[<?php echo implode(',',$teacher_usernames); ?>]' />
                 </form>
               </li>
               <?php 

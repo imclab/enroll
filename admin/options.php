@@ -10,8 +10,20 @@
 
   //Code to connect to database
   include_once 'settings.php';
-
-
+  //Connects to MySQL and Selects Database
+  $con = mysql_connect($host,$db_username,$db_password);
+  if (!$con)
+    die('Could not connect: ' . mysql_error());
+  //Select DB
+  mysql_select_db($db, $con);
+  //Get teacher's usernames
+  $teacher_usernames=array();
+  $get_teacher_usernames=mysql_query(
+    "SELECT username FROM users WHERE role='teacher'") or die(mysql_error());
+  while($row=mysql_fetch_array($get_teacher_usernames)){
+    $teacher_usernames[]="\"" . $row['username'] . "\"";
+  }
+  mysql_close();
 ?>
 <!DOCTYPE html>
 <html lang='en'>
@@ -86,7 +98,9 @@
             <ul class="nav pull-right">
                 <li>
                 <form id="ghostuserform" class="navbar-form pull-right">
-                  <input class="span2 search-query" name="username" type="text" placeholder="Login as..." />
+                  <input class="span2 search-query" name="username" type="text" 
+                         data-provide="typeahead" autocomplete="off" placeholder="Login as..."
+                         data-source='[<?php echo implode(',',$teacher_usernames); ?>]' />
                 </form>
               </li>
               <?php 
