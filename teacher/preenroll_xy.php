@@ -46,9 +46,6 @@
       or die(mysql_error());
   //Get Student List
   $students_result=mysql_query("SELECT id,firstname,lastname FROM users WHERE role='student'") or die(mysql_error());
-  //If status returned is 0
-  if($_GET['status']==3)
-    echo "<script>alert('Student already enrolled elsewhere');</script>";
 ?>
 <!DOCTYPE html>
 <html lang='en'>
@@ -142,6 +139,15 @@
       </div>
     </div>
       <div class='container'>
+        <?php
+          //If status returned is 0
+          if($_GET['status']==3){
+        ?>
+        <div class="alert alert-error fade in">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          Sorry, that student is already enrolled elsewhere.
+        </div>
+        <?php } ?>
         <div class="row">
           <div class="span3 bs-docs-sidebar hidden-phone hidden-tablet">
             <ul class="nav nav-list bs-docs-sidenav">
