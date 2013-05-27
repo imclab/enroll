@@ -24,7 +24,7 @@
   //Handle form updates
   $status=null;
   if($_SERVER['REQUEST_METHOD'] == "POST"){
-    if(isset($_POST['freshman'])){
+    if(isset($_POST['gradyears'])){
       $post_freshman=$_POST['freshman'];
       $post_sophomore=$_POST['sophomore'];
       $post_junior=$_POST['junior'];
@@ -32,6 +32,40 @@
       if(mysql_query("UPDATE settings 
                          SET freshman='$post_freshman',sophomore='$post_sophomore',
                          junior='$post_junior',senior='$post_senior'
+                         WHERE id=1 LIMIT 1") or die(mysql_error()))
+      {
+        $status=1;
+      }
+      else{
+        $status=0;
+      }
+    }
+    elseif(isset($_POST['sem1times'])){
+      $post_freshman=$_POST['freshman'];
+      $post_sophomore=$_POST['sophomore'];
+      $post_junior=$_POST['junior'];
+      $post_senior=$_POST['senior'];
+      $post_end=$_POST['end'];
+      if(mysql_query("UPDATE settings 
+                         SET col1_freshman_start='$post_freshman',col1_sophomore_start='$post_sophomore',
+                         col1_junior_start='$post_junior',col1_senior_start='$post_senior',col1_end='$post_end'
+                         WHERE id=1 LIMIT 1") or die(mysql_error()))
+      {
+        $status=1;
+      }
+      else{
+        $status=0;
+      }
+    }
+    elseif(isset($_POST['sem2times'])){
+      $post_freshman=$_POST['freshman'];
+      $post_sophomore=$_POST['sophomore'];
+      $post_junior=$_POST['junior'];
+      $post_senior=$_POST['senior'];
+      $post_end=$_POST['end'];
+      if(mysql_query("UPDATE settings 
+                         SET col2_freshman_start='$post_freshman',col2_sophomore_start='$post_sophomore',
+                         col2_junior_start='$post_junior',col2_senior_start='$post_senior',col2_end='$post_end'
                          WHERE id=1 LIMIT 1") or die(mysql_error()))
       {
         $status=1;
@@ -69,21 +103,10 @@
     </style>
     <link href="../css/bootstrap.css" rel="stylesheet">
     <link href="../css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="../css/bootstrap-datetimepicker.min.css" rel="stylesheet">
     <link href="../css/admin.css" rel="stylesheet">
 
-    <!-- JQUERY -->
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <!-- BOOTSTRAP -->
-    <script src="../js/bootstrap.min.js"></script>
-    <!-- AJAX UPLOAD BY BRYAN GENTRY -->
-    <!-- http://bryangentry.us/ajax-upload-with-javascript-and-php-upload-an-image-and-display-a-preview/ -->
-    <script src="../js/ajaxupload.js"></script>
-    <!-- FORM VALIDATION USING JQUERY -->
-    <!-- http://alittlecode.com/jquery-form-validation-with-styles-from-twitter-bootstrap/ -->
-    <!-- <script src="../js/jquery.validate.min.js"></script> -->
-    <!-- <script src="../js/validate.js"></script> -->
-    <!-- INHOUSE JAVASCRIPT -->
-    <script src="../js/admin.js"></script>
+    
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -92,7 +115,7 @@
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target=".bs-docs-sidebar">
     <?php include_once("analyticstracking.php") ?>
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
@@ -157,13 +180,151 @@
           <span id="status_text"></span>
         </div>
         <div class="row">
-          <div class="span3 bs-docs-sidebar hidden-phone hidden-tablet">
+          <div class="span2 bs-docs-sidebar hidden-phone hidden-tablet">
             <ul class="nav nav-list bs-docs-sidenav">
+              <li><a href='#colloquiumstartend'><i class='icon-chevron-right'></i>Colloquium Start/End Times</a></li>
               <li><a href='#graduation'><i class='icon-chevron-right'></i>Graduation Years</a></li>
               <li><a href='#sync'><i class='icon-chevron-right'></i>Sync Users</a></li>
             </ul>
         </div>
-        <div class="span8 offset1">
+        <div class="span9 offset1">
+          <section id="colloquiumstartend">
+          <div class='page-header'>
+            <h1>Colloquium Start/End Times</h1>
+          </div>
+          <div class="row">
+            <div class="span4">
+              <h3>Semester 1</h3>
+              <form class="form" action="#" method="post">
+                <div class="control-group">
+                  <label class="control-label" for="inputCol1Freshman">Freshman Start Time</label>
+                 <div class="input-append date controls datetimepicker">
+                    <input data-format="yyyy-MM-dd hh:mm:ss" type="text" 
+                           name="freshman" id="inputCol1Freshman" value="<?php echo $get_settings_array['col1_freshman_start']; ?>" required />
+                    <span class="add-on">
+                      <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                      </i>
+                    </span>
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label" for="inputCol1Sophomore">Sophomore Start Time</label>
+                  <div class="input-append date controls datetimepicker">
+                    <input data-format="yyyy-MM-dd hh:mm:ss" type="text" 
+                           name="sophomore" id="inputCol1Sophomore" value="<?php echo $get_settings_array['col1_sophomore_start']; ?>" required />
+                    <span class="add-on">
+                      <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                      </i>
+                    </span>
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label" for="inputCol1Junior">Junior Start Time</label>
+                  <div class="input-append date controls datetimepicker">
+                    <input data-format="yyyy-MM-dd hh:mm:ss" type="text" 
+                           name="junior" id="inputCol1Junior" value="<?php echo $get_settings_array['col1_junior_start']; ?>" required />
+                    <span class="add-on">
+                      <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                      </i>
+                    </span>
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label" for="inputCol1Senior">Senior Start Time</label>
+                  <div class="input-append date controls datetimepicker">
+                    <input data-format="yyyy-MM-dd hh:mm:ss" type="text" 
+                           name="senior" id="inputCol1Senior" value="<?php echo $get_settings_array['col1_senior_start']; ?>" required />
+                    <span class="add-on">
+                      <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                      </i>
+                    </span>
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label" for="inputCol1EndTime">End Time</label>
+                  <div class="input-append date controls datetimepicker">
+                    <input data-format="yyyy-MM-dd hh:mm:ss" type="text" 
+                           name="end" id="inputCol1EndTime" value="<?php echo $get_settings_array['col1_end']; ?>" required />
+                    <span class="add-on">
+                      <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                      </i>
+                    </span>
+                  </div>
+                </div>
+                <div class="control-group">
+                  <div class="controls">
+                    <button type="submit" class="btn btn-primary" name="sem1times">Update</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="span5">
+              <h3>Semester 2</h3>
+              <form class="form" action="#" method="post">
+                <div class="control-group">
+                  <label class="control-label" for="inputCol2Freshman">Freshman Start Time</label>
+                 <div class="input-append date controls datetimepicker">
+                    <input data-format="yyyy-MM-dd hh:mm:ss" type="text" 
+                           name="freshman" id="inputCol2Freshman" value="<?php echo $get_settings_array['col2_freshman_start']; ?>" required />
+                    <span class="add-on">
+                      <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                      </i>
+                    </span>
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label" for="inputCol2Sophomore">Sophomore Start Time</label>
+                  <div class="input-append date controls datetimepicker">
+                    <input data-format="yyyy-MM-dd hh:mm:ss" type="text" 
+                           name="sophomore" id="inputCol2Sophomore" value="<?php echo $get_settings_array['col2_sophomore_start']; ?>" required />
+                    <span class="add-on">
+                      <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                      </i>
+                    </span>
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label" for="inputCol2Junior">Junior Start Time</label>
+                  <div class="input-append date controls datetimepicker">
+                    <input data-format="yyyy-MM-dd hh:mm:ss" type="text" 
+                           name="junior" id="inputCol2Junior" value="<?php echo $get_settings_array['col2_junior_start']; ?>" required />
+                    <span class="add-on">
+                      <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                      </i>
+                    </span>
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label" for="inputCol2Senior">Senior Start Time</label>
+                  <div class="input-append date controls datetimepicker">
+                    <input data-format="yyyy-MM-dd hh:mm:ss" type="text" 
+                           name="senior" id="inputCol2Senior" value="<?php echo $get_settings_array['col2_senior_start']; ?>" required />
+                    <span class="add-on">
+                      <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                      </i>
+                    </span>
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label" for="inputCol2EndTime">End Time</label>
+                  <div class="input-append date controls datetimepicker">
+                    <input data-format="yyyy-MM-dd hh:mm:ss" type="text" 
+                           name="end" id="inputCol2EndTime" value="<?php echo $get_settings_array['col2_end']; ?>" required />
+                    <span class="add-on">
+                      <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                      </i>
+                    </span>
+                  </div>
+                </div>
+                <div class="control-group">
+                  <div class="controls">
+                    <button type="submit" class="btn btn-primary" name="sem2times">Update</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
           <section id="graduation">
             <div class='page-header'>
               <h1>Graduation Years</h1>
@@ -195,7 +356,7 @@
                 </div>
                 <div class="control-group">
                   <div class="controls">
-                    <button type="submit" class="btn btn-primary">Update</button>
+                    <button name="gradyears" type="submit" class="btn btn-primary">Update</button>
                   </div>
                 </div>
               </form>
@@ -233,5 +394,28 @@
         </div>    
       </div>
     </div>
+    <!-- JQUERY -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <!-- BOOTSTRAP -->
+    <script src="../js/bootstrap.min.js"></script>
+    <!-- AJAX UPLOAD BY BRYAN GENTRY -->
+    <!-- http://bryangentry.us/ajax-upload-with-javascript-and-php-upload-an-image-and-display-a-preview/ -->
+    <script src="../js/ajaxupload.js"></script>
+    <!-- BOOTSTRAP DATETIME PICKER -->
+    <!-- http://tarruda.github.io/bootstrap-datetimepicker/ -->
+    <script src="../js/bootstrap-datetimepicker.min.js"></script>
+    <!-- FORM VALIDATION USING JQUERY -->
+    <!-- http://alittlecode.com/jquery-form-validation-with-styles-from-twitter-bootstrap/ -->
+    <!-- <script src="../js/jquery.validate.min.js"></script> -->
+    <!-- <script src="../js/validate.js"></script> -->
+    <!-- INHOUSE JAVASCRIPT -->
+    <script src="../js/admin.js"></script>
+    <script type="text/javascript">
+      $(function() {
+        $('.datetimepicker').datetimepicker({
+          language: 'pt-BR'
+        });
+      });
+    </script>
   </body>
 </html>
