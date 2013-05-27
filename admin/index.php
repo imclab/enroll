@@ -1,13 +1,11 @@
 <?php
   session_start();
-
   //Credentials aren't legit or user isn't an admin, kick back to login screen
   if (!isset($_SESSION['username']) || 
     $_SESSION['login']!=true || 
     $_SESSION['admin']!=true) {
       header("Location: ../login.html");
   }
-
   //Code to connect to database
   include_once 'settings.php';
   //Connects to MySQL and Selects Database
@@ -16,13 +14,68 @@
     die('Could not connect: ' . mysql_error());
   //Select DB
   mysql_select_db($db, $con);
+  //Ghost usernames
+  $numStudents=0;
+  $numTeachers=0;
+  $ghost_usernames=array();
+  $get_ghost_usernames=mysql_query(
+      "SELECT username,role 
+       FROM users 
+       WHERE role='teacher' OR role='student'") or die(mysql_error());
+  while($row=mysql_fetch_array($get_ghost_usernames)){
+    $ghost_usernames[]="\"" . $row['username'] . "\"";
+    if(strcmp($row['role'], 'student')==0)
+      $numStudents++;
+    elseif(strcmp($row['role'], 'teacher')==0)
+      $numTeachers++;
+  }
+  $num_col1=0;
+  $num_col1_final=0;
+  $num_col2=0;
+  $num_col2_final=0;
+  //Get number of colloquia assigned for that date
+  $c_assignments_result=mysql_query(
+      "SELECT id,final,duration,semester 
+       FROM `c_assignments`") or die(mysql_error());
+  while($row = mysql_fetch_array($c_assignments_result)){
+    if($row['semester']==1){
+      $num_col1++;
+      if($row['final']==1)
+        $num_col1_final++;
+    }
+    elseif($row['semester']==2){
+      $num_col2++;
+      if($row['final']==1)
+        $num_col2_final++;
+    }
+  }
+  //Semester 1 Colloquium Data
+  $percentage_col1_assigned=$num_col1/$numTeachers*100;
+  $progress_col1_assigned="progress-danger";
+  if($percentage_col1_assigned>30 && $percentage_col1_assigned<70)
+    $progress_col1_assigned="progress-warning";
+  elseif($percentage_col1_assigned>=70)
+    $progress_col1_assigned="progress-success";
+  //Semester 2 Colloquium Data
+  $percentage_col2_assigned=$num_col2/$numTeachers*100;
+  $progress_col2_assigned="progress-danger";
+  if($percentage_col2_assigned>30 && $percentage_col2_assigned<70)
+    $progress_col2_assigned="progress-warning";
+  elseif($percentage_col2_assigned>=70)
+    $progress_col2_assigned="progress-success";
+
+
+
+
+
+
+
   //Get next date
   $next_date_result=mysql_query("SELECT id,date,semester FROM dates WHERE date > " .  date('Y-m-d') . "  LIMIT 1") or die(mysql_error());
   $next_date_row= mysql_fetch_array($next_date_result);
   $next_date=$next_date_row['date'];
   $next_date_id=$next_date_row['id'];
   $next_date_semester=$next_date_row['semester'];
-
   //Get number of xy courses assigned for that date
   $xy_assignments_result=mysql_query("SELECT id,final FROM `xy_assignments` WHERE date_id=$next_date_id") or die(mysql_error());
   $xy_assignments_count=0;
@@ -32,27 +85,7 @@
     if($row['final']==0)
       $xy_assignments_not_approved++;
   }
-
-  //Get number of colloquia assigned for that date
-  $c_assignments_result=mysql_query("SELECT id,final FROM `c_assignments` WHERE semester=$next_date_semester OR duration='y'") or die(mysql_error());
-  $c_assignments_count=0;
-  $c_assignments_not_approved=0;
-  while($row = mysql_fetch_array($c_assignments_result)){
-    $c_assignments_count++;
-    if($row['final']==0)
-      $c_assignments_not_approved++;
-  }
-
-  //Ghost usernames
-  $ghost_usernames=array();
-  $get_ghost_usernames=mysql_query(
-    "SELECT username FROM users WHERE role='teacher' OR role='student'") or die(mysql_error());
-  while($row=mysql_fetch_array($get_ghost_usernames)){
-    $ghost_usernames[]="\"" . $row['username'] . "\"";
-  }
-
   mysql_close();
-
 ?>
 <!DOCTYPE html>
 <html lang='en'>
@@ -63,7 +96,6 @@
     <meta name='description' content="Flexible Scheduling for Today's Classroom">
     <meta name='author' content='Marcos Alcozer'>
     <meta name='keywords' content='Education, Scheduling'>
-
     <!-- CSS -->
     <style>
       body {
@@ -73,7 +105,6 @@
     <link href="../css/bootstrap.css" rel="stylesheet">
     <link href="../css/bootstrap-responsive.css" rel="stylesheet">
     <link href="../css/admin.css" rel="stylesheet">
-
     <!-- JQUERY -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <!-- BOOTSTRAP -->
@@ -87,14 +118,11 @@
     <!-- <script src="../js/validate.js"></script> -->
     <!-- INHOUSE JAVASCRIPT -->
     <script src="../js/admin.js"></script>
-
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="../js/html5shiv.js"></script>
     <![endif]-->
-
   </head>
-
   <body>
     <?php include_once("analyticstracking.php") ?>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -143,17 +171,20 @@
         </div>
       </div>
     </div>
+    <header id="overview">
+      <div class="container">
+        <h1>Dashboard</h1>
+      </div>
+    </header>
     <div class='container'>
-      <h1><?php echo date('l F jS, Y', strtotime($next_date)); ?></h1>
-      <hr />
-      <div id='main' role='main'>
-        <div>
-          There are <?php echo $xy_assignments_count; ?> XY courses assigned to this date, 
-          <?php echo $xy_assignments_not_approved; ?> are waiting to be approved.
+      <div class="span9">
+        Semester 1 Colloquium Assignments:
+        <div class="progress progress-striped active <?php echo $progress_col1_assigned; ?>">
+          <div class="bar" style="width: <?php echo $percentage_col1_assigned; ?>%;"></div>
         </div>
-        <div>
-          There are <?php echo $c_assignments_count; ?> colloquium courses assigned to this date,
-          <?php echo $c_assignments_not_approved; ?> are waiting to be approved.
+        Semester 2 Colloquium Assignments:
+        <div class="progress progress-striped active <?php echo $progress_col2_assigned; ?>">
+          <div class="bar" style="width: <?php echo $percentage_col2_assigned; ?>%;"></div>
         </div>
       </div>
     </div> <!-- /container -->
