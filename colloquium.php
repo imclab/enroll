@@ -25,7 +25,11 @@
   mysql_select_db($db, $con);
   //Get class levels
   $get_settings_result=mysql_query(
-    "SELECT freshman,sophomore,junior,senior FROM settings LIMIT 1") or die(mysql_error());
+    "SELECT freshman,sophomore,junior,senior,col1_freshman_start,col1_sophomore_start,
+            col1_junior_start,col1_senior_start,col1_end,col2_freshman_start,col2_sophomore_start,
+            col2_junior_start,col2_senior_start,col2_end 
+     FROM settings 
+     LIMIT 1") or die(mysql_error());
   $get_settings_array=mysql_fetch_array($get_settings_result);
   $freshman=$get_settings_array['freshman'];
   $sophomore=$get_settings_array['sophomore'];
@@ -33,18 +37,40 @@
   $senior=$get_settings_array['senior'];
   //Get user's class level
   $class_level=null;
+  $col1_start=null;
+  $col1_end=$get_graduation_year_array['col1_end'];
+  $col2_start=null;
+  $col2_end=$get_graduation_year_array['col2_end'];
   $get_graduation_year_result=mysql_query(
       "SELECT graduation_year FROM users WHERE username='$username' LIMIT 1") or die(mysql_error());
   $get_graduation_year_array=mysql_fetch_array($get_graduation_year_result);
   $graduation_year=$get_graduation_year_array['graduation_year'];
-  if($graduation_year==$freshman)
+  if($graduation_year==$freshman){
     $class_level="freshman";
-  elseif($graduation_year==$sophomore)
+    $col1_start=$get_settings_array['col1_freshman_start'];
+    $col2_start=$get_settings_array['col2_freshman_start'];
+  }
+  elseif($graduation_year==$sophomore){
     $class_level="sophomore";
-  elseif($graduation_year==$junior)
+    $col1_start=$get_settings_array['col1_sophomore_start'];
+    $col2_start=$get_settings_array['col2_sophomore_start'];
+  }
+  elseif($graduation_year==$junior){
     $class_level="junior";
-  elseif($graduation_year==$senior)
+    $col1_start=$get_settings_array['col1_junior_start'];
+    $col2_start=$get_settings_array['col2_junior_start'];
+  }
+  elseif($graduation_year==$senior){
     $class_level="senior";
+    $col1_start=$get_settings_array['col1_senior_start'];
+    $col2_start=$get_settings_array['col2_senior_start'];
+  }
+  $col1_register=false;
+  $col2_register=false;
+  if(time() >= $col1start && time() < $col1end)
+    $col1_register=true;
+  if(time() >= $col2start && time() < $col2end)
+    $col2_register=true;
   //Get next date for colloquium courses
   $next_col_result=mysql_query("SELECT id,date FROM dates WHERE date >= " .  date('Y-m-d') . " ORDER BY date LIMIT 1") or die(mysql_error());
   $next_col_row= mysql_fetch_array($next_col_result);
@@ -187,7 +213,13 @@
                     <input name='username' type='hidden' value='<?php echo $_SESSION["username"]; ?>' />
                   </form>
                   <li>
+                    <?php
+                      if($_SESSION['student'] && 
+                         (($semester==1 && $col1_register) ||
+                          ($semester==2 && $col2_register))){
+                    ?> 
                     <i id="<?php echo $chosen_col2_id; ?>" class="icon-remove-sign remove_assignment"></i>
+                    <?php } ?>
                     <img class="img-rounded" src="img/courses/<?php echo $chosen_col2_image; ?>" width="200"  />
                     <p><?php echo $chosen_col2_name; ?></p>
                     <p>2nd Semester</p>
@@ -262,7 +294,9 @@
                     </p>
                     <div id='status<?php echo $cassnid; ?>'></div>
                     <?php
-                      if($_SESSION['student']) 
+                      if($_SESSION['student'] && 
+                         (($semester==1 && $col1_register) ||
+                          ($semester==2 && $col2_register))) 
                         echo "<p><button class='btn' type='button' id='enrollbutton" . $cassnid . "' onClick='enroll(\"$cassnid\")' >Enroll</button></p>";
                     ?>  
                   </li>
