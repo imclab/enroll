@@ -74,6 +74,22 @@
         $status=0;
       }
     }
+    elseif(isset($_POST['xytimes'])){
+      $xy_num_days_open=$_POST['xy_num_days_open'];
+      $xy_time_open=$_POST['xy_time_open'];
+      $xy_num_days_close=$_POST['xy_num_days_close'];
+      $xy_time_close=$_POST['xy_time_close'];
+      if(mysql_query("UPDATE settings 
+                         SET xy_num_days_open='$xy_num_days_open',xy_time_open='$xy_time_open',
+                         xy_num_days_close='$xy_num_days_close',xy_time_close='$xy_time_close'
+                         WHERE id=1 LIMIT 1") or die(mysql_error()))
+      {
+        $status=1;
+      }
+      else{
+        $status=0;
+      }
+    }
   }
   //Get Settings
   $get_settings_result=mysql_query(
@@ -183,6 +199,7 @@
           <div class="span2 bs-docs-sidebar hidden-phone hidden-tablet">
             <ul class="nav nav-list bs-docs-sidenav">
               <li><a href='#colloquiumstartend'><i class='icon-chevron-right'></i>Colloquium Start/End Times</a></li>
+              <li><a href='#xystartend'><i class='icon-chevron-right'></i>XY Start/End Times</a></li>
               <li><a href='#graduation'><i class='icon-chevron-right'></i>Graduation Years</a></li>
               <li><a href='#sync'><i class='icon-chevron-right'></i>Sync Users</a></li>
             </ul>
@@ -325,6 +342,38 @@
             </div>
           </div>
         </section>
+        <section id="xystartend">
+          <div class='page-header'>
+            <h1>XY Start/End Times</h1>
+          </div>
+          <form class="form" action="#" method="post">
+            XY registration will open 
+            <input type="number" name="xy_num_days_open" class="input-mini" value=<?php echo $get_settings_array['xy_num_days_open']; ?> required /> 
+            days prior at 
+            <span class="input-append timepicker">
+              <input data-format="hh:mm:ss" type="text" class="input-mini"
+                     name="xy_time_open" value="<?php echo $get_settings_array['xy_time_open']; ?>" required />
+              <span class="add-on">
+                <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                </i>
+              </span> 
+            </span>
+            and will close 
+            <input type="number" name="xy_num_days_close" class="input-mini" value=<?php echo $get_settings_array['xy_num_days_close']; ?> required /> 
+            days prior at 
+            <span class="input-append timepicker">
+              <input data-format="hh:mm:ss" type="text" class="input-mini"
+                     name="xy_time_close" value="<?php echo $get_settings_array['xy_time_close']; ?>" required />
+              <span class="add-on">
+                <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                </i>
+              </span> 
+            </span>
+            <div>
+              <button type="submit" class="btn btn-primary" name="xytimes">Update</button>
+            </div>
+          </form>
+        </section>
           <section id="graduation">
             <div class='page-header'>
               <h1>Graduation Years</h1>
@@ -414,6 +463,9 @@
       $(function() {
         $('.datetimepicker').datetimepicker({
           language: 'pt-BR'
+        });
+        $('.timepicker').datetimepicker({
+          pickDate: false
         });
       });
     </script>
