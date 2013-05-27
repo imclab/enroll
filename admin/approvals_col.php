@@ -90,7 +90,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="brand appname" href="#">Enroll</a>
+          <a class="brand appname" href="#">Enroll<img src='../img/beta-icon.png' style="vertical-align:text-top;"/></a>
           <div class="nav-collapse collapse">
            <ul class="nav">
              <li><a href="index.php">Dashboard</a></li>
