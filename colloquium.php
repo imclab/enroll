@@ -38,9 +38,9 @@
   //Get user's class level
   $class_level=null;
   $col1_start=null;
-  $col1_end=$get_graduation_year_array['col1_end'];
+  $col1_end=$get_settings_array['col1_end'];
   $col2_start=null;
-  $col2_end=$get_graduation_year_array['col2_end'];
+  $col2_end=$get_settings_array['col2_end'];
   $get_graduation_year_result=mysql_query(
       "SELECT graduation_year FROM users WHERE username='$username' LIMIT 1") or die(mysql_error());
   $get_graduation_year_array=mysql_fetch_array($get_graduation_year_result);
@@ -65,11 +65,12 @@
     $col1_start=$get_settings_array['col1_senior_start'];
     $col2_start=$get_settings_array['col2_senior_start'];
   }
+  //Check to see if registration window is currently open
   $col1_register=false;
   $col2_register=false;
-  if(time() >= $col1start && time() < $col1end)
+  if(time() >= strtotime($col1_start) && time() < strtotime($col1_end))
     $col1_register=true;
-  if(time() >= $col2start && time() < $col2end)
+  if(time() >= strtotime($col2_start) && time() < strtotime($col2_end))
     $col2_register=true;
   //Get next date for colloquium courses
   $next_col_result=mysql_query("SELECT id,date FROM dates WHERE date >= " .  date('Y-m-d') . " ORDER BY date LIMIT 1") or die(mysql_error());
@@ -86,7 +87,6 @@
             WHERE c_assignments.final=1";
   //Result of above query
   $result = mysql_query($query) or die(mysql_error());
-
   $chosen_col1_name=NULL;
   $chosen_col1_image=NULL;
   $chosen_col1_id=NULL;
@@ -197,7 +197,11 @@
                     <input name='username' type='hidden' value='<?php echo $_SESSION["username"]; ?>' />
                   </form>
                   <li>
+                    <?php
+                      if($_SESSION['student'] && $col1_register){
+                    ?> 
                     <i id="<?php echo $chosen_col1_id; ?>" class="icon-remove-sign remove_assignment"></i>
+                    <?php } ?>
                     <img class="img-rounded" src="img/courses/<?php echo $chosen_col1_image; ?>" width="200"  />
                     <p><?php echo $chosen_col1_name; ?></p>
                     <p>1st Semester</p>
@@ -214,9 +218,7 @@
                   </form>
                   <li>
                     <?php
-                      if($_SESSION['student'] && 
-                         (($semester==1 && $col1_register) ||
-                          ($semester==2 && $col2_register))){
+                      if($_SESSION['student'] && $col2_register){
                     ?> 
                     <i id="<?php echo $chosen_col2_id; ?>" class="icon-remove-sign remove_assignment"></i>
                     <?php } ?>
