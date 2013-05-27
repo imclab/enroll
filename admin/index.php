@@ -63,9 +63,20 @@
     $progress_col2_assigned="progress-warning";
   elseif($percentage_col2_assigned>=70)
     $progress_col2_assigned="progress-success";
-
-
-
+  //Number of Semester 1 Colloquiums you have finalized:
+  $percentage_col1_finalized=$num_col1_final/$num_col1*100;
+  $progress_col1_finalized="progress-danger";
+  if($percentage_col1_finalized>30 && $percentage_col1_finalized<70)
+    $progress_col1_finalized="progress-warning";
+  elseif($percentage_col1_finalized>=70)
+    $progress_col1_finalized="progress-success";
+  //Number of Semester 2 Colloquiums you have finalized:
+  $percentage_col2_finalized=$num_col2_final/$num_col2*100;
+  $progress_col2_finalized="progress-danger";
+  if($percentage_col2_finalized>30 && $percentage_col2_finalized<70)
+    $progress_col2_finalized="progress-warning";
+  elseif($percentage_col2_finalized>=70)
+    $progress_col2_finalized="progress-success";
 
 
 
@@ -178,13 +189,21 @@
     </header>
     <div class='container'>
       <div class="span9">
-        Semester 1 Colloquium Assignments:
+        Teachers who have assigned a Colloquium to Semester 1:
         <div class="progress progress-striped active <?php echo $progress_col1_assigned; ?>">
           <div class="bar" style="width: <?php echo $percentage_col1_assigned; ?>%;"></div>
         </div>
-        Semester 2 Colloquium Assignments:
+        Teachers who have assigned a Colloquium to Semester 2:
         <div class="progress progress-striped active <?php echo $progress_col2_assigned; ?>">
           <div class="bar" style="width: <?php echo $percentage_col2_assigned; ?>%;"></div>
+        </div>
+        Number of Semester 1 Colloquiums you have finalized:
+        <div class="progress progress-striped active <?php echo $progress_col1_finalized; ?>">
+          <div class="bar" style="width: <?php echo $percentage_col1_finalized; ?>%;"></div>
+        </div>
+        Number of Semester 2 Colloquiums you have finalized:
+        <div class="progress progress-striped active <?php echo $progress_col2_finalized; ?>">
+          <div class="bar" style="width: <?php echo $percentage_col2_finalized; ?>%;"></div>
         </div>
       </div>
     </div> <!-- /container -->
