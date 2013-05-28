@@ -55,7 +55,7 @@
   $next_xy_row= mysql_fetch_array($next_xy_result);
   $next_xy=$next_xy_row['date'];
   $next_xy_id=$next_xy_row['id'];
-  //Grab all of the teacher's xy options
+  //Grab all of the teacher's xy options for that date
   $query = "SELECT users.lastname, users.firstname, xy_assignments.id AS xyassnid, 
                    xy.name, xy.description, xy.image, xy_assignments.block, xy_assignments.class_size,
                    xy.freshmen,xy.sophomores,xy.juniors,xy.seniors 
@@ -254,8 +254,8 @@
       {
     ?>
           <!-- FILTER BETWEEN X AND Y COURSES-->
-          <?php if(!isset($chosen_x_name) && 
-                   !isset($chosen_y_name))
+          <?php if(is_null($chosen_x_name) && 
+                   is_null($chosen_y_name))
                 { ?>
                   <ul id="filters" >
                       <div><li data-filter="x"><h2>X Period</h2></li></div>
@@ -279,13 +279,15 @@
                   $firstname = $row['firstname'];
                   $block = $row['block'];
                   $class_size = $row['class_size'];
-                  $spots_left_result=mysql_query("SELECT COUNT(*) AS count FROM `xy_enrollments` WHERE xy_assignments_id=$xyassnid") or die(mysql_error());
-                  $spots_left_array=mysql_fetch_array($spots_left_result);
-                  $spots_left=$class_size - $spots_left_array['count'];
-                  if($spots_left > 0 && 
+                  if(isset($_SESSION['username'])) {
+                    $spots_left_result=mysql_query("SELECT COUNT(*) AS count FROM `xy_enrollments` WHERE xy_assignments_id=$xyassnid") or die(mysql_error());
+                    $spots_left_array=mysql_fetch_array($spots_left_result);
+                    $spots_left=$class_size - $spots_left_array['count'];
+                  }
+                  if(($spots_left > 0 || is_null($spots_left)) && 
                     ((is_null($chosen_x_name) && strcmp($block, "x") == 0 && is_null($chosen_xy_name)) || 
                      (is_null($chosen_y_name) && strcmp($block, "y") == 0 && is_null($chosen_xy_name)) ||
-                     (is_null($chosen_y_name) && is_null($chosen_x_name) && strcmp($block, "xy") != 0)) )
+                     (is_null($chosen_y_name) && is_null($chosen_x_name) && strcmp($block, "xy") == 0)) )
                   {
               ?>
                     <li class="<?php if(strcmp($block, 'xy')==0){echo 'x y';}else{echo $block;} ?> card" value="<?php echo $xyassnid; ?>"  >
