@@ -1,6 +1,8 @@
 $(document).ready(
 
 	function() {
+		$('.tooltip').tooltip();
+
 		var $window = $(window);
 		// side bar
 		setTimeout(function () {
@@ -31,6 +33,13 @@ $(document).ready(
 			function(event) {
 				$('#menu').toggle();
 				$('#rosters').toggle();
+			}
+		);
+		$(".unenroll_students").click(
+			function(event) {
+				event.preventDefault();
+				$("#keepstudents" + event.target.id).val(0);
+				$("#unfinalize" + event.target.id).submit();
 			}
 		);
 		$("#ghostuserform").submit(function(event){

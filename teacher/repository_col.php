@@ -126,19 +126,20 @@
           </div><!--/.nav-collapse -->
         </div>
       </div>
-    </div>
-    <div class='container'>
       <?php if($_GET['status']==0 && !is_null($_GET['status'])) { ?>
-      <div id="failed" class="alert alert-error">
+      <div id="failed" class="alert alert-error text-center">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         Sorry, changes did not save.
       </div>
       <?php }else if($_GET['status']==1 && !is_null($_GET['status'])) { ?>
-      <div id="success" class="alert alert-info">
+      <div id="success" class="alert alert-info text-center">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         Changes saved successfully.
       </div>
       <?php } ?>
+    </div>
+    <div class='container'>
+
       <!-- MANAGEMENT MODULE -->
       <div id='manage'>
         <h2>Course Repository</h2>

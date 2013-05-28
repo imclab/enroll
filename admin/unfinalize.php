@@ -9,6 +9,9 @@
   $id=$_POST['id'];
   if(strcmp($_POST['type'],"colloquium")==0){
     $semester=$_POST['semester'];
+    if(!$_POST['keepstudents']){
+      mysql_query("DELETE FROM c_enrollments WHERE c_assignments_id=$id");
+    }
     //Update Data in MySQL
     mysql_query("UPDATE c_assignments SET final=0 WHERE id=$id");
     mysql_close($con);

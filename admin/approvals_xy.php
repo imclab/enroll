@@ -241,7 +241,7 @@
                           }
                           echo "<td>";
                             if(strcmp($row['notes'],"")!=0)
-                              echo "<a href='#'' title='" . $row['notes'] . "'>Note</a>";
+                              echo "<a href='#' class='tooltip'  title='" . $row['notes'] . "'>Note</a>Note";
                           echo "</td>";
                           if(!$row['final']){
                             echo "<td><button class='btn btn-medium btn-warning' type='submit'>Finalize</button></td>";

@@ -110,7 +110,6 @@
     <meta name='description' content="Flexible Scheduling for Today's Classroom">
     <meta name='author' content='Marcos Alcozer'>
     <meta name='keywords' content='Education, Scheduling'>
-
     <!-- CSS -->
     <style>
       body {
@@ -121,14 +120,10 @@
     <link href="../css/bootstrap-responsive.css" rel="stylesheet">
     <link href="../css/bootstrap-datetimepicker.min.css" rel="stylesheet">
     <link href="../css/admin.css" rel="stylesheet">
-
-    
-
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="../js/html5shiv.js"></script>
     <![endif]-->
-
   </head>
 
   <body data-spy="scroll" data-target=".bs-docs-sidebar">
@@ -178,23 +173,23 @@
           </div><!--/.nav-collapse -->
         </div>
       </div>
+      <?php if(!$status && !is_null($status)) { ?>
+      <div id="failed" class="alert alert-error text-center">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        Sorry, changes did not save.
+      </div>
+      <?php }else if($status && !is_null($status)) { ?>
+      <div id="success" class="alert alert-info text-center">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        Changes saved successfully.
+      </div>
+      <?php } ?>
+      <div id="status" class="alert alert-info text-center" style="display: none;">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <span id="status_text"></span>
+      </div>
     </div>
       <div class='container'>
-        <?php if(!$status && !is_null($status)) { ?>
-        <div id="failed" class="alert alert-error">
-          <button type="button" class="close" data-dismiss="alert">&times;</button>
-          Sorry, changes did not save.
-        </div>
-        <?php }else if($status && !is_null($status)) { ?>
-        <div id="success" class="alert alert-info">
-          <button type="button" class="close" data-dismiss="alert">&times;</button>
-          Changes saved successfully.
-        </div>
-        <?php } ?>
-        <div id="status" class="alert alert-info" style="display: none;">
-          <button type="button" class="close" data-dismiss="alert">&times;</button>
-          <span id="status_text"></span>
-        </div>
         <div class="row">
           <div class="span2 bs-docs-sidebar hidden-phone hidden-tablet">
             <ul class="nav nav-list bs-docs-sidenav">

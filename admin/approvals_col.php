@@ -159,16 +159,21 @@
                 <?php
                   while ($row=mysql_fetch_array($col_assignments_result)) {
                     $seats_assigned=0;
+                    ?>
+                    <?php
                     echo "<tr>";
                     if(!$row['final']){
                       echo "<form action='finalize.php' method='post'>";
                     }
                     else{
-                      echo "<form action='unfinalize.php' method='post'>";
+                      echo "<form id='unfinalize" . $row['id'] . "' action='unfinalize.php' method='post'>";
                     }
                     echo "<input name='id' type='hidden' value='" . $row['id'] . "' />";
                     echo "<input name='type' type='hidden' value='colloquium' />";
                     echo "<input name='semester' type='hidden' value=$selected_semester />";
+                    echo "<input id='keepstudents" . $row['id'] . "' name='keepstudents' type='hidden' value=1 />";
+                    ?>
+                    <?php
                     echo "<td>" . $row['lastname'] . ", " . $row['firstname'] . "</td>";
                     echo "<td>" . $row['name'] . "</td>";
                     echo "<td>";
@@ -225,14 +230,33 @@
                       echo "<td>" . $row['lunch_block'] . "</td>";
                     }
                     echo "<td>";
-                      if(strcmp($row['notes'],"")!=0)
-                        echo "<a href='#'' title='" . $row['notes'] . "'>Note</a>";
+                      if(strcmp($row['notes'],"")!=0){ ?>
+                       <a href="#" class="tooltip" title="<?php echo $row['notes']; ?>" >Note</a>Note
+                    <?php }
                     echo "</td>";
                     if(!$row['final']){
                       echo "<td><button class='btn btn-medium btn-warning' type='submit'>Finalize</button></td>";
                     }
                     else{
-                      echo "<td><button class='btn btn-medium btn-success' type='submit'>Unfinalize</button></td>";
+                      ?>
+                      <!-- Modal -->
+                      <div id="<?php echo $row['id']; ?>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                          <h3 id="myModalLabel">Unfinalize Course</h3>
+                        </div>
+                        <div class="modal-body">
+                          <p>If there are already students enrolled in this course, what should happen to the current enrollments?</p>
+
+                        </div>
+                        <div class="modal-footer">
+                          <button id="<?php echo $row['id']; ?>" class="btn btn-warning unenroll_students" type='submit'>Unenroll Students</button>
+                          <button class="btn btn-primary" type='submit'>Keep Enrollments</button>
+                        </div>
+                      </div>
+                      <?php
+                      echo "<td><button class='btn btn-medium btn-success unfinalize_button' data-toggle='modal' data-target='#" . $row['id'] . "'>Unfinalize</button></td>";
+                      //echo "<td><button class='btn btn-medium btn-success' type='submit'>Unfinalize</button></td>";
                     }
                     echo "</form>";
                     echo "</tr>";
