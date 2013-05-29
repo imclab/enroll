@@ -192,7 +192,7 @@
                           <input name='username' type='hidden' value='<?php echo $_SESSION["username"]; ?>' />
                         </form>
                         <li>
-                          <?php if($_SESSION['student'] && $xy_registration_open){ ?>
+                          <?php if(isset($username) && $xy_registration_open){ ?>
                             <i id="<?php echo $chosen_xy_id; ?>" class="icon-remove-sign remove_assignment"></i>
                           <?php } ?>
                           <img class="img-rounded" src="img/courses/<?php echo $chosen_xy_image; ?>" width="200"  />
@@ -212,7 +212,7 @@
                           <input name='username' type='hidden' value='<?php echo $_SESSION["username"]; ?>' />
                         </form>
                         <li>
-                          <?php if($_SESSION['student'] && $xy_registration_open){ ?>
+                          <?php if(isset($username) && $xy_registration_open){ ?>
                             <i id="<?php echo $chosen_x_id; ?>" class="icon-remove-sign remove_assignment"></i>
                           <?php } ?>
                           <img class="img-rounded" src="img/courses/<?php echo $chosen_x_image; ?>" width="200"  />
@@ -232,7 +232,7 @@
                           <input name='username' type='hidden' value='<?php echo $_SESSION["username"]; ?>' />
                         </form>
                         <li>
-                          <?php if($_SESSION['student'] && $xy_registration_open){ ?>
+                          <?php if(isset($username) && $xy_registration_open){ ?>
                             <i id="<?php echo $chosen_y_id; ?>" class="icon-remove-sign remove_assignment"></i>
                           <?php } ?>
                           <img class="img-rounded" src="img/courses/<?php echo $chosen_y_image; ?>" width="200"  />
@@ -294,7 +294,7 @@
                       <form id='enroll<?php echo $xyassnid; ?>' >
                         <input name='type' type='hidden' value='xy' />
                         <input name='courseid' type='hidden' value='<?php echo $xyassnid; ?>' />
-                        <input name='username' type='hidden' value='<?php echo $_SESSION["username"]; ?>' />
+                        <input name='username' type='hidden' value='<?php echo $username; ?>' />
                         <input name='class_size' type='hidden' value='<?php echo $class_size; ?>' />
                       </form>
                       <img class="img-rounded" src="img/courses/<?php echo $image; ?>" width="200"  />
