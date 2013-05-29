@@ -111,6 +111,7 @@
   $xy_close=strtotime(date("Y-m-d", strtotime($next_xy) - $get_settings_array['xy_num_days_close'] * 86400) + $get_settings_array['xy_time_close'] );
   if(time() >= $xy_open && time() < $xy_close)
     $xy_registration_open=true;
+  $status=$_GET['status'];
 ?>
 <html lang="en">
   <head>
@@ -168,6 +169,22 @@
           </div><!--/.nav-collapse -->
         </div>
       </div>
+      <?php if(!$status && !is_null($status)) { ?>
+      <div id="failed" class="alert alert-error text-center">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        Something went terribly wrong, please try again.
+      </div>
+      <?php }else if($status==1 && !is_null($status)) { ?>
+      <div id="success" class="alert alert-success text-center">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        You got it! Congrats!
+      </div>
+      <?php }else if($status==3 && !is_null($status)) { ?>
+      <div id="success" class="alert alert-info text-center">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        Oh no, so sorry, but that one has just filled up. Please select another.
+      </div>
+      <?php } ?>
     </div>
     <div class="container">
       <h1>XY for <?php echo date('l F jS, Y', strtotime($next_xy)); ?></h1>
@@ -291,12 +308,11 @@
                   {
               ?>
                     <li class="<?php if(strcmp($block, 'xy')==0){echo 'x y';}else{echo $block;} ?> card" value="<?php echo $xyassnid; ?>"  >
-                      <form id='enroll<?php echo $xyassnid; ?>' >
+                      <form action='enroll.php' method='post' >
                         <input name='type' type='hidden' value='xy' />
                         <input name='courseid' type='hidden' value='<?php echo $xyassnid; ?>' />
                         <input name='username' type='hidden' value='<?php echo $username; ?>' />
                         <input name='class_size' type='hidden' value='<?php echo $class_size; ?>' />
-                      </form>
                       <img class="img-rounded" src="img/courses/<?php echo $image; ?>" width="200"  />
                       <p><?php echo $name; ?></p>
                       <p><?php echo $firstname . " " . $lastname; ?></p>
@@ -318,8 +334,9 @@
                       <div id='status<?php echo $xyassnid; ?>'></div>
                       <?php
                         if(isset($username) && $xy_registration_open) 
-                          echo "<p><button class='btn' type='button' id='enrollbutton" . $xyassnid . "' onClick='enroll(\"$xyassnid\")' >Enroll</button></p>";
-                      ?>  
+                          echo "<p><button class='btn btn-primary' type='submit' >Enroll</button></p>";
+                      ?>
+                      </form>
                     </li>
             <?php
                   }

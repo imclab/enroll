@@ -25,8 +25,14 @@
  	//Spots left
  	$spots_left=$class_size - $numberRegistrations_result;
  	if($spots_left < 1){
- 		mysql_close($con);
- 		header('Location: colloquium.php?status=3');
+ 		if(strcmp($type, "colloquium") == 0){
+	 		mysql_close($con);
+	 		header('Location: colloquium.php?status=3');
+	 	}
+	 	else if(strcmp($type, "xy") == 0){
+	 		mysql_close($con);
+	 		header('Location: xy.php?status=3');
+	 	}
  	}
  	else if($spots_left > 0 && strcmp($type, "colloquium") == 0){
  		if(mysql_query("INSERT INTO c_enrollments(c_assignments_id,users_id) VALUES('$courseid','$userid')")){
@@ -54,21 +60,21 @@
  			if($spots_left < 0){
  				$delete_result=mysql_query("DELETE FROM xy_enrollments WHERE xy_assignments_id='$courseid' AND users_id='$userid' LIMIT 1");
  				mysql_close($con);
- 				header('Location: colloquium.php?status=3');
+ 				header('Location: xy.php?status=3');
  			}
  			else{
  				mysql_close($con);
- 				header('Location: colloquium.php?status=1');
+ 				header('Location: xy.php?status=1');
  			}
  		}
  		else{
  			mysql_close($con);
- 			header('Location: colloquium.php?status=0');
+ 			header('Location: xy.php?status=0');
  		}
  	}
  	else{
  		mysql_close($con);
- 		header('Location: colloquium.php?status=0');
+ 		header('Location: xy.php?status=0');
  	}
 	mysql_close($con);
 ?>
