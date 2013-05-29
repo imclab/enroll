@@ -108,7 +108,7 @@
   }
   $xy_registration_open=false;
   $xy_open=strtotime($next_xy) - ($get_settings_array['xy_num_days_open'] * 86400 + strtotime( $get_settings_array['xy_time_open']));
-  $xy_close=strtotime($next_xy) - ($get_settings_array['xy_num_days_close'] * 86400 + strtotime( $get_settings_array['xy_time_close']));
+  $xy_close=strtotime(date("Y-m-d", strtotime($next_xy) - $get_settings_array['xy_num_days_close'] * 86400) + $get_settings_array['xy_time_close'] );
   if(time() >= $xy_open && time() < $xy_close)
     $xy_registration_open=true;
 ?>
@@ -317,7 +317,7 @@
                       </p>
                       <div id='status<?php echo $xyassnid; ?>'></div>
                       <?php
-                        if($_SESSION['student'] && $xy_registration_open) 
+                        if(isset($username) && $xy_registration_open) 
                           echo "<p><button class='btn' type='button' id='enrollbutton" . $xyassnid . "' onClick='enroll(\"$xyassnid\")' >Enroll</button></p>";
                       ?>  
                     </li>
