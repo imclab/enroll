@@ -121,7 +121,7 @@
       }
     }
   }
-  
+  $status=$_GET['status'];
 ?>
 <html lang="en">
   <head>
@@ -131,7 +131,6 @@
     <meta name="description" content="Flexible Scheduling for Today's Classroom">
     <meta name="author" content="Marcos Alcozer">
     <meta name="keywords" content="Education, Scheduling">
-
     <!-- Le styles -->
     <style>
       body {
@@ -141,9 +140,7 @@
     <link href="css/wookmark.css" rel="stylesheet">
     <link href="css/bootstrap.css" rel="stylesheet">
     <link href="css/bootstrap-responsive.css" rel="stylesheet">
-    <link href="css/admin.css" rel="stylesheet">
-    
-    
+    <link href="css/admin.css" rel="stylesheet">  
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="../js/html5shiv.js"></script>
@@ -179,6 +176,22 @@
           </div><!--/.nav-collapse -->
         </div>
       </div>
+      <?php if(!$status && !is_null($status)) { ?>
+      <div id="failed" class="alert alert-error text-center">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        Something went terribly wrong, please try again.
+      </div>
+      <?php }else if($status==1 && !is_null($status)) { ?>
+      <div id="success" class="alert alert-success text-center">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        You got it! Congrats!
+      </div>
+      <?php }else if($status==3 && !is_null($status)) { ?>
+      <div id="success" class="alert alert-info text-center">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        Oh no, so sorry, but that one has just filled up. Please select another.
+      </div>
+      <?php } ?>
     </div>
     <div class="container">
         <h1>Colloquium</h1>
@@ -194,11 +207,11 @@
                   <form id='remove<?php echo $chosen_col1_id; ?>' >
                     <input name='type' type='hidden' value='colloquium' />
                     <input name='courseid' type='hidden' value='<?php echo $chosen_col1_id; ?>' />
-                    <input name='username' type='hidden' value='<?php echo $_SESSION["username"]; ?>' />
+                    <input name='username' type='hidden' value='<?php echo $username; ?>' />
                   </form>
                   <li>
                     <?php
-                      if($_SESSION['student'] && $col1_register){
+                      if(isset($username) && $col1_register){
                     ?> 
                     <i id="<?php echo $chosen_col1_id; ?>" class="icon-remove-sign remove_assignment"></i>
                     <?php } ?>
@@ -214,11 +227,11 @@
                   <form id='remove<?php echo $chosen_col2_id; ?>' >
                     <input name='type' type='hidden' value='colloquium' />
                     <input name='courseid' type='hidden' value='<?php echo $chosen_col2_id; ?>' />
-                    <input name='username' type='hidden' value='<?php echo $_SESSION["username"]; ?>' />
+                    <input name='username' type='hidden' value='<?php echo $username; ?>' />
                   </form>
                   <li>
                     <?php
-                      if($_SESSION['student'] && $col2_register){
+                      if(isset($username) && $col2_register){
                     ?> 
                     <i id="<?php echo $chosen_col2_id; ?>" class="icon-remove-sign remove_assignment"></i>
                     <?php } ?>
@@ -234,7 +247,7 @@
         </div>
         <div class="container">
         <?php }
-          if(isset($_SESSION['username']) && 
+          if(isset($username) && 
             (isset($chosen_col1_name) || isset($chosen_col2_name)) )
             echo "<h2>Choices</h2><hr />";
         ?>
@@ -267,28 +280,29 @@
                 $duration = $row['duration'];
                 $semester = $row['semester'];
                 $class_size = $row['class_size'];
-                $spots_left_result=mysql_query("SELECT COUNT(*) AS count FROM `c_enrollments` WHERE c_assignments_id=$cassnid") or die(mysql_error());
-                $spots_left_array=mysql_fetch_array($spots_left_result);
-                $spots_left=$class_size - $spots_left_array['count'];
-                if($spots_left > 0 && 
+                if(isset($username)) {
+                  $spots_left_result=mysql_query("SELECT COUNT(*) AS count FROM `c_enrollments` WHERE c_assignments_id=$cassnid") or die(mysql_error());
+                  $spots_left_array=mysql_fetch_array($spots_left_result);
+                  $spots_left=$class_size - $spots_left_array['count'];
+                }
+                if(($spots_left > 0 || is_null($spots_left)) && 
                   ((is_null($chosen_col1_name) && strcmp($semester, "1") == 0) || 
                    (is_null($chosen_col2_name) && strcmp($semester, "2") == 0) ) )
                 {
 
           ?>
                   <li class="<?php echo $semester; ?> card" value="<?php echo $cassnid; ?>"  >
-                    <form id='enroll<?php echo $cassnid; ?>' >
+                    <form action='enroll.php' method='post' >
                       <input name='type' type='hidden' value='colloquium' />
                       <input name='courseid' type='hidden' value='<?php echo $cassnid; ?>' />
-                      <input name='username' type='hidden' value='<?php echo $_SESSION["username"]; ?>' />
+                      <input name='username' type='hidden' value='<?php echo $username; ?>' />
                       <input name='class_size' type='hidden' value='<?php echo $class_size; ?>' />
-                    </form>
                     <img class="img-rounded" src="img/courses/<?php echo $image; ?>" width="200"  />
                     <p><?php echo $name; ?></p>
                     <p><?php echo $firstname . " " . $lastname; ?></p>
                     <p>Semester <?php echo $semester; ?></p>
                     <?php 
-                      if(isset($_SESSION['username'])) {
+                      if(isset($username)) {
                         echo "<p>$spots_left Spots Left</p>";
                       } ?>
                     <p onClick="expand_description('<?php echo $cassnid; ?>')">
@@ -296,11 +310,12 @@
                     </p>
                     <div id='status<?php echo $cassnid; ?>'></div>
                     <?php
-                      if($_SESSION['student'] && 
+                      if(isset($username) && 
                          (($semester==1 && $col1_register) ||
                           ($semester==2 && $col2_register))) 
-                        echo "<p><button class='btn' type='button' id='enrollbutton" . $cassnid . "' onClick='enroll(\"$cassnid\")' >Enroll</button></p>";
+                        echo "<p><button class='btn btn-primary' type='submit' >Enroll</button></p>";
                     ?>  
+                  </form>
                   </li>
           <?php
                 }
@@ -321,7 +336,6 @@
         $(document).ready(new function() {
           // This filter is later used as the selector for which grid items to show.
           var filter = '', handler;
-
           // Prepare layout options.
           var options = {
             align: 'left',
@@ -330,22 +344,17 @@
             offset: 15, // Optional, the distance between grid items
             itemWidth: 210 // Optional, the width of a grid item
           };
-
           // This function filters the grid when a change is made.
           var refresh = function() {
             // This hides all grid items ("inactive" is a CSS class that sets opacity to 0).
             $('#tiles li').addClass('inactive');
-
             // Create a new layout selector with our filter.
             handler = $(filter);
-
             // This shows the items we want visible.
             handler.removeClass("inactive");
-
             // This updates the layout.
             handler.wookmark(options);
           }
-
           /**
            * This function checks all filter options to see which ones are active.
            * If they have changed, it also calls a refresh (see above).
@@ -353,32 +362,26 @@
           var updateFilters = function() {
             var oldFilter = filter,
                 filters = [];
-
             // Collect filter list.
             var items = $('#filters li'),
                 i = 0, length = items.length, item;
-
             for(; i < length; i++) {
               item = items.eq(i);
               if(item.hasClass('active')) {
                 filters.push('#tiles li.' + item.attr('data-filter'));
               }
             }
-
             // If no filters active, set default to show all.
             if (filters.length == 0) {
               filters.push('#tiles li');
             }
-
             // Finalize our filter selector for jQuery.
             filter = filters.join(', ');
-
             // If the filter has changed, update the layout.
             if(oldFilter != filter) {
               refresh();
             }
           };
-
           /**
            * When a filter is clicked, toggle it's active state and refresh.
            */
@@ -387,10 +390,8 @@
             $(event.currentTarget).toggleClass('active');
             updateFilters();
           }
-
           // Capture filter click events.
           $('#filters li').click(onClickFilter);
-
           // Do initial update (shows all items).
           updateFilters();
         });

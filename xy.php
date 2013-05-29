@@ -189,7 +189,7 @@
                         <form id='remove<?php echo $chosen_xy_id; ?>' >
                           <input name='type' type='hidden' value='xy' />
                           <input name='courseid' type='hidden' value='<?php echo $chosen_xy_id; ?>' />
-                          <input name='username' type='hidden' value='<?php echo $_SESSION["username"]; ?>' />
+                          <input name='username' type='hidden' value='<?php echo $username; ?>' />
                         </form>
                         <li>
                           <?php if(isset($username) && $xy_registration_open){ ?>
@@ -209,7 +209,7 @@
                         <form id='remove<?php echo $chosen_x_id; ?>' >
                           <input name='type' type='hidden' value='xy' />
                           <input name='courseid' type='hidden' value='<?php echo $chosen_x_id; ?>' />
-                          <input name='username' type='hidden' value='<?php echo $_SESSION["username"]; ?>' />
+                          <input name='username' type='hidden' value='<?php echo $username; ?>' />
                         </form>
                         <li>
                           <?php if(isset($username) && $xy_registration_open){ ?>
@@ -229,7 +229,7 @@
                         <form id='remove<?php echo $chosen_y_id; ?>' >
                           <input name='type' type='hidden' value='xy' />
                           <input name='courseid' type='hidden' value='<?php echo $chosen_y_id; ?>' />
-                          <input name='username' type='hidden' value='<?php echo $_SESSION["username"]; ?>' />
+                          <input name='username' type='hidden' value='<?php echo $username; ?>' />
                         </form>
                         <li>
                           <?php if(isset($username) && $xy_registration_open){ ?>

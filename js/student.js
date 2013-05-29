@@ -21,20 +21,20 @@ function expand_description(clicked_id){
 	$("#ellipses" + clicked_id).toggle();
 	$("#description" + clicked_id).toggle();
 }
-
+/**
 function enroll(clicked_id){
 	$("#enrollbutton" + clicked_id).toggle();
+	$("#status" + clicked_id).append("<em>Please wait...</em>");
 	$.post(
 		'enroll.php',
 		$("#enroll" + clicked_id).serialize(),
 		function(data) {
-			$("#status" + clicked_id).append(data);
 		}
 	);
 	setTimeout(function() {
 		location.reload(true);
 	}, 1500);
-}
+}**/
 function ghost_user(username,role){
 	$.post(
 		'admin/ghostuser.php',

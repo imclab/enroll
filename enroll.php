@@ -6,17 +6,14 @@
  		die('Could not connect: ' . mysql_error());
  	}
  	mysql_select_db($db, $con);
-
  	$type=trim($_POST['type']);
  	$courseid=trim($_POST['courseid']);
  	$class_size=trim($_POST['class_size']);
  	$username=trim($_POST['username']);
-
  	//Get the user's id
  	$userid_result = mysql_query("SELECT id from users WHERE username=\"$username\"") or die(mysql_error());
  	$userid_array = mysql_fetch_array($userid_result);
  	$userid = $userid_array['id'];
-
  	if(strcmp($type, "colloquium") == 0){
  		//Get the current number of registrations for the course
  		$numberRegistrations_result = mysql_query("SELECT COUNT(*) AS count FROM `c_enrollments` WHERE c_assignments_id=\"$courseid\"") or die(mysql_error());
@@ -25,49 +22,53 @@
  		//Get the current number of registrations for the course
  		$numberRegistrations_result = mysql_query("SELECT COUNT(*) AS count FROM `xy_enrollments` WHERE xy_assignments_id=\"$courseid\"") or die(mysql_error());
  	}
- 	
  	//Spots left
- 	$spots_left = $class_size - $numberRegistrations_result;
-
+ 	$spots_left=$class_size - $numberRegistrations_result;
  	if($spots_left < 1){
- 		echo "Course is full! Unable to enroll.";
+ 		mysql_close($con);
+ 		header('Location: colloquium.php?status=3');
  	}
  	else if($spots_left > 0 && strcmp($type, "colloquium") == 0){
- 		$register_result=mysql_query("INSERT INTO c_enrollments(c_assignments_id,users_id) VALUES('$courseid','$userid')") or die(mysql_error());
- 		if($register_result){
+ 		if(mysql_query("INSERT INTO c_enrollments(c_assignments_id,users_id) VALUES('$courseid','$userid')")){
  			$numberRegistrations_result = mysql_query("SELECT COUNT(*) AS count FROM `c_enrollments` WHERE c_assignments_id=$courseid") or die(mysql_error());
- 			$spots_left = $class_size - $numberRegistrations_result;
+ 			$spots_left=$class_size - $numberRegistrations_result;
  			if($spots_left < 0){
- 				$delete_result=mysql_query("DELETE FROM c_enrollments WHERE c_assignments_id='$courseid' AND users_id='$userid' LIMIT 1");
- 				echo "Course is full! Unable to enroll.";
+ 				$delete_result=mysql_query("DELETE FROM c_enrollments WHERE c_assignments_id=$courseid AND users_id=$userid LIMIT 1");
+ 				mysql_close($con);
+ 				header('Location: colloquium.php?status=3');
  			}
  			else{
- 				echo "Registration Successful!";
+ 				mysql_close($con);
+ 				header('Location: colloquium.php?status=1');
  			}
  		}
  		else{
- 			echo "Error! Please try again.";
+ 			mysql_close($con);
+ 			header('Location: colloquium.php?status=0');
  		}
  	}
  	else if($spots_left > 0 && strcmp($type, "xy") == 0){
- 		$register_result=mysql_query("INSERT INTO xy_enrollments(xy_assignments_id,users_id) VALUES('$courseid','$userid')") or die(mysql_error());
- 		if($register_result){
+ 		if(mysql_query("INSERT INTO xy_enrollments(xy_assignments_id,users_id) VALUES('$courseid','$userid')")){
  			$numberRegistrations_result = mysql_query("SELECT COUNT(*) AS count FROM `xy_enrollments` WHERE xy_assignments_id=$courseid") or die(mysql_error());
  			$spots_left = $class_size - $numberRegistrations_result;
  			if($spots_left < 0){
  				$delete_result=mysql_query("DELETE FROM xy_enrollments WHERE xy_assignments_id='$courseid' AND users_id='$userid' LIMIT 1");
- 				echo "Course is full! Unable to enroll.";
+ 				mysql_close($con);
+ 				header('Location: colloquium.php?status=3');
  			}
  			else{
- 				echo "Registration Successful!";
+ 				mysql_close($con);
+ 				header('Location: colloquium.php?status=1');
  			}
  		}
  		else{
- 			echo "Error! Please try again.";
+ 			mysql_close($con);
+ 			header('Location: colloquium.php?status=0');
  		}
  	}
  	else{
- 		echo "Error! Please try again.";
+ 		mysql_close($con);
+ 		header('Location: colloquium.php?status=0');
  	}
 	mysql_close($con);
 ?>
