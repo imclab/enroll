@@ -18,6 +18,9 @@
     header("Location: approvals_col.php?semester=$semester");
   }
   else if(strcmp($_POST['type'],"xy")==0){
+    if(!$_POST['keepstudents']){
+      mysql_query("DELETE FROM xy_enrollments WHERE xy_assignments_id=$id");
+    }
     //Update Data in MySQL
     mysql_query("UPDATE xy_assignments SET final=0 WHERE id=$id");
     mysql_close($con);

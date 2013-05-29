@@ -256,7 +256,6 @@
                       </div>
                       <?php
                       echo "<td><button class='btn btn-medium btn-success unfinalize_button' data-toggle='modal' data-target='#" . $row['id'] . "'>Unfinalize</button></td>";
-                      //echo "<td><button class='btn btn-medium btn-success' type='submit'>Unfinalize</button></td>";
                     }
                     echo "</form>";
                     echo "</tr>";
