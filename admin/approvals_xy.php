@@ -13,6 +13,10 @@
     die('Could not connect: ' . mysql_error());
   //Select DB
   mysql_select_db($db, $con);
+  //Get list of classrooms
+  $get_classrooms_result=mysql_query(
+    "SELECT rooms FROM settings LIMIT 1") or die(mysql_error());
+  $get_classrooms_array=mysql_fetch_array($get_classrooms_result);
   //Get the date of the next XY
   $next_date=null;
   $next_date_id=null;
@@ -154,6 +158,14 @@
           mysql_data_seek($dates_result,0);
           while($date=mysql_fetch_array($dates_result)){
             if(in_array($date['id'], $xy_assignments_array)){
+              $classrooms=explode(",",$get_classrooms_array['rooms']);
+              //Iterate through xy assignments
+              mysql_data_seek($xy_assignments_result,0);
+              while ($row=mysql_fetch_array($xy_assignments_result)) {
+                if($date['id']==$row['date_id'] && $row['final']){
+                  unset( $classrooms[ array_search($row['room'], $classrooms) ] );
+                }
+              }
               $seats_assigned=0;
         ?>
             <section id="<?php echo $date['id']; ?>">
@@ -207,10 +219,22 @@
                           }
                           echo "<td>" . $row['preferred_room'] . "</td>";
                           if(!$row['final']){
-                            if(!is_null($row['room']))
-                              echo "<td><input class='input-mini' name='room' type='text' value='" . $row['room'] . "' required /></td>";
-                            else
-                              echo "<td><input class='input-mini' name='room' type='text' value='" . $row['preferred_room'] . "' required /></td>";
+                            echo "<td><select class='input-medium' name='room' required>";
+                              if(!is_null($row['room'])){
+                                foreach($classrooms as $room){
+                                  echo "<option ";
+                                  if(strcmp($room,$row['room'])==0) echo ' selected ';
+                                  echo " value='$room'>$room</option>";
+                                }
+                              }
+                              else{
+                                foreach($classrooms as $room){
+                                  echo "<option ";
+                                  if(strcmp($room,$row['preferred_room'])==0) echo ' selected ';
+                                  echo " value='$room'>$room</option>";
+                                }
+                              }
+                            echo "</select></td>";
                           }
                           else{
                             echo "<td>" . $row['room'] . "</td>";
