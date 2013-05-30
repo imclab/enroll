@@ -28,6 +28,11 @@
   $userid=$get_userid_array['id'];
   //Grab all of the teacher's xy repository
   $get_xy_repository_result=mysql_query("SELECT * FROM xy WHERE teacher_id=$userid") or die(mysql_error());
+  //Get list of classrooms
+  $get_classrooms_result=mysql_query(
+    "SELECT rooms FROM settings LIMIT 1") or die(mysql_error());
+  $get_classrooms_array=mysql_fetch_array($get_classrooms_result);
+  $classrooms=explode(",",$get_classrooms_array['rooms']);
   //Close MySQL Connection, all necessary queries have been run
   mysql_close($con);
 ?>
@@ -187,7 +192,14 @@
                   <div class='control-group'>
                     <label class='control-label'>Preferred Room</label>
                     <div class='controls'>
-                      <input name='preferred_room' type='text' maxlength='4' required />
+                      <select name='preferred_room' required>
+                        <option value=''></option>
+                        <?php
+                          reset($classrooms);
+                          foreach($classrooms as $room)
+                            echo "<option value='$room'>$room</option>";
+                        ?>
+                      </select>
                     </div>
                   </div>
                   <div class='control-group'>
@@ -304,8 +316,17 @@
                   <div class="control-group">
                     <label class="control-label">Preferred Room</label>
                     <div class="controls">
-                      <input id='preferred_room<?php echo $numCourse; ?>' name='preferred_room' 
-                           type='text' maxlength='4' value='<?php echo $preferred_room; ?>' disabled required />
+                      <select id='preferred_room<?php echo $numCourse; ?>' name='preferred_room' disabled required>
+                        <option value=''></option>
+                        <?php
+                          reset($classrooms);
+                          foreach($classrooms as $room){
+                            echo "<option ";
+                            if(strcmp($room,$preferred_room)==0) echo ' selected ';
+                            echo " value='$room'>$room</option>";
+                          }
+                        ?>
+                      </select>
                     </div>
                   </div>
                   <div class="control-group">
