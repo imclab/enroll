@@ -15,6 +15,11 @@
   mysql_select_db($db, $con);
   //Get selected semester from URL
   $selected_semester=$_GET['semester'];
+  //Get list of classrooms
+  $get_classrooms_result=mysql_query(
+    "SELECT rooms FROM settings LIMIT 1") or die(mysql_error());
+  $get_classrooms_array=mysql_fetch_array($get_classrooms_result);
+  $classrooms=explode(",",$get_classrooms_array['rooms']);
   //Get colloquium assignments for selected date
   $col_assignments_result=mysql_query(
       "SELECT users.lastname, users.firstname, c_assignments.id, c_assignments.final, colloquiums.name, 
@@ -24,6 +29,13 @@
       INNER JOIN `c_assignments` on c_assignments.teacher_id=users.id 
       INNER JOIN `colloquiums` on c_assignments.c_id=colloquiums.id 
       WHERE c_assignments.semester=$selected_semester") or die(mysql_error());
+  //Traverse colloquium assignments, remove rooms from classrooms array that are already assigned to a finalized colloquium
+  while ($row=mysql_fetch_array($col_assignments_result)) {
+    //If assignment is finalized
+    if($row['final']){
+      unset( $classrooms[ array_search($row['room'], $classrooms) ] );
+    }
+  }
   //Calculate total seats offered
   $col_seats=0;
   $col_seats_result=mysql_query("SELECT class_size FROM c_assignments WHERE semester=$selected_semester AND final=1") or die(mysql_error());
@@ -157,6 +169,7 @@
               </thead>
               <tbody>
                 <?php
+                  mysql_data_seek($col_assignments_result,0);
                   while ($row=mysql_fetch_array($col_assignments_result)) {
                     $seats_assigned=0;
                     ?>
@@ -194,10 +207,22 @@
                     }
                     echo "<td>" . $row['preferred_room'] . "</td>";
                     if(!$row['final']){
-                      if(!is_null($row['room']))
-                        echo "<td><input class='input-mini' name='room' type='text' value='" . $row['room'] . "' required /></td>";
-                      else
-                        echo "<td><input class='input-mini' name='room' type='text' value='" . $row['preferred_room'] . "' required /></td>";
+                      echo "<td><select class='input-medium' name='room' required>";
+                        if(!is_null($row['room'])){
+                          foreach($classrooms as $room){
+                            echo "<option ";
+                            if(strcmp($room,$row['room'])==0) echo ' selected ';
+                            echo " value='$room'>$room</option>";
+                          }
+                        }
+                        else{
+                          foreach($classrooms as $room){
+                            echo "<option ";
+                            if(strcmp($room,$row['preferred_room'])==0) echo ' selected ';
+                            echo " value='$room'>$room</option>";
+                          }
+                        }
+                      echo "</select></td>";
                     }
                     else{
                       echo "<td>" . $row['room'] . "</td>";
