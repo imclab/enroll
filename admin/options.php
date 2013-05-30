@@ -90,6 +90,17 @@
         $status=0;
       }
     }
+    elseif(isset($_POST['classrooms'])){
+      $classrooms=$_POST['classrooms'];
+      if(mysql_query("UPDATE settings 
+                         SET rooms='$classrooms' WHERE id=1 LIMIT 1") or die(mysql_error()))
+      {
+        $status=1;
+      }
+      else{
+        $status=0;
+      }
+    }
   }
   //Get Settings
   $get_settings_result=mysql_query(
@@ -195,6 +206,7 @@
             <ul class="nav nav-list bs-docs-sidenav">
               <li><a href='#colloquiumstartend'><i class='icon-chevron-right'></i>Colloquium Start/End Times</a></li>
               <li><a href='#xystartend'><i class='icon-chevron-right'></i>XY Start/End Times</a></li>
+              <li><a href='#classrooms'><i class='icon-chevron-right'></i>Available Classrooms</a></li>
               <li><a href='#graduation'><i class='icon-chevron-right'></i>Graduation Years</a></li>
               <li><a href='#sync'><i class='icon-chevron-right'></i>Sync Users</a></li>
             </ul>
@@ -369,6 +381,24 @@
             </div>
           </form>
         </section>
+        <section id="classrooms">
+          <div class='page-header'>
+            <h1>Available Classrooms</h1>
+          </div>
+          <form class="form" action="#" method="post">
+            <div class="control-group">
+              <label class="control-label" for="classroms">List of classrooms:</label>
+              <div class="controls">
+                <textarea class="input-xxlarge" name="classrooms" id="classrooms" rows="5" required><?php echo $get_settings_array['rooms']; ?></textarea>
+              </div>
+            </div>
+            <div class="control-group">
+              <div class="controls">
+                <button name="classrooms_submit" type="submit" class="btn btn-primary">Update</button>
+              </div>
+            </div>
+          </form>
+       </section>
           <section id="graduation">
             <div class='page-header'>
               <h1>Graduation Years</h1>
