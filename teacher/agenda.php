@@ -112,7 +112,7 @@
               </li>
             </ul>
             <ul class="nav pull-right">
-              <?php if($_SESSION['admin']){
+              <?php if($_SESSION['admin'] && $_SESSION['teacher']){
                echo "<li><a href='../admin'>Admin Panel</a></li>";
               }
               if(!is_null($ghostuser)){ ?>
