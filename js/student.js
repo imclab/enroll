@@ -17,10 +17,7 @@ $(document).ready(
 		);
 	}
 );
-function expand_description(clicked_id){
-	$("#ellipses" + clicked_id).toggle();
-	$("#description" + clicked_id).toggle();
-}
+
 function ghost_user(username,role){
 	$.post(
 		'admin/ghostuser.php',

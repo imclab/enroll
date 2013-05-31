@@ -306,7 +306,7 @@
                       if(isset($username)) {
                         echo "<p>$spots_left Spots Left</p>";
                       } ?>
-                    <p onClick="expand_description('<?php echo $cassnid; ?>')">
+                    <p class="desc" id='<?php echo $cassnid; ?>'>
                       <?php echo substr($description, 0, 200); ?><span id="ellipses<?php echo $cassnid; ?>">...</span><span id="description<?php echo $cassnid; ?>" style="display: none;"><?php echo substr($description, 200); ?></span>
                     </p>
                     <div id='status<?php echo $cassnid; ?>'></div>
@@ -396,6 +396,13 @@
           $('#filters li').click(onClickFilter);
           // Do initial update (shows all items).
           updateFilters();
+
+          $(".desc").click(function(event){
+            $("#ellipses" + event.target.id).toggle();
+            $("#description" + event.target.id).toggle();
+            refresh();
+          });
+
         });
       </script>
   </body>
