@@ -1,4 +1,8 @@
--- Generation Time: May 29, 2013 at 08:41 PM
+-- phpMyAdmin SQL Dump
+-- version 4.0.0
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -25,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `colloquiums` (
   `description` text NOT NULL,
   `image` text NOT NULL,
   `teacher_id` int(11) NOT NULL,
-  `preferred_room` varchar(5) NOT NULL,
+  `preferred_room` text NOT NULL,
   `preferred_class_size` int(11) NOT NULL,
   `preferred_lunch_block` char(1) NOT NULL,
   `freshmen` tinyint(1) NOT NULL,
@@ -35,6 +39,7 @@ CREATE TABLE IF NOT EXISTS `colloquiums` (
   PRIMARY KEY (`id`),
   KEY `teacher_id` (`teacher_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+
 
 -- --------------------------------------------------------
 
@@ -48,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `c_assignments` (
   `semester` int(11) NOT NULL,
   `c_id` int(11) NOT NULL,
   `class_size` int(11) DEFAULT '0',
-  `room` varchar(5) DEFAULT NULL,
+  `room` text,
   `lunch_block` char(1) DEFAULT NULL,
   `notes` text NOT NULL,
   `teacher_id` int(11) NOT NULL,
@@ -71,7 +76,7 @@ CREATE TABLE IF NOT EXISTS `c_enrollments` (
   PRIMARY KEY (`id`),
   KEY `c_assignments_id` (`c_assignments_id`),
   KEY `users_id` (`users_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 -- --------------------------------------------------------
 
@@ -88,6 +93,7 @@ CREATE TABLE IF NOT EXISTS `dates` (
   KEY `date` (`date`),
   KEY `date_2` (`date`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+
 
 
 -- --------------------------------------------------------
@@ -116,6 +122,7 @@ CREATE TABLE IF NOT EXISTS `settings` (
   `xy_time_open` time NOT NULL DEFAULT '07:00:00',
   `xy_num_days_close` int(11) NOT NULL DEFAULT '0',
   `xy_time_close` time NOT NULL DEFAULT '00:00:00',
+  `rooms` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
@@ -123,8 +130,8 @@ CREATE TABLE IF NOT EXISTS `settings` (
 -- Dumping data for table `settings`
 --
 
-INSERT INTO `settings` (`id`, `freshman`, `sophomore`, `junior`, `senior`, `col1_freshman_start`, `col1_sophomore_start`, `col1_junior_start`, `col1_senior_start`, `col1_end`, `col2_freshman_start`, `col2_sophomore_start`, `col2_junior_start`, `col2_senior_start`, `col2_end`, `xy_num_days_open`, `xy_time_open`, `xy_num_days_close`, `xy_time_close`) VALUES
-(1, 2016, 2015, 2014, 2013, '2013-05-01 07:00:00', '2013-08-13 12:00:00', '2013-08-13 07:00:00', '2013-08-12 07:00:00', '2013-08-19 07:00:00', '2014-01-01 07:00:00', '2014-01-01 07:00:00', '2014-01-01 07:00:00', '2014-01-01 07:00:00', '2014-01-01 07:00:00', 300, '07:00:00', 0, '00:00:00');
+INSERT INTO `settings` (`id`, `freshman`, `sophomore`, `junior`, `senior`, `col1_freshman_start`, `col1_sophomore_start`, `col1_junior_start`, `col1_senior_start`, `col1_end`, `col2_freshman_start`, `col2_sophomore_start`, `col2_junior_start`, `col2_senior_start`, `col2_end`, `xy_num_days_open`, `xy_time_open`, `xy_num_days_close`, `xy_time_close`, `rooms`) VALUES
+(1, 2016, 2015, 2014, 2013, '2013-05-01 07:00:00', '2013-08-13 12:00:00', '2013-08-13 07:00:00', '2013-08-12 07:00:00', '2013-08-19 07:00:00', '2014-01-01 07:00:00', '2014-01-01 07:00:00', '2014-01-01 07:00:00', '2014-01-01 07:00:00', '2014-01-01 07:00:00', 300, '07:00:00', 0, '00:00:00', '1,2,3');
 
 -- --------------------------------------------------------
 
@@ -138,9 +145,11 @@ CREATE TABLE IF NOT EXISTS `users` (
   `firstname` text NOT NULL,
   `username` text NOT NULL,
   `role` text,
+  `secondary_role` text,
   `graduation_year` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1172 ;
+
 
 -- --------------------------------------------------------
 
@@ -155,7 +164,7 @@ CREATE TABLE IF NOT EXISTS `xy` (
   `image` text NOT NULL,
   `category` tinyint(4) NOT NULL,
   `teacher_id` int(11) NOT NULL,
-  `preferred_room` varchar(5) NOT NULL,
+  `preferred_room` text NOT NULL,
   `preferred_class_size` int(11) NOT NULL,
   `freshmen` tinyint(1) NOT NULL,
   `sophomores` tinyint(1) NOT NULL,
@@ -164,6 +173,7 @@ CREATE TABLE IF NOT EXISTS `xy` (
   PRIMARY KEY (`id`),
   KEY `teacher_id` (`teacher_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
+
 
 -- --------------------------------------------------------
 
@@ -188,6 +198,7 @@ CREATE TABLE IF NOT EXISTS `xy_assignments` (
   KEY `teacher_id` (`teacher_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=30 ;
 
+
 -- --------------------------------------------------------
 
 --
@@ -202,7 +213,7 @@ CREATE TABLE IF NOT EXISTS `xy_enrollments` (
   KEY `xy_assignments_id` (`xy_assignments_id`),
   KEY `users_id` (`users_id`),
   KEY `xy_assignments_id_2` (`xy_assignments_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
 -- Constraints for dumped tables
