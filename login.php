@@ -33,23 +33,23 @@
 					$get_user_role_result=mysql_query(
 					  "SELECT role,secondary_role FROM users WHERE username='$username' LIMIT 1") or die(mysql_error());
 					$get_user_role_array=mysql_fetch_array($get_user_role_result);
-					$role=$get_user_role_array['role'];
 					$_SESSION['secondary_role']=$get_user_role_array['secondary_role'];
 					$_SESSION['firstname']=$entries[0]["givenname"][0];
 					$_SESSION['lastname']=$entries[0]["sn"][0];
 					//If role is administator, set session variable
-					if(strcmp($role, 'admin')==0 || 
+					if(strcmp($get_user_role_array['role'], 'admin')==0 || 
 					   strcmp($get_user_role_array['secondary_role'], 'admin')==0)
 						$_SESSION['admin']=true;
 					else
 						$_SESSION['admin']=false;
 					//If role is teacher, set session variable
-					if(strcmp($role, 'teacher') == 0)
+					if(strcmp($get_user_role_array['role'], 'teacher') == 0 ||
+						strcmp($get_user_role_array['secondary_role'], 'teacher') == 0)
 						$_SESSION['teacher']=true;
 					else
 						$_SESSION['teacher']=false;
 					//If role is student, set session variable
-					if(strcmp($role, 'student') == 0){
+					if(strcmp($get_user_role_array['role'], 'student') == 0){
 						$_SESSION['student']=true;
 					}
 					else{

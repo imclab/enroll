@@ -124,7 +124,10 @@
               </li>
             </ul>
             <ul class="nav pull-right">
-              <?php if(!is_null($ghostuser)){ ?>
+              <?php if($_SESSION['admin']){
+               echo "<li><a href='../admin'>Admin Panel</a></li>";
+              }
+              if(!is_null($ghostuser)){ ?>
               <li><a href="javascript:void(0)" onclick='ghost_user("<?php echo $master_username; ?>","admin");'><?php echo $master_username; ?></a></li>
               <?php 
                 }
