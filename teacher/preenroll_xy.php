@@ -31,17 +31,17 @@
   $next_date_id=null;
   $next_xy_result=mysql_query(
       "SELECT *
-       FROM dates 
-       WHERE date >= " .  date('Y-m-d') . " AND schedule='a' ORDER BY date LIMIT 1") or die(mysql_error());
+       FROM course_schedule 
+       WHERE date >= " .  date('Y-m-d') . " AND (x=1 OR y=1) ORDER BY date LIMIT 1") or die(mysql_error());
   $next_xy_row= mysql_fetch_array($next_xy_result);
   $next_date=$next_xy_row['date'];
   $next_date_id=$next_xy_row['id'];
   //Get all XY assignments for teacher
   $dates_result=mysql_query(
-      "SELECT xy_assignments.id, xy.name, xy_assignments.date_id, dates.date 
+      "SELECT xy_assignments.id, xy.name, xy_assignments.date_id, course_schedule.date 
        FROM xy_assignments 
        INNER JOIN `xy` on xy_assignments.xy_id=xy.id 
-       INNER JOIN `dates` on xy_assignments.date_id=dates.id  
+       INNER JOIN `course_schedule` on xy_assignments.date_id=course_schedule.id  
        WHERE xy_assignments.teacher_id=$userid AND xy_assignments.final=1")
       or die(mysql_error());
   //Get Student List

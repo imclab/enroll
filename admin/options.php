@@ -132,6 +132,21 @@
         $status=0;
       }
     }
+    elseif(isset($_POST['quarter_button'])){
+      $quarter1=$_POST['quarter1'];
+      $quarter2=$_POST['quarter2'];
+      $quarter3=$_POST['quarter3'];
+      $quarter4=$_POST['quarter4'];
+      if(mysql_query("UPDATE settings 
+                      SET quarter_1_start='$quarter1',quarter_2_start='$quarter2',quarter_3_start='$quarter3',quarter_4_start='$quarter4'
+                      WHERE id=1 LIMIT 1") or die(mysql_error()))
+      {
+        $status=1;
+      }
+      else{
+        $status=0;
+      }
+    }
     elseif(isset($_POST['classrooms'])){
       $classrooms=$_POST['classrooms'];
       if(mysql_query("UPDATE settings 
@@ -253,6 +268,7 @@
           <div class="span2 bs-docs-sidebar hidden-phone hidden-tablet">
             <ul class="nav nav-list bs-docs-sidenav">
               <li><a href='#colloquiumstartend'><i class='icon-chevron-right'></i>Registration Start/End Times</a></li>
+              <li><a href='#quarters'><i class='icon-chevron-right'></i>Quarter Start Dates</a></li>
               <li><a href='#schedule'><i class='icon-chevron-right'></i>Course Schedule</a></li>
               <li><a href='#classrooms'><i class='icon-chevron-right'></i>Available Classrooms</a></li>
               <li><a href='#graduation'><i class='icon-chevron-right'></i>Graduation Years</a></li>
@@ -426,6 +442,62 @@
             </span>
             <div>
               <button type="submit" class="btn btn-primary" name="xytimes">Update</button>
+            </div>
+          </form>
+        </section>
+        <section id="quarters">
+          <div class='page-header'>
+            <h2>Quarter Start Dates</h2>
+          </div>
+          <form class="form" action="#" method="post">
+            <div class="control-group">
+              <label class="control-label" for="inputQuarter1">1st Quarter Start Date</label>
+             <div class="input-append date controls datepicker">
+                <input data-format="yyyy-MM-dd" type="text" 
+                       name="quarter1" id="inputQuarter1" value="<?php echo $get_settings_array['quarter_1_start']; ?>" required />
+                <span class="add-on">
+                  <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                  </i>
+                </span>
+              </div>
+            </div>
+            <div class="control-group">
+              <label class="control-label" for="inputQuarter2">2nd Quarter Start Date</label>
+             <div class="input-append date controls datepicker">
+                <input data-format="yyyy-MM-dd" type="text" 
+                       name="quarter2" id="inputQuarter2" value="<?php echo $get_settings_array['quarter_2_start']; ?>" required />
+                <span class="add-on">
+                  <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                  </i>
+                </span>
+              </div>
+            </div>
+            <div class="control-group">
+              <label class="control-label" for="inputQuarter3">3rd Quarter Start Date</label>
+             <div class="input-append date controls datepicker">
+                <input data-format="yyyy-MM-dd" type="text" 
+                       name="quarter3" id="inputQuarter3" value="<?php echo $get_settings_array['quarter_3_start']; ?>" required />
+                <span class="add-on">
+                  <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                  </i>
+                </span>
+              </div>
+            </div>
+            <div class="control-group">
+              <label class="control-label" for="inputQuarter4">4th Quarter Start Date</label>
+             <div class="input-append date controls datepicker">
+                <input data-format="yyyy-MM-dd" type="text" 
+                       name="quarter4" id="inputQuarter4" value="<?php echo $get_settings_array['quarter_4_start']; ?>" required />
+                <span class="add-on">
+                  <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                  </i>
+                </span>
+              </div>
+            </div>
+            <div class="control-group">
+              <div class="controls">
+                <button type="submit" class="btn btn-primary" name="quarter_button">Update</button>
+              </div>
             </div>
           </form>
         </section>

@@ -26,15 +26,15 @@
   $get_userid_array=mysql_fetch_array($get_userid_result);
   $userid=$get_userid_array['id'];
   //Grab all dates xy is offered 
-  $get_dates_result=mysql_query("SELECT id, date FROM dates WHERE schedule='a'") or die(mysql_error());
+  $get_dates_result=mysql_query("SELECT id,date FROM course_schedule WHERE x=1 OR y=1") or die(mysql_error());
   //Get all xy assignments
   $get_xy_assignments_result=mysql_query(
-              "SELECT dates.date, dates.id AS dateid, xy.name, xy_assignments.notes, 
+              "SELECT course_schedule.date, course_schedule.id AS dateid, xy.name, xy_assignments.notes, 
                       xy_assignments.preferred_block,xy_assignments.final 
-              FROM `dates` 
-              LEFT JOIN `xy_assignments` on xy_assignments.date_id = dates.id 
+              FROM `course_schedule` 
+              LEFT JOIN `xy_assignments` on xy_assignments.date_id = course_schedule.id 
               LEFT JOIN `xy` on xy_assignments.xy_id = xy.id 
-              WHERE dates.schedule ='a' AND xy_assignments.teacher_id=$userid") or die(mysql_error());
+              WHERE (x=1 OR y=1) AND xy_assignments.teacher_id=$userid") or die(mysql_error());
   //Array of all dates with assignments if they exist
   $xy_assignments_dates=array();
   //Reset to first element in array

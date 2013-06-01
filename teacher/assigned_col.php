@@ -31,12 +31,16 @@
   $get_colloquium_repository_result=mysql_query('SELECT colloquiums.id,colloquiums.name, colloquiums.description, colloquiums.image, colloquiums.preferred_room, 
                    colloquiums.preferred_class_size, colloquiums.preferred_lunch_block, colloquiums.freshmen,
                    colloquiums.sophomores, colloquiums.juniors, colloquiums.seniors, users.id AS userid 
-            FROM colloquiums INNER JOIN `users` on colloquiums.teacher_id = users.id WHERE users.username="' . $username . '"')
+            FROM colloquiums 
+            INNER JOIN `users` on colloquiums.teacher_id = users.id 
+            WHERE users.username="' . $username . '"')
             or die (mysql_error());
   //Grab all of the teachers assigned colloquiums
   $get_colloquium_assignments_result=mysql_query(
               'SELECT c_assignments.duration, c_assignments.semester, c_assignments.c_id, c_assignments.notes, c_assignments.final, users.id AS userid
-               FROM c_assignments INNER JOIN `users` on c_assignments.teacher_id = users.id WHERE users.username="' . $username . '"')
+               FROM c_assignments 
+               INNER JOIN `users` on c_assignments.teacher_id = users.id 
+               WHERE users.username="' . $username . '"')
                 or die (mysql_error());
   //Teacher has no assigned colloquiums
   $sem1Col=false;

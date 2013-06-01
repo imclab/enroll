@@ -1,6 +1,5 @@
 <?php
   session_start();
-
   //Credentials aren't legit or user isn't an admin, kick back to login screen
   if (!isset($_SESSION['username']) || 
     $_SESSION['login']!=true || 
@@ -8,14 +7,12 @@
       $_SESSION['from_teacher']=true;
       header("Location: ../login.html");
   }
-
   $master_username=$_SESSION['username'];
   $ghostuser=$_SESSION['ghostuser'];
   if(!is_null($ghostuser))
     $username=$_SESSION['ghostuser'];
   else
     $username=$_SESSION['username'];
-
   include_once '../admin/settings.php';
   //Connects to MySQL and Selects Database
   $con = mysql_connect($host,$db_username,$db_password);
@@ -23,12 +20,10 @@
     die('Could not connect: ' . mysql_error());
   //Select DB
   mysql_select_db($db, $con);
-
   //Get next date for XY Courses
-  $next_xy_result=mysql_query("SELECT id,date FROM dates WHERE date > " .  date('Y-m-d') . " AND schedule=\"a\" ORDER BY date LIMIT 1") or die(mysql_error());
+  $next_xy_result=mysql_query("SELECT id,date FROM course_schedule WHERE date > " .  date('Y-m-d') . " AND ( x=1 OR y=1 )ORDER BY date LIMIT 1") or die(mysql_error());
   $next_xy_row= mysql_fetch_array($next_xy_result);
   $next_xy=$next_xy_row['date'];
-
   mysql_close();
 ?>
 <!DOCTYPE html>
