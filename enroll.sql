@@ -1,7 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 4.0.0
--- http://www.phpmyadmin.net
---
 -- Host: localhost
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -38,7 +34,24 @@ CREATE TABLE IF NOT EXISTS `colloquiums` (
   `seniors` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `teacher_id` (`teacher_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=54 ;
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `course_schedule`
+--
+
+CREATE TABLE IF NOT EXISTS `course_schedule` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `date` date NOT NULL,
+  `colloquium` tinyint(1) NOT NULL,
+  `x` tinyint(1) NOT NULL,
+  `y` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
 
 
 -- --------------------------------------------------------
@@ -60,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `c_assignments` (
   `final` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `teacher_id` (`teacher_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
 
 
 -- --------------------------------------------------------
@@ -76,24 +89,7 @@ CREATE TABLE IF NOT EXISTS `c_enrollments` (
   PRIMARY KEY (`id`),
   KEY `c_assignments_id` (`c_assignments_id`),
   KEY `users_id` (`users_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `dates`
---
-
-CREATE TABLE IF NOT EXISTS `dates` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `date` date NOT NULL,
-  `semester` int(11) DEFAULT NULL,
-  `schedule` char(1) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `date` (`date`),
-  KEY `date_2` (`date`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
-
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 
 -- --------------------------------------------------------
@@ -123,6 +119,10 @@ CREATE TABLE IF NOT EXISTS `settings` (
   `xy_num_days_close` int(11) NOT NULL DEFAULT '0',
   `xy_time_close` time NOT NULL DEFAULT '00:00:00',
   `rooms` text NOT NULL,
+  `quarter_1_start` date NOT NULL,
+  `quarter_2_start` date NOT NULL,
+  `quarter_3_start` date NOT NULL,
+  `quarter_4_start` date NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
@@ -130,8 +130,8 @@ CREATE TABLE IF NOT EXISTS `settings` (
 -- Dumping data for table `settings`
 --
 
-INSERT INTO `settings` (`id`, `freshman`, `sophomore`, `junior`, `senior`, `col1_freshman_start`, `col1_sophomore_start`, `col1_junior_start`, `col1_senior_start`, `col1_end`, `col2_freshman_start`, `col2_sophomore_start`, `col2_junior_start`, `col2_senior_start`, `col2_end`, `xy_num_days_open`, `xy_time_open`, `xy_num_days_close`, `xy_time_close`, `rooms`) VALUES
-(1, 2016, 2015, 2014, 2013, '2013-05-01 07:00:00', '2013-08-13 12:00:00', '2013-08-13 07:00:00', '2013-08-12 07:00:00', '2013-08-19 07:00:00', '2014-01-01 07:00:00', '2014-01-01 07:00:00', '2014-01-01 07:00:00', '2014-01-01 07:00:00', '2014-01-01 07:00:00', 300, '07:00:00', 0, '00:00:00', '1,2,3');
+INSERT INTO `settings` (`id`, `freshman`, `sophomore`, `junior`, `senior`, `col1_freshman_start`, `col1_sophomore_start`, `col1_junior_start`, `col1_senior_start`, `col1_end`, `col2_freshman_start`, `col2_sophomore_start`, `col2_junior_start`, `col2_senior_start`, `col2_end`, `xy_num_days_open`, `xy_time_open`, `xy_num_days_close`, `xy_time_close`, `rooms`, `quarter_1_start`, `quarter_2_start`, `quarter_3_start`, `quarter_4_start`) VALUES
+(1, 2016, 2015, 2014, 2013, '2013-05-01 07:00:00', '2013-08-13 12:00:00', '2013-08-13 07:00:00', '2013-08-12 07:00:00', '2013-08-19 07:00:00', '2014-01-01 07:00:00', '2014-01-01 07:00:00', '2014-01-01 07:00:00', '2014-01-01 07:00:00', '2014-01-01 07:00:00', 300, '07:00:00', 0, '00:00:00', '101,Theater', '2013-08-26', '2013-11-01', '2014-01-24', '2014-03-28');
 
 -- --------------------------------------------------------
 
@@ -149,7 +149,6 @@ CREATE TABLE IF NOT EXISTS `users` (
   `graduation_year` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1172 ;
-
 
 -- --------------------------------------------------------
 
@@ -215,6 +214,7 @@ CREATE TABLE IF NOT EXISTS `xy_enrollments` (
   KEY `xy_assignments_id_2` (`xy_assignments_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
+
 --
 -- Constraints for dumped tables
 --
@@ -248,8 +248,8 @@ ALTER TABLE `xy`
 -- Constraints for table `xy_assignments`
 --
 ALTER TABLE `xy_assignments`
+  ADD CONSTRAINT `xy_assignments_ibfk_2` FOREIGN KEY (`date_id`) REFERENCES `course_schedule` (`id`),
   ADD CONSTRAINT `xy_assignments_ibfk_1` FOREIGN KEY (`xy_id`) REFERENCES `xy` (`id`),
-  ADD CONSTRAINT `xy_assignments_ibfk_2` FOREIGN KEY (`date_id`) REFERENCES `dates` (`id`),
   ADD CONSTRAINT `xy_assignments_ibfk_3` FOREIGN KEY (`teacher_id`) REFERENCES `users` (`id`);
 
 --
