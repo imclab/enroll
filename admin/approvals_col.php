@@ -154,7 +154,7 @@
         <p class="lead pull-right">
           <?php echo $col_seats; ?> seats assigned.
         </p>
-          <table class="table table-striped">
+          <table class="table table-striped table-hover">
             <thead>
                 <tr>
                   <th>Name</th>

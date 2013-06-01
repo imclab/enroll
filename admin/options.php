@@ -90,6 +90,48 @@
         $status=0;
       }
     }
+    elseif(isset($_POST['add_schedule'])){
+      $date=$_POST['date'];
+      $colloquium=$_POST['colloquium'];
+      if($colloquium!=1)
+        $colloquium=0;
+      $x=$_POST['x'];
+      if($x!=1)
+        $x=0;
+      $y=$_POST['y'];
+      if($y!=1)
+        $y=0;
+      if(mysql_query("INSERT INTO course_schedule(date,colloquium,x,y) 
+                      VALUES('$date',$colloquium,$x,$y)") or die(mysql_error()))
+      {
+        $status=1;
+      }
+      else{
+        $status=0;
+      }
+    }
+    elseif(isset($_POST['update_schedule'])){
+      $id=$_POST['id'];
+      $date=$_POST['date'];
+      $colloquium=$_POST['colloquium'];
+      if($colloquium!=1)
+        $colloquium=0;
+      $x=$_POST['x'];
+      if($x!=1)
+        $x=0;
+      $y=$_POST['y'];
+      if($y!=1)
+        $y=0;
+      if(mysql_query("UPDATE course_schedule 
+                      SET date='$date',colloquium=$colloquium,x=$x,y=$y
+                      WHERE id=$id LIMIT 1") or die(mysql_error()))
+      {
+        $status=1;
+      }
+      else{
+        $status=0;
+      }
+    }
     elseif(isset($_POST['classrooms'])){
       $classrooms=$_POST['classrooms'];
       if(mysql_query("UPDATE settings 
@@ -110,6 +152,9 @@
   $sophomore=$get_settings_array['sophomore'];
   $junior=$get_settings_array['junior'];
   $senior=$get_settings_array['senior'];
+  //Get Course Schedule
+  $get_course_schedule_result=mysql_query(
+    "SELECT * FROM course_schedule") or die(mysql_error());
   mysql_close();
 ?>
 <!DOCTYPE html>
@@ -207,8 +252,8 @@
         <div class="row">
           <div class="span2 bs-docs-sidebar hidden-phone hidden-tablet">
             <ul class="nav nav-list bs-docs-sidenav">
-              <li><a href='#colloquiumstartend'><i class='icon-chevron-right'></i>Colloquium Start/End Times</a></li>
-              <li><a href='#xystartend'><i class='icon-chevron-right'></i>XY Start/End Times</a></li>
+              <li><a href='#colloquiumstartend'><i class='icon-chevron-right'></i>Registration Start/End Times</a></li>
+              <li><a href='#schedule'><i class='icon-chevron-right'></i>Course Schedule</a></li>
               <li><a href='#classrooms'><i class='icon-chevron-right'></i>Available Classrooms</a></li>
               <li><a href='#graduation'><i class='icon-chevron-right'></i>Graduation Years</a></li>
               <li><a href='#sync'><i class='icon-chevron-right'></i>Sync Users</a></li>
@@ -217,7 +262,7 @@
         <div class="span9 offset1">
           <section id="colloquiumstartend">
           <div class='page-header'>
-            <h1>Colloquium Start/End Times</h1>
+            <h2>Colloquium Registration Start/End Times</h2>
           </div>
           <div class="row">
             <div class="span4">
@@ -354,7 +399,7 @@
         </section>
         <section id="xystartend">
           <div class='page-header'>
-            <h1>XY Start/End Times</h1>
+            <h2>XY Registration Start/End Times</h2>
           </div>
           <form class="form" action="#" method="post">
             XY registration will open 
@@ -384,9 +429,94 @@
             </div>
           </form>
         </section>
+        <section id="schedule">
+          <div class='page-header'>
+            <h2>Course Schedule</h2>
+          </div>
+          <table class="table table-striped table-condensed table-hover">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Colloquium</th>
+                <th>X</th>
+                <th>Y</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php
+                while($row=mysql_fetch_array($get_course_schedule_result)){
+              ?>
+                <tr>
+                  <form class="form" action="#" method="post">
+                    <input name='id' type='hidden' value="<?php echo $row['id']; ?>" />
+                    <td>
+                      <div class="input-append date controls datepicker">
+                        <input class="input-small" data-format="yyyy-MM-dd" type="text" name="date" value="<?php echo $row['date']; ?>" required />
+                        <span class="add-on">
+                          <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                        </span>
+                      </div>
+                    </td>
+                    <td>
+                      <label class='checkbox inline'>
+                        <input type='checkbox' name='colloquium' value=1 <?php if($row['colloquium']){echo " checked";} ?> />
+                      </label>
+                    </td>
+                    <td>
+                      <label class='checkbox inline'>
+                        <input type='checkbox' name='x' value=1 <?php if($row['x']){echo " checked";} ?> />
+                      </label>
+                    </td>
+                    <td>
+                      <label class='checkbox inline'>
+                        <input type='checkbox' name='y' value=1 <?php if($row['y']){echo " checked";} ?> />
+                      </label>
+                    </td>
+                    <td>
+                      <button type="submit" class="btn" name="update_schedule">Update</button>
+                    </td>
+                  </form>
+                </tr>
+              <?php
+                }
+              ?>
+              <tr>
+                <form class="form" action="#" method="post">
+                  <td>
+                    <div class="input-append date controls datepicker">
+                      <input class="input-small" data-format="yyyy-MM-dd" type="text" name="date" required />
+                      <span class="add-on">
+                        <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <label class='checkbox inline'>
+                      <input type='checkbox' name='colloquium' value=1 />
+                    </label>
+                  </td>
+                  <td>
+                    <label class='checkbox inline'>
+                      <input type='checkbox' name='x' value=1 />
+                    </label>
+                  </td>
+                  <td>
+                    <label class='checkbox inline'>
+                      <input type='checkbox' name='y' value=1 />
+                    </label>
+                  </td>
+                  <td>
+                    <button type="submit" class="btn btn-primary" name="add_schedule">Add</button>
+                  </td>
+                </form>
+              </tr>
+            </tbody>
+          </table>
+        </section>
         <section id="classrooms">
           <div class='page-header'>
-            <h1>Available Classrooms</h1>
+            <h2>Available Classrooms</h2>
           </div>
           <form class="form" action="#" method="post">
             <div class="control-group">
@@ -404,7 +534,7 @@
        </section>
           <section id="graduation">
             <div class='page-header'>
-              <h1>Graduation Years</h1>
+              <h2>Graduation Years</h2>
             </div>
               <form class="form-horizontal" action="#" method="post">
                 <div class="control-group">
@@ -440,7 +570,7 @@
           </section>
           <section id="sync">
             <div class='page-header'>
-              <h1>Sync Users</h1>
+              <h2>Sync Users</h2>
             </div>
             <form class="form-horizontal" id="sync_users_form" method="post">
               <div class="control-group">
@@ -494,6 +624,9 @@
         });
         $('.timepicker').datetimepicker({
           pickDate: false
+        });
+        $('.datepicker').datetimepicker({
+          pickTime: false
         });
       });
     </script>
