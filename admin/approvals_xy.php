@@ -22,13 +22,13 @@
   $next_date_id=null;
   $next_xy_result=mysql_query(
       "SELECT *
-       FROM dates 
-       WHERE date >= " .  date('Y-m-d') . " AND schedule='a' ORDER BY date LIMIT 1") or die(mysql_error());
+       FROM course_schedule 
+       WHERE date >= " .  date('Y-m-d') . " AND (x=1 OR y=1) ORDER BY date LIMIT 1") or die(mysql_error());
   $next_xy_row= mysql_fetch_array($next_xy_result);
   $next_date=$next_xy_row['date'];
   $next_date_id=$next_xy_row['id'];
   //Get all dates where XY is offered
-  $dates_result=mysql_query("SELECT * FROM dates WHERE schedule='a'") or die(mysql_error());
+  $dates_result=mysql_query("SELECT * FROM course_schedule WHERE x=1 OR y=1") or die(mysql_error());
   $xy_assignments_result=mysql_query(
     "SELECT users.lastname, users.firstname, xy_assignments.date_id, xy_assignments.id, 
             xy_assignments.final, xy.name, xy_assignments.class_size, xy_assignments.room, 

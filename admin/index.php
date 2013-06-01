@@ -29,6 +29,11 @@
     elseif(strcmp($row['role'], 'teacher')==0)
       $numTeachers++;
   }
+  //Get settings
+  //Get Settings
+  $get_settings_result=mysql_query(
+    "SELECT * FROM settings LIMIT 1") or die(mysql_error());
+  $get_settings_array=mysql_fetch_array($get_settings_result);
   $num_col1=0;
   $num_col1_final=0;
   $num_col2=0;
@@ -77,16 +82,15 @@
     $progress_col2_finalized="progress-warning";
   elseif($percentage_col2_finalized>=70)
     $progress_col2_finalized="progress-success";
-
-
-
-
   //Get next date
-  $next_date_result=mysql_query("SELECT id,date,semester FROM dates WHERE date > " .  date('Y-m-d') . "  LIMIT 1") or die(mysql_error());
+  $next_date_result=mysql_query("SELECT id,date FROM course_schedule WHERE date > " .  date('Y-m-d') . "  LIMIT 1") or die(mysql_error());
   $next_date_row= mysql_fetch_array($next_date_result);
   $next_date=$next_date_row['date'];
   $next_date_id=$next_date_row['id'];
-  $next_date_semester=$next_date_row['semester'];
+  if($next_date < $get_settings_array['quarter_3_start'])
+    $next_date_semester=1;
+  else
+    $next_date_semester=1;
   //Get number of xy courses assigned for that date
   $xy_assignments_result=mysql_query("SELECT id,final FROM `xy_assignments` WHERE date_id=$next_date_id") or die(mysql_error());
   $xy_assignments_count=0;

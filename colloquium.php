@@ -73,7 +73,7 @@
   if(time() >= strtotime($col2_start) && time() < strtotime($col2_end))
     $col2_register=true;
   //Get next date for colloquium courses
-  $next_col_result=mysql_query("SELECT id,date FROM dates WHERE date >= " .  date('Y-m-d') . " ORDER BY date LIMIT 1") or die(mysql_error());
+  $next_col_result=mysql_query("SELECT id,date FROM course_schedule WHERE date >= " .  date('Y-m-d') . " AND colloquium=1 ORDER BY date LIMIT 1") or die(mysql_error());
   $next_col_row= mysql_fetch_array($next_col_result);
   $next_col=$next_col_row['date'];
   $next_col_id=$next_col_row['id'];
