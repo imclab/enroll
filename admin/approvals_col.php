@@ -29,11 +29,33 @@
       INNER JOIN `c_assignments` on c_assignments.teacher_id=users.id 
       INNER JOIN `colloquiums` on c_assignments.c_id=colloquiums.id 
       WHERE c_assignments.semester=$selected_semester") or die(mysql_error());
+  //Lunch Block Breakdown
+  $num_finalized_courses=0;
+  $num_lunch_block_a=0;
+  $num_lunch_block_b=0;
+  $num_lunch_block_c=0;
+  $num_lunch_block_d=0;
+  $temp=null;
   //Traverse colloquium assignments, remove rooms from classrooms array that are already assigned to a finalized colloquium
   while ($row=mysql_fetch_array($col_assignments_result)) {
     //If assignment is finalized
     if($row['final']){
       unset( $classrooms[ array_search($row['room'], $classrooms) ] );
+      $num_finalized_courses++;
+      switch ($row['lunch_block']){
+        case 'A':   
+            $num_lunch_block_a++;
+            break;
+        case "B":   
+          $num_lunch_block_b++;
+          break;
+        case "C":  
+          $num_lunch_block_c++;
+          break;
+        case "D":  
+          $num_lunch_block_d++;
+          break;
+      }
     }
   }
   //Calculate total seats offered
@@ -151,6 +173,32 @@
       </h1>
       <hr />
       <div id='main' role='main'>
+        <div class="span4">
+          Lunch Block A:
+          <span class="tooltip" data-toggle="tooltip" data-placement="left" 
+                title="<?php echo $num_lunch_block_a/$num_finalized_courses*100; ?>%">Tooltip</span>
+          <div class="progress progress-striped active progress-info">
+            <div class="bar" style="width: <?php echo $num_lunch_block_a/$num_finalized_courses*100; ?>%;"></div>
+          </div>
+          Lunch Block B:
+          <span class="tooltip" data-toggle="tooltip" data-placement="left" 
+                title="<?php echo $num_lunch_block_b/$num_finalized_courses*100; ?>%">Tooltip</span>
+          <div class="progress progress-striped active progress-info">
+            <div class="bar" style="width: <?php echo $num_lunch_block_b/$num_finalized_courses*100; ?>%;"></div>
+          </div>
+          Lunch Block C:
+          <span class="tooltip" data-toggle="tooltip" data-placement="left" 
+                title="<?php echo $num_lunch_block_c/$num_finalized_courses*100; ?>%">Tooltip</span>
+          <div class="progress progress-striped active progress-info">
+            <div class="bar" style="width: <?php echo $num_lunch_block_c/$num_finalized_courses*100; ?>%;"></div>
+          </div>
+          Lunch Block D:
+          <span class="tooltip" data-toggle="tooltip" data-placement="left" 
+                title="<?php echo $num_lunch_block_d/$num_finalized_courses*100; ?>%">Tooltip</span>
+          <div class="progress progress-striped active progress-info">
+            <div class="bar" style="width: <?php echo $num_lunch_block_d/$num_finalized_courses*100; ?>%;"></div>
+          </div>
+        </div>
         <p class="lead pull-right">
           <?php echo $col_seats; ?> seats assigned.
         </p>
