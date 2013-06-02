@@ -187,7 +187,6 @@
                         echo "<td></td>";
                         echo "<td></td>";
                         echo "<td></td>";
-                        echo "</form>";
                         echo "</tr>";
                       }
                       else{
