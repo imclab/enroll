@@ -25,10 +25,10 @@
   $status=null;
   if($_SERVER['REQUEST_METHOD'] == "POST"){
     if(isset($_POST['gradyears'])){
-      $post_freshman=$_POST['freshman'];
-      $post_sophomore=$_POST['sophomore'];
-      $post_junior=$_POST['junior'];
-      $post_senior=$_POST['senior'];
+      $post_freshman=mysql_real_escape_string($_POST['freshman']);
+      $post_sophomore=mysql_real_escape_string($_POST['sophomore']);
+      $post_junior=mysql_real_escape_string($_POST['junior']);
+      $post_senior=mysql_real_escape_string($_POST['senior']);
       if(mysql_query("UPDATE settings 
                          SET freshman='$post_freshman',sophomore='$post_sophomore',
                          junior='$post_junior',senior='$post_senior'
@@ -41,11 +41,11 @@
       }
     }
     elseif(isset($_POST['sem1times'])){
-      $post_freshman=$_POST['freshman'];
-      $post_sophomore=$_POST['sophomore'];
-      $post_junior=$_POST['junior'];
-      $post_senior=$_POST['senior'];
-      $post_end=$_POST['end'];
+      $post_freshman=mysql_real_escape_string($_POST['freshman']);
+      $post_sophomore=mysql_real_escape_string($_POST['sophomore']);
+      $post_junior=mysql_real_escape_string($_POST['junior']);
+      $post_senior=mysql_real_escape_string($_POST['senior']);
+      $post_end=mysql_real_escape_string($_POST['end']);
       if(mysql_query("UPDATE settings 
                          SET col1_freshman_start='$post_freshman',col1_sophomore_start='$post_sophomore',
                          col1_junior_start='$post_junior',col1_senior_start='$post_senior',col1_end='$post_end'
@@ -58,11 +58,11 @@
       }
     }
     elseif(isset($_POST['sem2times'])){
-      $post_freshman=$_POST['freshman'];
-      $post_sophomore=$_POST['sophomore'];
-      $post_junior=$_POST['junior'];
-      $post_senior=$_POST['senior'];
-      $post_end=$_POST['end'];
+      $post_freshman=mysql_real_escape_string($_POST['freshman']);
+      $post_sophomore=mysql_real_escape_string($_POST['sophomore']);
+      $post_junior=mysql_real_escape_string($_POST['junior']);
+      $post_senior=mysql_real_escape_string($_POST['senior']);
+      $post_end=mysql_real_escape_string($_POST['end']);
       if(mysql_query("UPDATE settings 
                          SET col2_freshman_start='$post_freshman',col2_sophomore_start='$post_sophomore',
                          col2_junior_start='$post_junior',col2_senior_start='$post_senior',col2_end='$post_end'
@@ -75,10 +75,10 @@
       }
     }
     elseif(isset($_POST['xytimes'])){
-      $xy_num_days_open=$_POST['xy_num_days_open'];
-      $xy_time_open=$_POST['xy_time_open'];
-      $xy_num_days_close=$_POST['xy_num_days_close'];
-      $xy_time_close=$_POST['xy_time_close'];
+      $xy_num_days_open=mysql_real_escape_string($_POST['xy_num_days_open']);
+      $xy_time_open=mysql_real_escape_string($_POST['xy_time_open']);
+      $xy_num_days_close=mysql_real_escape_string($_POST['xy_num_days_close']);
+      $xy_time_close=mysql_real_escape_string($_POST['xy_time_close']);
       if(mysql_query("UPDATE settings 
                          SET xy_num_days_open='$xy_num_days_open',xy_time_open='$xy_time_open',
                          xy_num_days_close='$xy_num_days_close',xy_time_close='$xy_time_close'
@@ -91,18 +91,18 @@
       }
     }
     elseif(isset($_POST['add_schedule'])){
-      $date=$_POST['date'];
-      $colloquium=$_POST['colloquium'];
+      $date=mysql_real_escape_string($_POST['date']);
+      $colloquium=mysql_real_escape_string($_POST['colloquium']);
       if($colloquium!=1)
         $colloquium=0;
-      $x=$_POST['x'];
+      $x=mysql_real_escape_string($_POST['x']);
       if($x!=1)
         $x=0;
-      $y=$_POST['y'];
+      $y=mysql_real_escape_string($_POST['y']);
       if($y!=1)
         $y=0;
       if(mysql_query("INSERT INTO course_schedule(date,colloquium,x,y) 
-                      VALUES('$date',$colloquium,$x,$y)") or die(mysql_error()))
+                      VALUES('$date','$colloquium','$x','$y')") or die(mysql_error()))
       {
         $status=1;
       }
@@ -111,20 +111,20 @@
       }
     }
     elseif(isset($_POST['update_schedule'])){
-      $id=$_POST['id'];
-      $date=$_POST['date'];
-      $colloquium=$_POST['colloquium'];
+      $id=mysql_real_escape_string($_POST['id']);
+      $date=mysql_real_escape_string($_POST['date']);
+      $colloquium=mysql_real_escape_string($_POST['colloquium']);
       if($colloquium!=1)
         $colloquium=0;
-      $x=$_POST['x'];
+      $x=mysql_real_escape_string($_POST['x']);
       if($x!=1)
         $x=0;
-      $y=$_POST['y'];
+      $y=mysql_real_escape_string($_POST['y']);
       if($y!=1)
         $y=0;
       if(mysql_query("UPDATE course_schedule 
-                      SET date='$date',colloquium=$colloquium,x=$x,y=$y
-                      WHERE id=$id LIMIT 1") or die(mysql_error()))
+                      SET date='$date',colloquium='$colloquium',x='$x',y='$y''
+                      WHERE id='$id' LIMIT 1") or die(mysql_error()))
       {
         $status=1;
       }
@@ -133,10 +133,10 @@
       }
     }
     elseif(isset($_POST['quarter_button'])){
-      $quarter1=$_POST['quarter1'];
-      $quarter2=$_POST['quarter2'];
-      $quarter3=$_POST['quarter3'];
-      $quarter4=$_POST['quarter4'];
+      $quarter1=mysql_real_escape_string($_POST['quarter1']);
+      $quarter2=mysql_real_escape_string($_POST['quarter2']);
+      $quarter3=mysql_real_escape_string($_POST['quarter3']);
+      $quarter4=mysql_real_escape_string($_POST['quarter4']);
       if(mysql_query("UPDATE settings 
                       SET quarter_1_start='$quarter1',quarter_2_start='$quarter2',quarter_3_start='$quarter3',quarter_4_start='$quarter4'
                       WHERE id=1 LIMIT 1") or die(mysql_error()))
@@ -148,7 +148,7 @@
       }
     }
     elseif(isset($_POST['classrooms'])){
-      $classrooms=$_POST['classrooms'];
+      $classrooms=mysql_real_escape_string($_POST['classrooms']);
       if(mysql_query("UPDATE settings 
                          SET rooms='$classrooms' WHERE id=1 LIMIT 1") or die(mysql_error()))
       {
