@@ -197,18 +197,26 @@
     <div class='container'>
       <div class="span9">
         Teachers who have assigned a Colloquium to Semester 1:
+        <span class="tooltip" data-toggle="tooltip" data-placement="left" 
+              title="<?php echo $num_col1 . ' teachers'; ?>">Tooltip</span>
         <div class="progress progress-striped active <?php echo $progress_col1_assigned; ?>">
           <div class="bar" style="width: <?php echo $percentage_col1_assigned; ?>%;"></div>
         </div>
         Teachers who have assigned a Colloquium to Semester 2:
+        <span class="tooltip" data-toggle="tooltip" data-placement="left" 
+              title="<?php echo $num_col2 . ' teachers'; ?>">Tooltip</span>
         <div class="progress progress-striped active <?php echo $progress_col2_assigned; ?>">
           <div class="bar" style="width: <?php echo $percentage_col2_assigned; ?>%;"></div>
         </div>
         Number of Semester 1 Colloquiums you have finalized:
+        <span class="tooltip" data-toggle="tooltip" data-placement="left" 
+              title="<?php echo $num_col1_final . ' courses'; ?>">Tooltip</span>
         <div class="progress progress-striped active <?php echo $progress_col1_finalized; ?>">
           <div class="bar" style="width: <?php echo $percentage_col1_finalized; ?>%;"></div>
         </div>
         Number of Semester 2 Colloquiums you have finalized:
+        <span class="tooltip" data-toggle="tooltip" data-placement="left" 
+              title="<?php echo $num_col2_final . ' courses'; ?>">Tooltip</span>
         <div class="progress progress-striped active <?php echo $progress_col2_finalized; ?>">
           <div class="bar" style="width: <?php echo $percentage_col2_finalized; ?>%;"></div>
         </div>
