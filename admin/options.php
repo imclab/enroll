@@ -223,11 +223,24 @@
                        </ul>
                    </li>
                </ul>
+              </li>
+              <li class="dropdown">
+               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Enrollments <b class="caret"></b></a>
+               <ul class="dropdown-menu">
+                 <li><a href='enroll_xy.php'>XY</a></li>
+                   <li class="dropdown-submenu">
+                       <a tabindex="-1" href="#">Colloquium</a>
+                       <ul class="dropdown-menu">
+                          <li><a href='enroll_col.php?semester=1'>Semester 1</a></li>
+                          <li><a href='enroll_col.php?semester=2'>Semester 2</a></li>
+                       </ul>
+                   </li>
+               </ul>
+              </li>
                <?php if($_SESSION['teacher']){
                 echo "<li><a href='../teacher/agenda.php'>My Courses</a></li>";
                }?>
                <li class="active"><a href="options.php">Settings</a></li>
-             </li>
            </ul>
             <ul class="nav pull-right">
                 <li>
