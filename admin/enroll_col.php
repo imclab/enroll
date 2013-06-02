@@ -32,7 +32,14 @@
   //Get Settings
   $get_settings_result=mysql_query(
     "SELECT * FROM settings LIMIT 1") or die(mysql_error());
-  mysql_close();
+  //Get selected semester from URL
+  $selected_semester=$_GET['semester'];
+  //Get Colloquium assignment for selected Semester
+  $col_assignment_result=mysql_query(
+        "SELECT c_assignments.id, colloquiums.name 
+         FROM c_assignments 
+         INNER JOIN `colloquiums` on c_assignments.c_id=colloquiums.id  
+         WHERE semester=$selected_semester AND c_assignments.final=1") or die(mysql_error());
 ?>
 <!DOCTYPE html>
 <html lang='en'>
@@ -136,11 +143,24 @@
     </div>
     <header id="overview">
       <div class="container">
-        <h1>Nothing here yet!</h1>
+        <h1>Semester <?php echo $selected_semester; ?></h1>
       </div>
     </header>
     <div class='container'>
-
+      <div class="row">
+        <div class="span2 bs-docs-sidebar hidden-phone hidden-tablet">
+          <ul class="nav nav-list bs-docs-sidenav">
+            <?php
+              while($row=mysql_fetch_array($col_assignment_result)){
+                echo "<li><a href='#" . $row['id'] . "'><i class='icon-chevron-right'></i>" . $row['name'] . "</a></li>";
+              }
+              mysql_close();
+            ?>
+          </ul>
+      </div>
+      <div class="span9 offset1">
+        
+      </div>
     </div> <!-- /container -->
   </body>
 </html>
