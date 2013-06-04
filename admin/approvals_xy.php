@@ -30,9 +30,10 @@
   //Get all dates where XY is offered
   $dates_result=mysql_query("SELECT * FROM course_schedule WHERE x=1 OR y=1") or die(mysql_error());
   $xy_assignments_result=mysql_query(
-    "SELECT users.lastname, users.firstname, xy_assignments.date_id, xy_assignments.id, 
+    "SELECT users.lastname, users.firstname, xy_assignments.date_id, xy_assignments.id,
             xy_assignments.final, xy.name, xy_assignments.class_size, xy_assignments.room, 
-            xy_assignments.preferred_block, xy_assignments.block, xy.preferred_class_size, xy.preferred_room, xy_assignments.notes 
+            xy_assignments.preferred_block, xy_assignments.block, xy.preferred_class_size, 
+            xy.preferred_room, xy_assignments.notes, xy.description
      FROM `users` 
      INNER JOIN `xy_assignments` on xy_assignments.teacher_id=users.id 
      INNER JOIN `xy` on xy_assignments.xy_id=xy.id") or die(mysql_error());
@@ -222,7 +223,8 @@
                           echo "<input name='type' type='hidden' value='xy' />";
                           echo "<input id='keepstudents" . $row['id'] . "' name='keepstudents' type='hidden' value=1 />";
                           echo "<td>" . $row['lastname'] . ", " . $row['firstname'] . "</td>";
-                          echo "<td>" . $row['name'] . "</td>";
+                          echo "<td><span class='tooltip' data-toggle='tooltip' data-placement='top' title='" . $row['description'] . "'>Tooltip</span>";
+                          echo $row['name'] . "</td>";
                           echo "<td>" . $row['preferred_class_size'] . "</td>";
                           if(!$row['final']){
                             if($row['class_size']!=0)
