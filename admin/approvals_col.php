@@ -24,7 +24,7 @@
   $col_assignments_result=mysql_query(
       "SELECT users.lastname, users.firstname, c_assignments.id, c_assignments.final, colloquiums.name, 
               c_assignments.class_size, c_assignments.room, colloquiums.preferred_lunch_block, c_assignments.lunch_block, c_assignments.duration,
-              colloquiums.preferred_class_size, colloquiums.preferred_room, c_assignments.notes
+              colloquiums.preferred_class_size, colloquiums.preferred_room, c_assignments.notes, colloquiums.description
       FROM `users` 
       INNER JOIN `c_assignments` on c_assignments.teacher_id=users.id 
       INNER JOIN `colloquiums` on c_assignments.c_id=colloquiums.id 
@@ -252,7 +252,8 @@
                     ?>
                     <?php
                     echo "<td>" . $row['lastname'] . ", " . $row['firstname'] . "</td>";
-                    echo "<td>" . $row['name'] . "</td>";
+                    echo "<td><span class='tooltip' data-toggle='tooltip' data-placement='top' title='" . $row['description'] . "'>Tooltip</span>";
+                    echo $row['name'] . "</td>";
                     echo "<td>";
                         if(strcmp($row['duration'],'s')==0)
                           echo "Semester";
