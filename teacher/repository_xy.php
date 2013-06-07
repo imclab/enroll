@@ -230,7 +230,7 @@
                   </div>
                   <div class='control-group'>
                     <div class='controls'>
-                      <button type='submit' class='btn'>Add Course</button>
+                      <button type='submit' class='btn btn-primary'>Add Course</button>
                       <div id='status'></div>
                     </div>
                   </div>
