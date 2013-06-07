@@ -16,10 +16,14 @@
   mysql_select_db($db, $con);
   //Ghost usernames
   $ghost_usernames=array();
+  $teacher_usernames=array();
   $get_ghost_usernames=mysql_query(
-    "SELECT username FROM users WHERE role='teacher' OR role='student'") or die(mysql_error());
+    "SELECT username,role FROM users WHERE role='teacher' OR role='student'") or die(mysql_error());
   while($row=mysql_fetch_array($get_ghost_usernames)){
     $ghost_usernames[]="\"" . $row['username'] . "\"";
+    if(strcmp($row['role'], 'student')!=0){
+      $teacher_usernames[]="\"" . $row['username'] . "\"";
+    }
   }
   //Handle form updates
   $status=null;
@@ -158,6 +162,29 @@
         $status=0;
       }
     }
+    elseif(isset($_POST['add_ghost_user'])){
+      $username=mysql_real_escape_string($_POST['username']);
+      $ghost_user=mysql_real_escape_string($_POST['ghost_user']);
+      if(mysql_query("UPDATE users
+                         SET ghost_user='$ghost_user' WHERE username='$username' LIMIT 1") or die(mysql_error()))
+      {
+        $status=1;
+      }
+      else{
+        $status=0;
+      }
+    }
+    elseif(isset($_POST['remove_ghost_user'])){
+      $username=mysql_real_escape_string($_POST['username']);
+      if(mysql_query("UPDATE users
+                         SET ghost_user=NULL WHERE username='$username' LIMIT 1") or die(mysql_error()))
+      {
+        $status=1;
+      }
+      else{
+        $status=0;
+      }
+    }
   }
   //Get Settings
   $get_settings_result=mysql_query(
@@ -170,6 +197,9 @@
   //Get Course Schedule
   $get_course_schedule_result=mysql_query(
     "SELECT * FROM course_schedule") or die(mysql_error());
+  //Get Ghost Users
+  $get_ghost_users_result=mysql_query(
+    "SELECT id,username,ghost_user FROM `users` WHERE ghost_user IS NOT NULL") or die(mysql_error());
   mysql_close();
 ?>
 <!DOCTYPE html>
@@ -297,7 +327,7 @@
           <div class="row">
             <div class="span4">
               <h3>Semester 1</h3>
-              <form class="form" action="#" method="post">
+              <form class="form" action="#colloquiumstartend" method="post">
                 <div class="control-group">
                   <label class="control-label" for="inputCol1Freshman">Freshman Start Time</label>
                  <div class="input-append date controls datetimepicker">
@@ -362,7 +392,7 @@
             </div>
             <div class="span5">
               <h3>Semester 2</h3>
-              <form class="form" action="#" method="post">
+              <form class="form" action="#colloquiumstartend" method="post">
                 <div class="control-group">
                   <label class="control-label" for="inputCol2Freshman">Freshman Start Time</label>
                  <div class="input-append date controls datetimepicker">
@@ -431,7 +461,7 @@
           <div class='page-header'>
             <h2>XY Registration Start/End Times</h2>
           </div>
-          <form class="form" action="#" method="post">
+          <form class="form" action="#xystartend" method="post">
             XY registration will open 
             <input type="number" name="xy_num_days_open" class="input-mini" value=<?php echo $get_settings_array['xy_num_days_open']; ?> required /> 
             days prior at 
@@ -463,7 +493,7 @@
           <div class='page-header'>
             <h2>Quarter Start Dates</h2>
           </div>
-          <form class="form" action="#" method="post">
+          <form class="form" action="#quarters" method="post">
             <div class="control-group">
               <label class="control-label" for="inputQuarter1">1st Quarter Start Date</label>
              <div class="input-append date controls datepicker">
@@ -534,7 +564,7 @@
                 while($row=mysql_fetch_array($get_course_schedule_result)){
               ?>
                 <tr>
-                  <form class="form" action="#" method="post">
+                  <form class="form" action="#schedule" method="post">
                     <input name='id' type='hidden' value="<?php echo $row['id']; ?>" />
                     <td>
                       <div class="input-append date controls datepicker">
@@ -568,7 +598,7 @@
                 }
               ?>
               <tr>
-                <form class="form" action="#" method="post">
+                <form class="form" action="#schedule" method="post">
                   <td>
                     <div class="input-append date controls datepicker">
                       <input class="input-small" data-format="yyyy-MM-dd" type="text" name="date" required />
@@ -604,7 +634,7 @@
           <div class='page-header'>
             <h2>Available Classrooms</h2>
           </div>
-          <form class="form" action="#" method="post">
+          <form class="form" action="#classrooms" method="post">
             <div class="control-group">
               <label class="control-label" for="classroms">List of classrooms:</label>
               <div class="controls">
@@ -622,7 +652,7 @@
             <div class='page-header'>
               <h2>Graduation Years</h2>
             </div>
-              <form class="form-horizontal" action="#" method="post">
+              <form class="form-horizontal" action="#graduation" method="post">
                 <div class="control-group">
                   <label class="control-label" for="inputFreshman">Freshman</label>
                   <div class="controls">
@@ -654,11 +684,71 @@
                 </div>
               </form>
           </section>
+          <section id="ghost">
+            <div class='page-header'>
+              <h2>Ghost Users</h2>
+            </div>
+            <table class="table table-striped table-condensed table-hover">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php
+                  while($row=mysql_fetch_array($get_ghost_users_result)){
+                ?>
+                  <tr>
+                    <form class="form" action="#ghost" method="post">
+                      <input name='id' type='hidden' value="<?php echo $row['id']; ?>" />
+                      <td>
+                          <input class="input-medium uneditable-input" name="username" type="text" value="<?php echo $row['username']; ?>" />
+                      </td>
+                      <td>
+                        appears as
+                      </td>
+                      <td>
+                        <input class="input-medium uneditable-input" name="ghost_user" type="text" value="<?php echo $row['ghost_user']; ?>" />
+                      </td>
+                      <td>
+                        <button type="submit" class="btn" name="remove_ghost_user">Remove</button>
+                      </td>
+                    </form>
+                  </tr>
+                <?php
+                  }
+                ?>
+                <tr>
+                  <form class="form" action="#ghost" method="post">
+                    <td>
+                      <input class="input-medium" name="username" type="text" 
+                             data-provide="typeahead" autocomplete="off"
+                             data-source='[<?php echo implode(',',$teacher_usernames); ?>]' />
+                    </td>
+                    <td>
+                      appears as
+                    </td>
+                    <td>
+                      <input class="input-medium" name="ghost_user" type="text" 
+                             data-provide="typeahead" autocomplete="off"
+                             data-source='[<?php echo implode(',',$teacher_usernames); ?>]' />
+                    </td>
+                    <td>
+                      <button type="submit" class="btn btn-primary" name="add_ghost_user">Add</button>
+                    </td>
+                  </form>
+                </tr>
+              </tbody>
+            </table>
+          </section>
           <section id="sync">
             <div class='page-header'>
               <h2>Sync Users</h2>
             </div>
-            <form class="form-horizontal" id="sync_users_form" method="post">
+            <form class="form-horizontal" action="#sync" id="sync_users_form" method="post">
               <div class="control-group">
                 <label class="control-label" for="inputUsername">Username</label>
                 <div class="controls">
