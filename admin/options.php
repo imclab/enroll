@@ -123,7 +123,7 @@
       if($y!=1)
         $y=0;
       if(mysql_query("UPDATE course_schedule 
-                      SET date='$date',colloquium='$colloquium',x='$x',y='$y''
+                      SET date='$date',colloquium='$colloquium',x='$x',y='$y'
                       WHERE id='$id' LIMIT 1") or die(mysql_error()))
       {
         $status=1;
@@ -285,6 +285,7 @@
               <li><a href='#schedule'><i class='icon-chevron-right'></i>Course Schedule</a></li>
               <li><a href='#classrooms'><i class='icon-chevron-right'></i>Available Classrooms</a></li>
               <li><a href='#graduation'><i class='icon-chevron-right'></i>Graduation Years</a></li>
+              <li><a href='#ghost'><i class='icon-chevron-right'></i>Ghost Users</a></li>
               <li><a href='#sync'><i class='icon-chevron-right'></i>Sync Users</a></li>
             </ul>
         </div>
