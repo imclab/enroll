@@ -37,34 +37,36 @@
   $class_level=null;
   $get_graduation_year_result=mysql_query(
       "SELECT graduation_year FROM users WHERE username='$username' LIMIT 1") or die(mysql_error());
-  $get_graduation_year_array=mysql_fetch_array($get_graduation_year_result);
-  $graduation_year=$get_graduation_year_array['graduation_year'];
-  if($graduation_year==$freshman)
-    $class_level="freshman";
-  elseif($graduation_year==$sophomore)
-    $class_level="sophomore";
-  elseif($graduation_year==$junior)
-    $class_level="junior";
-  elseif($graduation_year==$senior)
-    $class_level="senior";
+  if (mysql_num_rows($get_graduation_year_result) > 0){
+    $get_graduation_year_array=mysql_fetch_array($get_graduation_year_result);
+    $graduation_year=$get_graduation_year_array['graduation_year'];
+    if($graduation_year==$freshman)
+      $class_level="freshman";
+    elseif($graduation_year==$sophomore)
+      $class_level="sophomore";
+    elseif($graduation_year==$junior)
+      $class_level="junior";
+    elseif($graduation_year==$senior)
+      $class_level="senior";
+  }
   //Get next date for XY Courses
   $next_xy_result=mysql_query("SELECT id,date 
                                FROM course_schedule 
                                WHERE date >= " .  date('Y-m-d') . " AND (x=1 OR y=1) 
                                ORDER BY date LIMIT 1") or die(mysql_error());
-  $next_xy_row= mysql_fetch_array($next_xy_result);
-  $next_xy=$next_xy_row['date'];
-  $next_xy_id=$next_xy_row['id'];
-  //Grab all of the teacher's xy options for that date
-  $query = "SELECT users.lastname, users.firstname, xy_assignments.id AS xyassnid, 
-                   xy.name, xy.description, xy.image, xy_assignments.block, xy_assignments.class_size,
-                   xy.freshmen,xy.sophomores,xy.juniors,xy.seniors 
-            FROM `users` 
-            INNER JOIN `xy_assignments` on xy_assignments.teacher_id = users.id
-            INNER JOIN `xy` on xy_assignments.xy_id = xy.id 
-            WHERE xy_assignments.final=1 AND xy_assignments.date_id=$next_xy_id";
-  //Result of above query
-  $result = mysql_query($query) or die(mysql_error());
+  if (mysql_num_rows($next_xy_result)==1){
+    $next_xy_row=mysql_fetch_array($next_xy_result);
+    $next_xy=$next_xy_row['date'];
+    $next_xy_id=$next_xy_row['id'];
+    //Grab all of the teacher's xy options for that date
+    $result = mysql_query("SELECT users.lastname, users.firstname, xy_assignments.id AS xyassnid, 
+                     xy.name, xy.description, xy.image, xy_assignments.block, xy_assignments.class_size,
+                     xy.freshmen,xy.sophomores,xy.juniors,xy.seniors 
+              FROM `users` 
+              INNER JOIN `xy_assignments` on xy_assignments.teacher_id = users.id
+              INNER JOIN `xy` on xy_assignments.xy_id = xy.id 
+              WHERE xy_assignments.final=1 AND xy_assignments.date_id=$next_xy_id") or die(mysql_error());
+  }
   $chosen_xy_name=NULL;
   $chosen_xy_image=NULL;
   $chosen_xy_id=NULL;
@@ -84,8 +86,8 @@
                                    INNER JOIN `xy_enrollments` on users_id = users.id 
                                    INNER JOIN `xy_assignments` on xy_assignments.id = xy_enrollments.xy_assignments_id 
                                    INNER JOIN `xy` on xy_assignments.xy_id = xy.id 
-                                   WHERE users.username=\"$username\"") or die(mysql_error());
-    while($chosen_xy_row = mysql_fetch_array($chosen_xy_result)){
+                                   WHERE users.username='$username'") or die(mysql_error());
+    while($chosen_xy_row=mysql_fetch_array($chosen_xy_result)){
       if(strcmp($chosen_xy_row['block'],"xy") == 0){
         $chosen_xy_name=$chosen_xy_row['name'];
         $chosen_xy_image=$chosen_xy_row['image'];
@@ -107,10 +109,12 @@
     }
   }
   $xy_registration_open=false;
-  $xy_open=strtotime($next_xy) - ($get_settings_array['xy_num_days_open'] * 86400 + strtotime( $get_settings_array['xy_time_open']));
-  $xy_close=strtotime(date("Y-m-d", strtotime($next_xy) - $get_settings_array['xy_num_days_close'] * 86400) + $get_settings_array['xy_time_close'] );
-  if(time() >= $xy_open && time() < $xy_close)
-    $xy_registration_open=true;
+  if(isset($next_xy)){
+    $xy_open=strtotime($next_xy) - ($get_settings_array['xy_num_days_open'] * 86400 + strtotime( $get_settings_array['xy_time_open']));
+    $xy_close=strtotime(date("Y-m-d", strtotime($next_xy) - $get_settings_array['xy_num_days_close'] * 86400) + $get_settings_array['xy_time_close'] );
+    if(time() >= $xy_open && time() < $xy_close)
+      $xy_registration_open=true;
+  }
   $status=$_GET['status'];
 ?>
 <html lang="en">
@@ -188,7 +192,14 @@
       <?php } ?>
     </div>
     <div class="container">
-      <h1>XY for <?php echo date('l F jS, Y', strtotime($next_xy)); ?></h1>
+      <?php
+        if(isset($next_xy)){
+          echo "<h1>XY for " . date('l F jS, Y', strtotime($next_xy)) . "</h1>";
+        }
+        else{
+          echo "<h1>No XY dates are currently set.</h1>";
+        }
+      ?>
       <hr />
       <!-- SHOW AGENDA IS USER IS LOGGED IN AND HAS ALREADY CHOSEN A X OR Y COURSE -->
       <?php if(isset($_SESSION['username']) && 
@@ -299,8 +310,11 @@
                   $class_size = $row['class_size'];
                   if(isset($_SESSION['username'])) {
                     $spots_left_result=mysql_query("SELECT COUNT(*) AS count FROM `xy_enrollments` WHERE xy_assignments_id=$xyassnid") or die(mysql_error());
-                    $spots_left_array=mysql_fetch_array($spots_left_result);
-                    $spots_left=$class_size - $spots_left_array['count'];
+                    $spots_left=0;
+                    if (mysql_num_rows($spots_left_result) > 0){
+                      $spots_left_array=mysql_fetch_array($spots_left_result);
+                      $spots_left=$class_size - $spots_left_array['count'];
+                    }
                   }
                   if(($spots_left > 0 || is_null($spots_left)) && 
                     ((is_null($chosen_x_name) && strcmp($block, "x") == 0 && is_null($chosen_xy_name)) || 
