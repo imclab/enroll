@@ -21,7 +21,6 @@
 				if ($entries['count'] > 0){
 					$_SESSION['login']=true;
 					$_SESSION['username']=$username;
-					$_SESSION['ghostuser']=null;
 					$_SESSION['ghostrole']=null;
 					//finds role
 					//Connects to MySQL and Selects Database
@@ -31,11 +30,23 @@
 					//Select DB
 					mysql_select_db($db, $con);
 					$get_user_role_result=mysql_query(
-					  "SELECT role,secondary_role FROM users WHERE username='$username' LIMIT 1") or die(mysql_error());
+					  "SELECT role,secondary_role,ghost_user FROM users WHERE username='$username' LIMIT 1") or die(mysql_error());
 					$get_user_role_array=mysql_fetch_array($get_user_role_result);
 					$_SESSION['secondary_role']=$get_user_role_array['secondary_role'];
 					$_SESSION['firstname']=$entries[0]["givenname"][0];
 					$_SESSION['lastname']=$entries[0]["sn"][0];
+					$_SESSION['ghostuser']=$get_user_role_array['ghost_user'];
+					if(isset($get_user_role_array['ghost_user'])){
+						$ghost_username=$get_user_role_array['ghost_user'];
+						$get_ghost_user_details=mysql_query(
+					  		"SELECT * FROM users WHERE username='$ghost_username' LIMIT 1") or die(mysql_error());
+						while($row=mysql_fetch_array($get_ghost_user_details)){
+							$_SESSION['secondary_role']=$row['secondary_role'];
+							$_SESSION['firstname']=$row['firstname'];
+							$_SESSION['lastname']=$row['lastname'];
+							$_SESSION['username']=$row['username'];
+						}
+					}
 					//If role is administator, set session variable
 					if(strcmp($get_user_role_array['role'], 'admin')==0 || 
 					   strcmp($get_user_role_array['secondary_role'], 'admin')==0)
