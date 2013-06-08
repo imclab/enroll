@@ -113,6 +113,7 @@
                <?php if($_SESSION['teacher']){
                 echo "<li><a href='../teacher/agenda.php'>My Courses</a></li>";
                }?>
+               <li><a href="activity.php">Activity</a></li>
                <li><a href="options.php">Settings</a></li>
            </ul>
             <ul class="nav pull-right">

@@ -15,34 +15,19 @@
   //Select DB
   mysql_select_db($db, $con);
   //Ghost usernames
-  $numStudents=0;
-  $numTeachers=0;
   $ghost_usernames=array();
-  $student_usernames=array();
   $get_ghost_usernames=mysql_query(
       "SELECT username,role 
        FROM users 
        WHERE role='teacher' OR role='student'") or die(mysql_error());
   while($row=mysql_fetch_array($get_ghost_usernames)){
     $ghost_usernames[]="\"" . $row['username'] . "\"";
-    if(strcmp($row['role'], 'student')==0){
-      $numStudents++;
-      $student_usernames[]="\"" . $row['username'] . "\"";
-    }
-    elseif(strcmp($row['role'], 'teacher')==0)
-      $numTeachers++;
   }
   //Get Settings
   $get_settings_result=mysql_query(
     "SELECT * FROM settings LIMIT 1") or die(mysql_error());
-  //Get selected semester from URL
-  $selected_semester=$_GET['semester'];
-  //Get Colloquium assignment for selected Semester
-  $col_assignment_result=mysql_query(
-        "SELECT c_assignments.id, colloquiums.name 
-         FROM c_assignments 
-         INNER JOIN `colloquiums` on c_assignments.c_id=colloquiums.id  
-         WHERE semester=$selected_semester AND c_assignments.final=1") or die(mysql_error());
+  $get_settings_array=mysql_fetch_array($get_settings_result);
+  mysql_close();
 ?>
 <!DOCTYPE html>
 <html lang='en'>
@@ -93,7 +78,7 @@
           <a class="brand appname" href="#">Enroll<img src='../img/beta-icon.png' style="vertical-align:text-top;"/></a>
           <div class="nav-collapse collapse">
            <ul class="nav">
-             <li><a href="index.php">Dashboard</a></li>
+             <li class="active"><a href="index.php">Dashboard</a></li>
               <li class="dropdown">
                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Approvals <b class="caret"></b></a>
                <ul class="dropdown-menu">
@@ -107,7 +92,7 @@
                    </li>
                </ul>
               </li>
-              <li class="dropdown active">
+              <li class="dropdown">
                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Enrollments <b class="caret"></b></a>
                <ul class="dropdown-menu">
                  <li><a href='enroll_xy.php'>XY</a></li>
@@ -147,94 +132,10 @@
     </div>
     <header id="overview">
       <div class="container">
-        <h1>Semester <?php echo $selected_semester; ?></h1>
+        <h1>Activity</h1>
       </div>
     </header>
     <div class='container'>
-      <div class="row">
-        <div class="span2 bs-docs-sidebar hidden-phone hidden-tablet">
-          <ul class="nav nav-list bs-docs-sidenav">
-            <?php
-              while($row=mysql_fetch_array($col_assignment_result)){
-                echo "<li><a href='#" . $row['id'] . "'><i class='icon-chevron-right'></i>" . $row['name'] . "</a></li>";
-              }
-            ?>
-          </ul>
-      </div>
-      <div class="span9 offset1">
-        <?php
-          mysql_data_seek($col_assignment_result,0);
-          while($row=mysql_fetch_array($col_assignment_result)){
-            $id=$row['id'];
-            //Get Current Roster for Course
-            $roster_result=mysql_query(
-                "SELECT c_enrollments.id,users.firstname,users.lastname 
-                 FROM c_enrollments 
-                 INNER JOIN `users` on c_enrollments.users_id=users.id
-                 WHERE c_assignments_id=$id") or die(mysql_error());
-        ?>
-            <section id='<?php echo $row['id']; ?>'>
-              <div class='page-header'>
-                <h2><?php echo $row['name']; ?></h2>
-              </div>
-                <div class="row">
-                  <div class='span4'>
-                    <form action='enroll.php' method='post'>
-                      <input name='id' type='hidden' value="<?php echo $id; ?>" />
-                      <input name='type' type='hidden' value='colloquium' />
-                      <input name='semester' type='hidden' value="<?php echo $selected_semester; ?>" />
-                      <span class="input-append">
-                        <input class="input-medium" name="username" type="text" 
-                               data-provide="typeahead" autocomplete="off" placeholder="Username..."
-                               data-source='[<?php echo implode(',',$student_usernames); ?>]' />
-                        <span class="add-on">
-                          <span class="icon-search"></span>
-                        </span>
-                      </span>
-                      <button class='btn btn-medium btn-primary' type='submit'>Enroll</button>
-                    </form>
-                    <table class="table table-striped table-hover table-condensed">
-                      <thead>
-                        <tr>
-                          <th>Last Name</th>
-                          <th>First Name</th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <?php
-                          if (mysql_num_rows($roster_result) == 0){
-                            echo "<tr>";
-                            echo "<td>No Students Currently Enrolled</td>";
-                            echo "<td></td>";
-                            echo "<td></td>";
-                            echo "</tr>";
-                          }
-                          else{
-                            while($roster=mysql_fetch_array($roster_result)){
-                              echo "<tr>";
-                              echo "<form action='unenroll.php' method='post'>";
-                              echo "<input name='id' type='hidden' value='" . $roster['id'] . "' />";
-                              echo "<input name='type' type='hidden' value='colloquium' />";
-                              echo "<input name='semester' type='hidden' value=" . $selected_semester . " />";
-                              echo "<td>" . $roster['lastname'] . "</td>";
-                              echo "<td>" . $roster['firstname'] . "</td>";
-                              echo "<td><button class='btn btn-medium btn-warning' type='submit'>Remove</button></td>";
-                              echo "</form>";
-                              echo "</tr>";
-                            }
-                          }
-                        ?>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-            </section>
-        <?php
-          }
-          mysql_close();
-        ?>
-      </div>
     </div> <!-- /container -->
   </body>
 </html>
