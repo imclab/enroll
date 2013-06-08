@@ -1,6 +1,6 @@
 -- Host: localhost
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
@@ -12,6 +12,23 @@ SET time_zone = "+00:00";
 --
 -- Database: `enroll`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `activity`
+--
+
+CREATE TABLE IF NOT EXISTS `activity` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `date` datetime DEFAULT NULL,
+  `primary_user_id` int(11) DEFAULT NULL,
+  `secondary_user_id` int(11) DEFAULT NULL,
+  `activity` text,
+  PRIMARY KEY (`id`),
+  KEY `primary_user_id` (`primary_user_id`),
+  KEY `secondary_user_id` (`secondary_user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -34,10 +51,8 @@ CREATE TABLE IF NOT EXISTS `colloquiums` (
   `seniors` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `teacher_id` (`teacher_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=54 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=73 ;
 
-
--- --------------------------------------------------------
 
 --
 -- Table structure for table `course_schedule`
@@ -50,9 +65,15 @@ CREATE TABLE IF NOT EXISTS `course_schedule` (
   `x` tinyint(1) NOT NULL,
   `y` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
+--
+-- Dumping data for table `course_schedule`
+--
 
+INSERT INTO `course_schedule` (`id`, `date`, `colloquium`, `x`, `y`) VALUES
+(1, '2013-08-28', 1, 0, 0),
+(2, '2013-09-11', 1, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -73,7 +94,8 @@ CREATE TABLE IF NOT EXISTS `c_assignments` (
   `final` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `teacher_id` (`teacher_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=30 ;
+
 
 
 -- --------------------------------------------------------
@@ -91,7 +113,6 @@ CREATE TABLE IF NOT EXISTS `c_enrollments` (
   KEY `users_id` (`users_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
-
 -- --------------------------------------------------------
 
 --
@@ -100,10 +121,10 @@ CREATE TABLE IF NOT EXISTS `c_enrollments` (
 
 CREATE TABLE IF NOT EXISTS `settings` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `freshman` int(11) DEFAULT NULL,
-  `sophomore` int(11) DEFAULT NULL,
-  `junior` int(11) DEFAULT NULL,
-  `senior` int(11) DEFAULT NULL,
+  `freshman` int(11) NOT NULL,
+  `sophomore` int(11) NOT NULL,
+  `junior` int(11) NOT NULL,
+  `senior` int(11) NOT NULL,
   `col1_freshman_start` datetime NOT NULL DEFAULT '2013-05-27 07:00:00',
   `col1_sophomore_start` datetime NOT NULL DEFAULT '2013-05-27 07:00:00',
   `col1_junior_start` datetime NOT NULL DEFAULT '2013-05-27 07:00:00',
@@ -124,14 +145,14 @@ CREATE TABLE IF NOT EXISTS `settings` (
   `quarter_3_start` date NOT NULL,
   `quarter_4_start` date NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `settings`
 --
 
 INSERT INTO `settings` (`id`, `freshman`, `sophomore`, `junior`, `senior`, `col1_freshman_start`, `col1_sophomore_start`, `col1_junior_start`, `col1_senior_start`, `col1_end`, `col2_freshman_start`, `col2_sophomore_start`, `col2_junior_start`, `col2_senior_start`, `col2_end`, `xy_num_days_open`, `xy_time_open`, `xy_num_days_close`, `xy_time_close`, `rooms`, `quarter_1_start`, `quarter_2_start`, `quarter_3_start`, `quarter_4_start`) VALUES
-(1, 2016, 2015, 2014, 2013, '2013-05-01 07:00:00', '2013-08-13 12:00:00', '2013-08-13 07:00:00', '2013-08-12 07:00:00', '2013-08-19 07:00:00', '2014-01-01 07:00:00', '2014-01-01 07:00:00', '2014-01-01 07:00:00', '2014-01-01 07:00:00', '2014-01-01 07:00:00', 300, '07:00:00', 0, '00:00:00', '101,Theater', '2013-08-26', '2013-11-01', '2014-01-24', '2014-03-28');
+(1, 2013, 2014, 2015, 2016, '2013-08-15 08:00:00', '2013-08-13 12:00:00', '2013-08-13 08:00:00', '2013-08-12 08:00:00', '2013-08-19 07:00:00', '2014-01-01 07:00:00', '2014-01-01 07:00:00', '2014-01-01 07:00:00', '2014-01-01 07:00:00', '2014-01-01 07:00:00', 6, '07:00:00', 0, '00:00:00', '101,Theater', '2013-08-26', '2013-11-01', '2014-01-24', '2014-03-28');
 
 -- --------------------------------------------------------
 
@@ -146,11 +167,10 @@ CREATE TABLE IF NOT EXISTS `users` (
   `username` text NOT NULL,
   `role` text,
   `secondary_role` text,
+  `ghost_user` text,
   `graduation_year` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1172 ;
-
--- --------------------------------------------------------
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1173 ;
 
 --
 -- Table structure for table `xy`
@@ -171,10 +191,8 @@ CREATE TABLE IF NOT EXISTS `xy` (
   `seniors` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `teacher_id` (`teacher_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
 
-
--- --------------------------------------------------------
 
 --
 -- Table structure for table `xy_assignments`
@@ -195,8 +213,7 @@ CREATE TABLE IF NOT EXISTS `xy_assignments` (
   KEY `xy_id` (`xy_id`),
   KEY `date_id` (`date_id`),
   KEY `teacher_id` (`teacher_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=30 ;
-
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=21 ;
 
 -- --------------------------------------------------------
 
@@ -212,12 +229,18 @@ CREATE TABLE IF NOT EXISTS `xy_enrollments` (
   KEY `xy_assignments_id` (`xy_assignments_id`),
   KEY `users_id` (`users_id`),
   KEY `xy_assignments_id_2` (`xy_assignments_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
-
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14 ;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `activity`
+--
+ALTER TABLE `activity`
+  ADD CONSTRAINT `activity_ibfk_2` FOREIGN KEY (`secondary_user_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `activity_ibfk_1` FOREIGN KEY (`primary_user_id`) REFERENCES `users` (`id`);
 
 --
 -- Constraints for table `colloquiums`
@@ -235,8 +258,8 @@ ALTER TABLE `c_assignments`
 -- Constraints for table `c_enrollments`
 --
 ALTER TABLE `c_enrollments`
-  ADD CONSTRAINT `c_enrollments_ibfk_1` FOREIGN KEY (`c_assignments_id`) REFERENCES `c_assignments` (`id`),
-  ADD CONSTRAINT `c_enrollments_ibfk_2` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`);
+  ADD CONSTRAINT `c_enrollments_ibfk_2` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `c_enrollments_ibfk_1` FOREIGN KEY (`c_assignments_id`) REFERENCES `c_assignments` (`id`);
 
 --
 -- Constraints for table `xy`
@@ -248,7 +271,7 @@ ALTER TABLE `xy`
 -- Constraints for table `xy_assignments`
 --
 ALTER TABLE `xy_assignments`
-  ADD CONSTRAINT `xy_assignments_ibfk_2` FOREIGN KEY (`date_id`) REFERENCES `course_schedule` (`id`),
+  ADD CONSTRAINT `xy_assignments_ibfk_4` FOREIGN KEY (`date_id`) REFERENCES `course_schedule` (`id`),
   ADD CONSTRAINT `xy_assignments_ibfk_1` FOREIGN KEY (`xy_id`) REFERENCES `xy` (`id`),
   ADD CONSTRAINT `xy_assignments_ibfk_3` FOREIGN KEY (`teacher_id`) REFERENCES `users` (`id`);
 
