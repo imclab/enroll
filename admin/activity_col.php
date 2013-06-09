@@ -29,8 +29,13 @@
   $get_settings_array=mysql_fetch_array($get_settings_result);
   //Get latest activity, limit to 50 rows
   $get_activity_result=mysql_query(
-    "SELECT * FROM activity ORDER BY date LIMIT 50") or die(mysql_error());
-  mysql_close();
+    "SELECT c_activity.date,users.firstname AS primary_firstname,users.lastname AS primary_lastname,
+            c_activity.secondary_user_id,colloquiums.name AS col_name,c_activity.activity
+      FROM `c_activity` 
+      INNER JOIN `users` on c_activity.primary_user_id=users.id 
+      INNER JOIN `c_assignments` on c_activity.c_assignments_id=c_assignments.id 
+      INNER JOIN `colloquiums` on c_assignments.c_id=colloquiums.id 
+      ORDER BY date DESC LIMIT 50") or die(mysql_error());
 ?>
 <!DOCTYPE html>
 <html lang='en'>
@@ -145,6 +150,40 @@
       </div>
     </header>
     <div class='container'>
+      <table class="table table-hover table-striped">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Primary User</th>
+            <th>Activity</th>
+            <th>Secondary User</th>
+            <th>Course</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php
+            while($row=mysql_fetch_array($get_activity_result)){
+              $secondary_user_firstname="";
+              $secondary_user_lastname="";
+              if(isset($row['secondary_user_id'])){
+                $secondary_user_id=$row['secondary_user_id'];
+                if($secondary_user_array=mysql_fetch_array(mysql_query("SELECT firstname, lastname FROM users WHERE id=$secondary_user_id LIMIT 1"))){
+                  $secondary_user_firstname=$secondary_user_array['firstname'];
+                  $secondary_user_lastname=$secondary_user_array['lastname'];
+                }
+              }
+              echo "<tr>";
+                echo "<td>" . $row['date'] . "</td>";
+                echo "<td>" . $row['primary_firstname'] . " " . $row['primary_lastname'] . "</td>";
+                echo "<td>" . $row['activity'] . "</td>";
+                echo "<td>" . $secondary_user_firstname . " " . $secondary_user_lastname . "</td>";
+                echo "<td>" . $row['col_name'] . "</td>";
+              echo "</tr>";
+            }
+            mysql_close();
+          ?>
+        </tbody>
+      </table>
     </div> <!-- /container -->
   </body>
 </html>
