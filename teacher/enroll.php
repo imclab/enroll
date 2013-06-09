@@ -7,6 +7,7 @@
   }
   mysql_select_db($db, $con);
   $studentid=$_POST['id'];
+  $teacherid=$_POST['teacher_id'];
   $status=0;
   if(strcmp($_POST['type'],"colloquium")==0){
     $semester=$_POST['semester'];
@@ -20,6 +21,9 @@
     if (mysql_num_rows($check_enrollment_result) == 0){
       //Enroll user
       mysql_query("INSERT INTO c_enrollments(c_assignments_id,users_id) VALUES($col_id,$studentid)");
+      //Add to activity log
+      mysql_query("INSERT INTO c_activity(date,primary_user_id,secondary_user_id,c_assignments_id,activity) 
+             VALUES(NOW(),$teacherid,$studentid,$col_id,'enroll')");
       mysql_close($con);
       $status=1;
     }
@@ -39,6 +43,9 @@
     if (mysql_num_rows($check_enrollment_result) == 0){
       //Enroll user
       mysql_query("INSERT INTO xy_enrollments(xy_assignments_id,users_id) VALUES($xy_id,$studentid)");
+      //Add to activity log
+      mysql_query("INSERT INTO xy_activity(date,primary_user_id,secondary_user_id,xy_assignments_id,activity) 
+             VALUES(NOW(),$teacherid,$studentid,$xy_id,'enroll')");
       mysql_close($con);
       $status=1;
     }

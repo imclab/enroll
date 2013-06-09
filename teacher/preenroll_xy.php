@@ -176,7 +176,7 @@
               $xyassid=$date['id'];
               //Get Current Roster for Course
               $xy_roster_result=mysql_query(
-                  "SELECT xy_enrollments.id,users.firstname,users.lastname 
+                  "SELECT xy_enrollments.id,xy_enrollments.users_id,users.firstname,users.lastname 
                    FROM xy_enrollments 
                    INNER JOIN `users` on xy_enrollments.users_id=users.id
                    WHERE xy_assignments_id=$xyassid") or die(mysql_error());
@@ -212,6 +212,9 @@
                               echo "<tr>";
                               echo "<form action='unenroll.php' method='post'>";
                               echo "<input name='id' type='hidden' value='" . $row['id'] . "' />";
+                              echo "<input name='student_id' type='hidden' value=" . $row['users_id'] . " />";
+                              echo "<input name='teacher_id' type='hidden' value='$userid' />";
+                              echo "<input name='xy_id' type='hidden' value='" . $xyassid . "' />";
                               echo "<input name='type' type='hidden' value='xy' />";
                               echo "<td>" . $row['lastname'] . "</td>";
                               echo "<td>" . $row['firstname'] . "</td>";
@@ -249,6 +252,7 @@
                               echo "<tr>";
                               echo "<form action='enroll.php' method='post'>";
                               echo "<input name='id' type='hidden' value=" . $row['id'] . " />";
+                              echo "<input name='teacher_id' type='hidden' value='$userid' />";
                               echo "<input name='type' type='hidden' value='xy' />";
                               echo "<input name='xy_id' type='hidden' value='" . $xyassid . "' />";
                               echo "<td>" . $row['lastname'] . "</td>";

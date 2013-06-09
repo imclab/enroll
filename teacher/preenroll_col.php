@@ -42,7 +42,7 @@
   if($col_final){
     //Get Current Roster for Course
     $col_roster_result=mysql_query(
-        "SELECT c_enrollments.id,users.firstname,users.lastname 
+        "SELECT c_enrollments.id,c_enrollments.users_id,users.firstname,users.lastname 
          FROM c_enrollments 
          INNER JOIN `users` on c_enrollments.users_id=users.id
          WHERE c_assignments_id=$col_id") or die(mysql_error());
@@ -194,6 +194,9 @@
                           echo "<tr>";
                           echo "<form action='unenroll.php' method='post'>";
                           echo "<input name='id' type='hidden' value='" . $row['id'] . "' />";
+                          echo "<input name='student_id' type='hidden' value=" . $row['users_id'] . " />";
+                          echo "<input name='teacher_id' type='hidden' value='$userid' />";
+                          echo "<input name='col_id' type='hidden' value='" . $col_id . "' />";
                           echo "<input name='type' type='hidden' value='colloquium' />";
                           echo "<input name='semester' type='hidden' value=" . $selected_semester . " />";
                           echo "<td>" . $row['lastname'] . "</td>";
@@ -232,6 +235,7 @@
                           echo "<tr>";
                           echo "<form action='enroll.php' method='post'>";
                           echo "<input name='id' type='hidden' value=" . $row['id'] . " />";
+                          echo "<input name='teacher_id' type='hidden' value='$userid' />";
                           echo "<input name='type' type='hidden' value='colloquium' />";
                           echo "<input name='semester' type='hidden' value=" . $selected_semester . " />";
                           echo "<input name='col_id' type='hidden' value='" . $col_id . "' />";

@@ -27,6 +27,9 @@
   $get_settings_result=mysql_query(
     "SELECT * FROM settings LIMIT 1") or die(mysql_error());
   $get_settings_array=mysql_fetch_array($get_settings_result);
+  //Get latest activity, limit to 50 rows
+  $get_activity_result=mysql_query(
+    "SELECT * FROM activity ORDER BY date LIMIT 50") or die(mysql_error());
   mysql_close();
 ?>
 <!DOCTYPE html>
