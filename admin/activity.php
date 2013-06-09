@@ -78,7 +78,7 @@
           <a class="brand appname" href="#">Enroll<img src='../img/beta-icon.png' style="vertical-align:text-top;"/></a>
           <div class="nav-collapse collapse">
            <ul class="nav">
-             <li class="active"><a href="index.php">Dashboard</a></li>
+             <li><a href="index.php">Dashboard</a></li>
               <li class="dropdown">
                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Approvals <b class="caret"></b></a>
                <ul class="dropdown-menu">
@@ -108,7 +108,7 @@
                <?php if($_SESSION['teacher']){
                 echo "<li><a href='../teacher/agenda.php'>My Courses</a></li>";
                }?>
-               <li><a href="activity.php">Activity</a></li>
+               <li class="active"><a href="activity.php">Activity</a></li>
                <li><a href="options.php">Settings</a></li>
            </ul>
             <ul class="nav pull-right">

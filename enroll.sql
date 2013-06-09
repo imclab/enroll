@@ -16,23 +16,6 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `activity`
---
-
-CREATE TABLE IF NOT EXISTS `activity` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `date` datetime DEFAULT NULL,
-  `primary_user_id` int(11) DEFAULT NULL,
-  `secondary_user_id` int(11) DEFAULT NULL,
-  `activity` text,
-  PRIMARY KEY (`id`),
-  KEY `primary_user_id` (`primary_user_id`),
-  KEY `secondary_user_id` (`secondary_user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `colloquiums`
 --
 
@@ -52,6 +35,7 @@ CREATE TABLE IF NOT EXISTS `colloquiums` (
   PRIMARY KEY (`id`),
   KEY `teacher_id` (`teacher_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=73 ;
+
 
 
 --
@@ -78,6 +62,25 @@ INSERT INTO `course_schedule` (`id`, `date`, `colloquium`, `x`, `y`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `c_activity`
+--
+
+CREATE TABLE IF NOT EXISTS `c_activity` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `date` datetime DEFAULT NULL,
+  `primary_user_id` int(11) DEFAULT NULL,
+  `secondary_user_id` int(11) DEFAULT NULL,
+  `c_assignments_id` int(11) DEFAULT NULL,
+  `activity` text,
+  PRIMARY KEY (`id`),
+  KEY `primary_user_id` (`primary_user_id`),
+  KEY `secondary_user_id` (`secondary_user_id`),
+  KEY `c_assignments_id` (`c_assignments_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `c_assignments`
 --
 
@@ -95,7 +98,6 @@ CREATE TABLE IF NOT EXISTS `c_assignments` (
   PRIMARY KEY (`id`),
   KEY `teacher_id` (`teacher_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=30 ;
-
 
 
 -- --------------------------------------------------------
@@ -194,6 +196,26 @@ CREATE TABLE IF NOT EXISTS `xy` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
 
 
+
+--
+-- Table structure for table `xy_activity`
+--
+
+CREATE TABLE IF NOT EXISTS `xy_activity` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `date` datetime DEFAULT NULL,
+  `primary_user_id` int(11) DEFAULT NULL,
+  `secondary_user_id` int(11) DEFAULT NULL,
+  `xy_assignments_id` int(11) DEFAULT NULL,
+  `activity` text,
+  PRIMARY KEY (`id`),
+  KEY `primary_user_id` (`primary_user_id`),
+  KEY `secondary_user_id` (`secondary_user_id`),
+  KEY `c_assignments_id` (`xy_assignments_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
 --
 -- Table structure for table `xy_assignments`
 --
@@ -236,17 +258,18 @@ CREATE TABLE IF NOT EXISTS `xy_enrollments` (
 --
 
 --
--- Constraints for table `activity`
---
-ALTER TABLE `activity`
-  ADD CONSTRAINT `activity_ibfk_2` FOREIGN KEY (`secondary_user_id`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `activity_ibfk_1` FOREIGN KEY (`primary_user_id`) REFERENCES `users` (`id`);
-
---
 -- Constraints for table `colloquiums`
 --
 ALTER TABLE `colloquiums`
   ADD CONSTRAINT `colloquiums_ibfk_1` FOREIGN KEY (`teacher_id`) REFERENCES `users` (`id`);
+
+--
+-- Constraints for table `c_activity`
+--
+ALTER TABLE `c_activity`
+  ADD CONSTRAINT `c_activity_ibfk_3` FOREIGN KEY (`c_assignments_id`) REFERENCES `c_assignments` (`id`),
+  ADD CONSTRAINT `c_activity_ibfk_1` FOREIGN KEY (`primary_user_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `c_activity_ibfk_2` FOREIGN KEY (`secondary_user_id`) REFERENCES `users` (`id`);
 
 --
 -- Constraints for table `c_assignments`
@@ -266,6 +289,14 @@ ALTER TABLE `c_enrollments`
 --
 ALTER TABLE `xy`
   ADD CONSTRAINT `xy_ibfk_1` FOREIGN KEY (`teacher_id`) REFERENCES `users` (`id`);
+
+--
+-- Constraints for table `xy_activity`
+--
+ALTER TABLE `xy_activity`
+  ADD CONSTRAINT `xy_activity_ibfk_3` FOREIGN KEY (`xy_assignments_id`) REFERENCES `xy_assignments` (`id`),
+  ADD CONSTRAINT `xy_activity_ibfk_1` FOREIGN KEY (`primary_user_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `xy_activity_ibfk_2` FOREIGN KEY (`secondary_user_id`) REFERENCES `users` (`id`);
 
 --
 -- Constraints for table `xy_assignments`
