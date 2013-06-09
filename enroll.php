@@ -45,10 +45,11 @@
  				mysql_close($con);
  				header('Location: colloquium.php?status=3');
  			}
- 			//Student successfull registered in a colloquium
+ 			//Student successfully registered in a colloquium
  			else{
  				//Add to activity log
- 				mysql_query("INSERT INTO activity(date,primary_user_id,activity) VALUES(date('Y-m-d H:i:s','$userid','Student enrolled in a Colloquium'))");
+ 				mysql_query("INSERT INTO c_activity(date,primary_user_id,c_assignments_id,activity) 
+ 							 VALUES(NOW(),$userid,$courseid,'enroll')");
  				mysql_close($con);
  				header('Location: colloquium.php?status=1');
  			}
@@ -58,16 +59,22 @@
  			header('Location: colloquium.php?status=0');
  		}
  	}
+ 	//If there are spots left and it is a XY
  	else if($spots_left > 0 && strcmp($type, "xy") == 0){
  		if(mysql_query("INSERT INTO xy_enrollments(xy_assignments_id,users_id) VALUES('$courseid','$userid')")){
  			$numberRegistrations_result = mysql_query("SELECT COUNT(*) AS count FROM `xy_enrollments` WHERE xy_assignments_id=$courseid") or die(mysql_error());
  			$spots_left = $class_size - $numberRegistrations_result;
+ 			//Course over limit, remove student
  			if($spots_left < 0){
  				$delete_result=mysql_query("DELETE FROM xy_enrollments WHERE xy_assignments_id='$courseid' AND users_id='$userid' LIMIT 1");
  				mysql_close($con);
  				header('Location: xy.php?status=3');
  			}
+ 			//Student successfully registered in a XY
  			else{
+ 				//Add to activity log
+ 				mysql_query("INSERT INTO xy_activity(date,primary_user_id,xy_assignments_id,activity) 
+ 							 VALUES(NOW(),$userid,$courseid,'enroll')");
  				mysql_close($con);
  				header('Location: xy.php?status=1');
  			}

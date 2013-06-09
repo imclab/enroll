@@ -16,9 +16,15 @@
 
  	if(strcmp($type, "colloquium") == 0){
  		$remove_result=mysql_query("DELETE FROM c_enrollments WHERE c_assignments_id='$courseid' AND users_id='$userid' LIMIT 1");
+ 		//Add to activity log
+ 		mysql_query("INSERT INTO c_activity(date,primary_user_id,c_assignments_id,activity) 
+ 					 VALUES(NOW(),$userid,$courseid,'unenroll')");
  	}
  	else if(strcmp($type, "xy") == 0){
  		$remove_result=mysql_query("DELETE FROM xy_enrollments WHERE xy_assignments_id='$courseid' AND users_id='$userid' LIMIT 1");
+ 		//Add to activity log
+ 		mysql_query("INSERT INTO xy_activity(date,primary_user_id,xy_assignments_id,activity) 
+ 					 VALUES(NOW(),$userid,$courseid,'unenroll')");
  	}
 	if($remove_result){
 		echo "Course removed!";
