@@ -37,6 +37,12 @@
     "SELECT * FROM settings LIMIT 1") or die(mysql_error());
   //Get selected semester from URL
   $selected_semester=$_GET['semester'];
+  //Internal user id
+  $username=$_SESSION['username'];
+  $userid=NULL;
+  $get_userid_result=mysql_query("SELECT id FROM users WHERE username='$username'") or die(mysql_error());
+  $get_userid_array=mysql_fetch_array($get_userid_result);
+  $userid=$get_userid_array['id'];
   //Get Colloquium assignment for selected Semester
   $col_assignment_result=mysql_query(
         "SELECT c_assignments.id, colloquiums.name 
@@ -168,7 +174,7 @@
             $id=$row['id'];
             //Get Current Roster for Course
             $roster_result=mysql_query(
-                "SELECT c_enrollments.id,users.firstname,users.lastname 
+                "SELECT c_enrollments.id,users.id AS studentid,users.firstname,users.lastname,users.username 
                  FROM c_enrollments 
                  INNER JOIN `users` on c_enrollments.users_id=users.id
                  WHERE c_assignments_id=$id") or die(mysql_error());
@@ -183,6 +189,7 @@
                       <input name='id' type='hidden' value="<?php echo $id; ?>" />
                       <input name='type' type='hidden' value='colloquium' />
                       <input name='semester' type='hidden' value="<?php echo $selected_semester; ?>" />
+                      <input name='teacher_id' type='hidden' value='<?php echo $userid; ?>' />
                       <span class="input-append">
                         <input class="input-medium" name="username" type="text" 
                                data-provide="typeahead" autocomplete="off" placeholder="Username..."
@@ -198,6 +205,7 @@
                         <tr>
                           <th>Last Name</th>
                           <th>First Name</th>
+                          <th>Username</th>
                           <th></th>
                         </tr>
                       </thead>
@@ -208,6 +216,7 @@
                             echo "<td>No Students Currently Enrolled</td>";
                             echo "<td></td>";
                             echo "<td></td>";
+                            echo "<td></td>";
                             echo "</tr>";
                           }
                           else{
@@ -215,10 +224,14 @@
                               echo "<tr>";
                               echo "<form action='unenroll.php' method='post'>";
                               echo "<input name='id' type='hidden' value='" . $roster['id'] . "' />";
+                              echo "<input name='student_id' type='hidden' value='" . $roster['studentid'] . "' />";
+                              echo "<input name='teacher_id' type='hidden' value='$userid' />";
+                              echo "<input name='col_id' type='hidden' value='$id' />";
                               echo "<input name='type' type='hidden' value='colloquium' />";
                               echo "<input name='semester' type='hidden' value=" . $selected_semester . " />";
                               echo "<td>" . $roster['lastname'] . "</td>";
                               echo "<td>" . $roster['firstname'] . "</td>";
+                              echo "<td>" . $roster['username'] . "</td>";
                               echo "<td><button class='btn btn-medium btn-warning' type='submit'>Remove</button></td>";
                               echo "</form>";
                               echo "</tr>";

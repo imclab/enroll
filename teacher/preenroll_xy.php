@@ -45,7 +45,7 @@
        WHERE xy_assignments.teacher_id=$userid AND xy_assignments.final=1")
       or die(mysql_error());
   //Get Student List
-  $students_result=mysql_query("SELECT id,firstname,lastname FROM users WHERE role='student'") or die(mysql_error());
+  $students_result=mysql_query("SELECT id,firstname,lastname,username FROM users WHERE role='student'") or die(mysql_error());
 ?>
 <!DOCTYPE html>
 <html lang='en'>
@@ -194,6 +194,7 @@
                         <tr>
                           <th>Last Name</th>
                           <th>First Name</th>
+                          <th>Username</th>
                           <th></th>
                         </tr>
                       </thead>
@@ -201,6 +202,7 @@
                         <?php
                           if (mysql_num_rows($xy_roster_result) == 0){
                             echo "<tr>";
+                            echo "<td></td>";
                             echo "<td></td>";
                             echo "<td></td>";
                             echo "<td></td>";
@@ -218,6 +220,7 @@
                               echo "<input name='type' type='hidden' value='xy' />";
                               echo "<td>" . $row['lastname'] . "</td>";
                               echo "<td>" . $row['firstname'] . "</td>";
+                              echo "<td>" . $row['username'] . "</td>";
                               echo "<td><button class='btn btn-medium btn-warning' type='submit'>Remove</button></td>";
                               echo "</form>";
                               echo "</tr>";
@@ -234,6 +237,7 @@
                         <tr>
                           <th>Last Name</th>
                           <th>First Name</th>
+                          <th>Username</th>
                           <th></th>
                         </tr>
                       </thead>
@@ -241,6 +245,7 @@
                         <?php
                           if (mysql_num_rows($students_result) == 0){
                             echo "<tr>";
+                            echo "<td></td>";
                             echo "<td></td>";
                             echo "<td></td>";
                             echo "<td></td>";
@@ -257,6 +262,7 @@
                               echo "<input name='xy_id' type='hidden' value='" . $xyassid . "' />";
                               echo "<td>" . $row['lastname'] . "</td>";
                               echo "<td>" . $row['firstname'] . "</td>";
+                              echo "<td>" . $row['username'] . "</td>";
                               echo "<td><button class='btn btn-medium btn-primary' type='submit'>Enroll</button></td>";
                               echo "</form>";
                               echo "</tr>";
