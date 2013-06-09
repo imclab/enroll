@@ -15,8 +15,6 @@
   //Select DB
   mysql_select_db($db, $con);
   //Ghost usernames
-  $numStudents=0;
-  $numTeachers=0;
   $ghost_usernames=array();
   $get_ghost_usernames=mysql_query(
       "SELECT username,role 
@@ -24,82 +22,14 @@
        WHERE role='teacher' OR role='student'") or die(mysql_error());
   while($row=mysql_fetch_array($get_ghost_usernames)){
     $ghost_usernames[]="\"" . $row['username'] . "\"";
-    if(strcmp($row['role'], 'student')==0)
-      $numStudents++;
-    elseif(strcmp($row['role'], 'teacher')==0)
-      $numTeachers++;
   }
-  //Get settings
   //Get Settings
   $get_settings_result=mysql_query(
     "SELECT * FROM settings LIMIT 1") or die(mysql_error());
   $get_settings_array=mysql_fetch_array($get_settings_result);
-  $num_col1=0;
-  $num_col1_final=0;
-  $num_col2=0;
-  $num_col2_final=0;
-  //Get number of colloquia assigned for that date
-  $c_assignments_result=mysql_query(
-      "SELECT id,final,duration,semester 
-       FROM `c_assignments`") or die(mysql_error());
-  while($row = mysql_fetch_array($c_assignments_result)){
-    if($row['semester']==1){
-      $num_col1++;
-      if($row['final']==1)
-        $num_col1_final++;
-    }
-    elseif($row['semester']==2){
-      $num_col2++;
-      if($row['final']==1)
-        $num_col2_final++;
-    }
-  }
-  //Semester 1 Colloquium Data
-  $percentage_col1_assigned=$num_col1/$numTeachers*100;
-  $progress_col1_assigned="progress-danger";
-  if($percentage_col1_assigned>30 && $percentage_col1_assigned<70)
-    $progress_col1_assigned="progress-warning";
-  elseif($percentage_col1_assigned>=70)
-    $progress_col1_assigned="progress-success";
-  //Semester 2 Colloquium Data
-  $percentage_col2_assigned=$num_col2/$numTeachers*100;
-  $progress_col2_assigned="progress-danger";
-  if($percentage_col2_assigned>30 && $percentage_col2_assigned<70)
-    $progress_col2_assigned="progress-warning";
-  elseif($percentage_col2_assigned>=70)
-    $progress_col2_assigned="progress-success";
-  //Number of Semester 1 Colloquiums you have finalized:
-  $percentage_col1_finalized=$num_col1_final/$num_col1*100;
-  $progress_col1_finalized="progress-danger";
-  if($percentage_col1_finalized>30 && $percentage_col1_finalized<70)
-    $progress_col1_finalized="progress-warning";
-  elseif($percentage_col1_finalized>=70)
-    $progress_col1_finalized="progress-success";
-  //Number of Semester 2 Colloquiums you have finalized:
-  $percentage_col2_finalized=$num_col2_final/$num_col2*100;
-  $progress_col2_finalized="progress-danger";
-  if($percentage_col2_finalized>30 && $percentage_col2_finalized<70)
-    $progress_col2_finalized="progress-warning";
-  elseif($percentage_col2_finalized>=70)
-    $progress_col2_finalized="progress-success";
-  //Get next date
-  $next_date_result=mysql_query("SELECT id,date FROM course_schedule WHERE date > " .  date('Y-m-d') . "  LIMIT 1") or die(mysql_error());
-  $next_date_row= mysql_fetch_array($next_date_result);
-  $next_date=$next_date_row['date'];
-  $next_date_id=$next_date_row['id'];
-  if($next_date < $get_settings_array['quarter_3_start'])
-    $next_date_semester=1;
-  else
-    $next_date_semester=1;
-  //Get number of xy courses assigned for that date
-  $xy_assignments_result=mysql_query("SELECT id,final FROM `xy_assignments` WHERE date_id=$next_date_id") or die(mysql_error());
-  $xy_assignments_count=0;
-  $xy_assignments_not_approved=0;
-  while($row = mysql_fetch_array($xy_assignments_result)){
-    $xy_assignments_count++;
-    if($row['final']==0)
-      $xy_assignments_not_approved++;
-  }
+  //Get latest activity, limit to 50 rows
+  $get_activity_result=mysql_query(
+    "SELECT * FROM activity ORDER BY date LIMIT 50") or die(mysql_error());
   mysql_close();
 ?>
 <!DOCTYPE html>
@@ -151,7 +81,7 @@
           <a class="brand appname" href="#">Enroll<img src='../img/beta-icon.png' style="vertical-align:text-top;"/></a>
           <div class="nav-collapse collapse">
            <ul class="nav">
-             <li class="active"><a href="index.php">Dashboard</a></li>
+             <li><a href="index.php">Dashboard</a></li>
               <li class="dropdown">
                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Approvals <b class="caret"></b></a>
                <ul class="dropdown-menu">
@@ -178,7 +108,7 @@
                    </li>
                </ul>
               </li>
-              <li class="dropdown">
+              <li class="dropdown active">
                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Activity <b class="caret"></b></a>
                <ul class="dropdown-menu">
                  <li><a href='activity_xy.php'>XY</a></li>
@@ -211,36 +141,10 @@
     </div>
     <header id="overview">
       <div class="container">
-        <h1>Dashboard</h1>
+        <h1>Activity</h1>
       </div>
     </header>
     <div class='container'>
-      <div class="span9">
-        Teachers who have assigned a Colloquium to Semester 1:
-        <span class="tooltip" data-toggle="tooltip" data-placement="left" 
-              title="<?php echo $num_col1 . ' teachers'; ?>">Tooltip</span>
-        <div class="progress progress-striped active <?php echo $progress_col1_assigned; ?>">
-          <div class="bar" style="width: <?php echo $percentage_col1_assigned; ?>%;"></div>
-        </div>
-        Teachers who have assigned a Colloquium to Semester 2:
-        <span class="tooltip" data-toggle="tooltip" data-placement="left" 
-              title="<?php echo $num_col2 . ' teachers'; ?>">Tooltip</span>
-        <div class="progress progress-striped active <?php echo $progress_col2_assigned; ?>">
-          <div class="bar" style="width: <?php echo $percentage_col2_assigned; ?>%;"></div>
-        </div>
-        Number of Semester 1 Colloquiums you have finalized:
-        <span class="tooltip" data-toggle="tooltip" data-placement="left" 
-              title="<?php echo $num_col1_final . ' courses'; ?>">Tooltip</span>
-        <div class="progress progress-striped active <?php echo $progress_col1_finalized; ?>">
-          <div class="bar" style="width: <?php echo $percentage_col1_finalized; ?>%;"></div>
-        </div>
-        Number of Semester 2 Colloquiums you have finalized:
-        <span class="tooltip" data-toggle="tooltip" data-placement="left" 
-              title="<?php echo $num_col2_final . ' courses'; ?>">Tooltip</span>
-        <div class="progress progress-striped active <?php echo $progress_col2_finalized; ?>">
-          <div class="bar" style="width: <?php echo $percentage_col2_finalized; ?>%;"></div>
-        </div>
-      </div>
     </div> <!-- /container -->
   </body>
 </html>

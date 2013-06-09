@@ -126,10 +126,16 @@
                    </li>
                </ul>
               </li>
+              <li class="dropdown">
+               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Activity <b class="caret"></b></a>
+               <ul class="dropdown-menu">
+                 <li><a href='activity_xy.php'>XY</a></li>
+                 <li><a href='activity_col.php'>Colloquium</a></li>
+               </ul>
+              </li>
                <?php if($_SESSION['teacher']){
                 echo "<li><a href='../teacher/agenda.php'>My Courses</a></li>";
                }?>
-               <li><a href="activity.php">Activity</a></li>
                <li><a href="options.php">Settings</a></li>
            </ul>
             <ul class="nav pull-right">
