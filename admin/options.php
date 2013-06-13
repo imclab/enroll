@@ -321,6 +321,7 @@
               <li><a href='#quarters'><i class='icon-chevron-right'></i>Quarter Start Dates</a></li>
               <li><a href='#schedule'><i class='icon-chevron-right'></i>Course Schedule</a></li>
               <li><a href='#classrooms'><i class='icon-chevron-right'></i>Available Classrooms</a></li>
+              <li><a href='#labs'><i class='icon-chevron-right'></i>Available Labs</a></li>
               <li><a href='#graduation'><i class='icon-chevron-right'></i>Graduation Years</a></li>
               <li><a href='#ghost'><i class='icon-chevron-right'></i>Ghost Users</a></li>
               <li><a href='#sync'><i class='icon-chevron-right'></i>Sync Users</a></li>
@@ -644,6 +645,24 @@
           <form class="form" action="#classrooms" method="post">
             <div class="control-group">
               <label class="control-label" for="classroms">List of classrooms:</label>
+              <div class="controls">
+                <textarea class="input-xxlarge" name="classrooms" id="classrooms" rows="5" required><?php echo $get_settings_array['rooms']; ?></textarea>
+              </div>
+            </div>
+            <div class="control-group">
+              <div class="controls">
+                <button name="classrooms_submit" type="submit" class="btn btn-primary">Update</button>
+              </div>
+            </div>
+          </form>
+       </section>
+        <section id="labs">
+          <div class='page-header'>
+            <h2>Available Labs</h2>
+          </div>
+          <form class="form" action="#classrooms" method="post">
+            <div class="control-group">
+              <label class="control-label" for="classroms">List of spaces the can be reserved:</label>
               <div class="controls">
                 <textarea class="input-xxlarge" name="classrooms" id="classrooms" rows="5" required><?php echo $get_settings_array['rooms']; ?></textarea>
               </div>
